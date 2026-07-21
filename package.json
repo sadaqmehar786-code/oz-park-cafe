@@ -1,0 +1,8 @@
+{
+  "name": "oz-park-cafe",
+  "version": "1.0.0",
+  "description": "OZ Park Cafe website",
+  "scripts": {
+    "deploy": "node deploy.js"
+  }
+}
