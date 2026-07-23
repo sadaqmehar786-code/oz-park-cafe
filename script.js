@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           card.innerHTML = `
             <div class="menu-card-img-wrapper">
-              <img src="${item.image_url}" alt="${item.name_en}" class="menu-card-img">
+              <img src="${item.image_url}" alt="${item.name_en}" class="menu-card-img" onerror="this.src='https://images.unsplash.com/photo-1517701604599-bb29b565090c?q=80&w=800&auto=format&fit=crop'">
               <span class="menu-card-badge">
                 <span class="lang-ar">${item.category_name_ar || ''}</span>
                 <span class="lang-en">${item.category_name_en || ''}</span>
