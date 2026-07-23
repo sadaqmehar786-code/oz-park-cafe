@@ -47,13 +47,10 @@ app.get('/sitemap.xml', require('./routes/seo'));
 app.get('/robots.txt', require('./routes/seo'));
 
 // Serve Admin SPA Dashboard for any /admin* URL
-app.use('/admin', (req, res, next) => {
-  if (req.path.includes('.') && !req.path.endsWith('.html')) {
-    return next(); // Let static handler manage files like app.js, style.css
-  }
+app.use('/admin', express.static(path.join(__dirname, 'admin')));
+app.get(['/admin', '/admin/*'], (req, res) => {
   res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });
-app.use('/admin', express.static(path.join(__dirname, 'admin')));
 
 // Serve Public Website
 app.use(express.static(__dirname));
