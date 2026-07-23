@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم | أوز بارك كافيه - OZ Park Café Admin</title>
+  <link rel="stylesheet" href="/admin-assets/style.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       LOGIN VIEW (Rendered if Unauthenticated)
+       ========================================================================== -->
+  <div id="login-view" class="login-wrapper" style="display: none;">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-logo-badge">OZ PARK CAFÉ</div>
+      </div>
+      <h2>
+        <span class="lang-ar">تسجيل الدخول إلى لوحة التحكم</span>
+        <span class="lang-en">Sign in to Admin Dashboard</span>
+      </h2>
+      <p>
+        <span class="lang-ar">أدخل بريدك الإلكتروني وكلمة المرور للمتابعة</span>
+        <span class="lang-en">Enter your email and password to proceed</span>
+      </p>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label>
+            <span class="lang-ar">البريد الإلكتروني</span>
+            <span class="lang-en">Email Address</span>
+          </label>
+          <input type="email" id="login-email" class="form-control" value="admin@ozparkcafe.com" required placeholder="admin@ozparkcafe.com">
+        </div>
+        <div class="form-group">
+          <label>
+            <span class="lang-ar">كلمة المرور</span>
+            <span class="lang-en">Password</span>
+          </label>
+          <input type="password" id="login-password" class="form-control" value="admin123" required placeholder="••••••••">
+        </div>
+        <div id="login-error" class="badge badge-danger" style="display: none; margin-bottom: 1rem; width: 100%; padding: 0.6rem;"></div>
+        <button type="submit" class="btn btn-gold btn-full">
+          <span class="lang-ar">دخول إلى النظام</span>
+          <span class="lang-en">Sign In</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MAIN ADMIN APP CONTAINER
+       ========================================================================== -->
+  <div id="admin-app" class="admin-app" style="display: none;">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-badge">
+          <span class="title">OZ PARK CAFÉ</span>
+          <span class="subtitle">Management System</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">
+          <span class="lang-ar">نظرة عامة</span>
+          <span class="lang-en">Overview</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#/dashboard" class="nav-item active" data-route="dashboard">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+              <span class="lang-ar">الرئيسية والإحصائيات</span>
+              <span class="lang-en">Dashboard Overview</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-label">
+          <span class="lang-ar">محتوى المقهى</span>
+          <span class="lang-en">Café Content</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#/pages" class="nav-item" data-route="pages">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              <span class="lang-ar">محرر صفحات المواقع</span>
+              <span class="lang-en">CMS Page Editor</span>
+            </a>
+          </li>
+          <li>
+            <a href="#/menu" class="nav-item" data-route="menu">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              <span class="lang-ar">إدارة قائمة المشروبات</span>
+              <span class="lang-en">Café Menu Manager</span>
+            </a>
+          </li>
+          <li>
+            <a href="#/offers" class="nav-item" data-route="offers">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+              <span class="lang-ar">العروض والتخفيضات</span>
+              <span class="lang-en">Offers & Promotions</span>
+            </a>
+          </li>
+          <li>
+            <a href="#/blog" class="nav-item" data-route="blog">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+              <span class="lang-ar">مدونة وحكايات القهوة</span>
+              <span class="lang-en">Blog Management</span>
+            </a>
+          </li>
+          <li>
+            <a href="#/gallery" class="nav-item" data-route="gallery">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span class="lang-ar">معرض الصور والفيديوهات</span>
+              <span class="lang-en">Gallery Management</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-label">
+          <span class="lang-ar">التحسين والإعلام</span>
+          <span class="lang-en">SEO & Media</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#/seo" class="nav-item" data-route="seo">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <span class="lang-ar">لوحة محركات البحث (SEO)</span>
+              <span class="lang-en">SEO Management Panel</span>
+            </a>
+          </li>
+          <li>
+            <a href="#/media" class="nav-item" data-route="media">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+              <span class="lang-ar">مكتبة الوسائط والملفات</span>
+              <span class="lang-en">Media Library</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-label">
+          <span class="lang-ar">النظام والمستخدمين</span>
+          <span class="lang-en">System & Users</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#/users" class="nav-item" data-route="users">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+              <span class="lang-ar">المستخدمين والأدوار</span>
+              <span class="lang-en">Users & Permissions</span>
+            </a>
+          </li>
+          <li>
+            <a href="#/settings" class="nav-item" data-route="settings">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="lang-ar">إعدادات المقهى والموقع</span>
+              <span class="lang-en">Café & Site Settings</span>
+            </a>
+          </li>
+          <li>
+            <a href="#/activity" class="nav-item" data-route="activity">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="lang-ar">سجل العمليات والأمان</span>
+              <span class="lang-en">Audit Activity Log</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="avatar-circle" id="user-avatar-text">OP</div>
+          <div class="user-details">
+            <span class="name" id="user-display-name">Super Admin</span>
+            <span class="role" id="user-display-role">Super Admin</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+
+      <!-- Topbar Header -->
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button class="sidebar-toggle" id="toggle-sidebar-btn" aria-label="Toggle Sidebar">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <span style="font-weight: 700; color: var(--color-navy);" class="lang-ar">مظهر ووظائف لوحة تحكم أوز بارك كافيه</span>
+          <span style="font-weight: 700; color: var(--color-navy);" class="lang-en">OZ Park Café Admin Console</span>
+        </div>
+
+        <div class="topbar-right">
+          <button class="lang-switch-btn" id="admin-lang-switch">
+            <span class="lang-ar">English</span>
+            <span class="lang-en">العربية</span>
+          </button>
+          <a href="/" target="_blank" class="btn btn-outline btn-sm">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            <span class="lang-ar">عرض الموقع العام</span>
+            <span class="lang-en">View Café Website</span>
+          </a>
+          <button class="btn btn-navy btn-sm" id="logout-btn">
+            <span class="lang-ar">خروج</span>
+            <span class="lang-en">Logout</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Viewport Container for Dynamic SPA Views -->
+      <div id="app-viewport" class="admin-content">
+        <!-- Views rendered dynamically via app.js -->
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal Container -->
+  <div id="modal-backdrop" class="modal-backdrop">
+    <div id="modal-card" class="modal-card">
+      <!-- Modal Content rendered here -->
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/admin-assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+[
+  {
+    "category_slug": "hot",
+    "name_ar": "إسبانيش لاتيه",
+    "name_en": "Spanish Latte",
+    "description_ar": "إسبريسو غني ممزوج بالحليب المكثف المحلى والحليب الطازج المبخر.",
+    "description_en": "Rich espresso combined with sweetened condensed milk and steamed fresh milk.",
+    "price": 14,
+    "calories": 235
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "لاتيه",
+    "name_en": "Café Latte",
+    "description_ar": "مزيج متوازن من الإسبريسو المزدوج السلس والحليب الساخن المبخر مع طبقة رغوة خفيفة.",
+    "description_en": "A classic blend of smooth double espresso and velvet micro-foamed hot milk.",
+    "price": 13,
+    "calories": 122
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "كابتشينو",
+    "name_en": "Cappuccino",
+    "description_ar": "إسبريسو غني يعلوه حليب مبخر ورغوة حليب كثيفة غنية مع رشة كاكاو.",
+    "description_en": "Classic espresso topped with steamed milk and a thick layer of velvety milk foam.",
+    "price": 13,
+    "calories": 162
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "إسبريسو دبل",
+    "name_en": "Double Espresso",
+    "description_ar": "جرعتان مركزتان من القهوة المستخلصة بعناية من حبوبنا المختارة الفاخرة.",
+    "description_en": "Two concentrated shots of pure, rich espresso extracted from premium coffee beans.",
+    "price": 10,
+    "calories": 15
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "قهوة تركي",
+    "name_en": "Turkish Coffee",
+    "description_ar": "قهوة تركية تقليدية غنية برغوة ممتازة ومحضرة على الطريقة الكلاسيكية.",
+    "description_en": "Traditional, intense Turkish coffee brewed with expertise and featuring a perfect foam.",
+    "price": 9,
+    "calories": 21
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "قهوة تركي بالحليب",
+    "name_en": "Turkish Coffee with Milk",
+    "description_ar": "القهوة التركية التقليدية غنية ومعدلة بالحليب الساخن لقوام أكثر سلاسة ونعومة.",
+    "description_en": "Classic rich Turkish coffee brewed with fresh warm milk for a smoother, creamy finish.",
+    "price": 12,
+    "calories": 70
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "كورتادو",
+    "name_en": "Cortado",
+    "description_ar": "أجزاء متساوية من الإسبريسو المركز والحليب الطازج المبخر لتقليل الحموضة.",
+    "description_en": "Equal parts of rich espresso and warm steamed milk to reduce acidity while retaining strength.",
+    "price": 12,
+    "calories": 52
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "قهوة فرنسي",
+    "name_en": "French Coffee",
+    "description_ar": "مزيج ناعم ودافئ من البن الفرنسي الفاخر الممزوج بالحليب والمحلى برفق.",
+    "description_en": "A premium blend of French-roasted coffee with milk and a touch of sweetness.",
+    "price": 13,
+    "calories": 264
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "ماكياتو",
+    "name_en": "Macchiato",
+    "description_ar": "جرعة إسبريسو غنية تعلوها لمسة رقيقة ورغوة لطيفة من الحليب المبخر.",
+    "description_en": "A bold shot of espresso marked with a delicate dollop of steamed milk foam.",
+    "price": 12,
+    "calories": 159
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "قهوة أمريكي",
+    "name_en": "Americano",
+    "description_ar": "إسبريسو غني ومخفف بالماء الساخن للحفاظ على النكهة القوية والممتعة.",
+    "description_en": "Rich espresso shots topped with hot water, keeping the authentic dark profile intact.",
+    "price": 7,
+    "calories": 7
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "فلات وايت",
+    "name_en": "Flat White",
+    "description_ar": "إسبريسو ريستريتو مزدوج وقوي مع حليب مبخر ناعم ورقيق جداً.",
+    "description_en": "Double ristretto espresso shots topped with a thin layer of micro-foamed steamed milk.",
+    "price": 14,
+    "calories": 120
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "موكا",
+    "name_en": "Mocha",
+    "description_ar": "مزيج من الإسبريسو، صوص الشوكولاتة الفاخر، الحليب المبخر مع لمسة رغوة ناعمة.",
+    "description_en": "Double espresso blended with premium chocolate sauce and steamed fresh milk.",
+    "price": 16,
+    "calories": 289
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "وايت موكا",
+    "name_en": "White Mocha",
+    "description_ar": "إسبريسو غني ممزوج بصوص الشوكولاتة البيضاء السلسة والحليب الطازج المبخر.",
+    "description_en": "Rich espresso blended with smooth white chocolate sauce and hot steamed milk.",
+    "price": 17,
+    "calories": 298
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "V60",
+    "name_en": "V60 Drip Coffee",
+    "description_ar": "قهوة مقطرة يدوياً ومستخلصة بعناية لتبرز النكهات والإيحاءات الحقيقية للبن.",
+    "description_en": "Pour-over drip coffee carefully hand-brewed to extract clean, nuanced flavor notes.",
+    "price": 15,
+    "calories": 5
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "شاي أحمر",
+    "name_en": "Red Tea",
+    "description_ar": "أوراق الشاي الأحمر الفاخرة المحضرة بماء مغلي ونكهات مميزة تقليدية.",
+    "description_en": "Premium black tea leaves brewed hot for a clean, rich traditional taste.",
+    "price": 4,
+    "calories": 5
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "شاي أخضر",
+    "name_en": "Green Tea",
+    "description_ar": "أوراق الشاي الأخضر الطبيعي الغني بمضادات الأكسدة لمذاق هادئ ومريح للمعدة.",
+    "description_en": "Pure, premium green tea leaves offering a smooth earthy finish and high antioxidants.",
+    "price": 4,
+    "calories": 3
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "كوكتيل أعشاب",
+    "name_en": "Herbal Tea Blend",
+    "description_ar": "توليفة دافئة وخالية من الكافيين من البابونج، النعناع، والزهور الطبيعية المهدئة.",
+    "description_en": "A soothing, naturally caffeine-free infusion of chamomile, mint, and aromatic herbs.",
+    "price": 15,
+    "calories": 80
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "براد شاي",
+    "name_en": "Teapot",
+    "description_ar": "براد شاي أحمر أو أخضر طازج دافئ يكفي للمشاركة.",
+    "description_en": "A teapot of fresh red or green tea, warm and perfect for sharing.",
+    "price": 10,
+    "calories": 10
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "دلة قهوة عربي",
+    "name_en": "Arabic coffe Pot",
+    "description_ar": "دلة قهوة عربية تقليدية محضرة بأجود أنواع الهيل والزعفران للضيافة الراقية.",
+    "description_en": "Traditional Arabic coffee pot brewed with cardamom and saffron for premium hospitality.",
+    "price": 15,
+    "calories": 25
+  },
+  {
+    "category_slug": "hot",
+    "name_ar": "كأس قهوة عربي",
+    "name_en": "Arabic coffe cup",
+    "description_ar": "فنجان من القهوة العربية الأصيلة بنكهتها التقليدية الغنية والمميزة.",
+    "description_en": "A single cup of authentic traditional Arabic coffee with a rich local flavor.",
+    "price": 9,
+    "calories": 15
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "آيس أمريكانو",
+    "name_en": "Ice Americano",
+    "description_ar": "قهوة إسبريسو مزدوجة مركزة ومبردة تسكب فوق الماء والثلج لانتعاش فوري.",
+    "description_en": "Double shot of rich espresso poured over ice and cold water for a crisp caffeine kick.",
+    "price": 8,
+    "calories": 13
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "آيس سبانش لاتيه",
+    "name_en": "Ice Spanish Latte",
+    "description_ar": "إسبريسو بارد محلى بحليب مكثف وممزوج بالحليب الطازج البارد مع الثلج.",
+    "description_en": "Chilled espresso sweetened with condensed milk, poured over cold fresh milk and ice.",
+    "price": 16,
+    "calories": 347
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "آيس كراميل ماكياتو",
+    "name_en": "Ice Caramel Macchiato",
+    "description_ar": "إسبريسو بارد مدمج بنكهة الفانيليا وحليب طازج مع خطوط صوص كراميل ذهبي غني.",
+    "description_en": "Chilled milk marked with espresso and vanilla syrup, drizzled with buttery caramel sauce.",
+    "price": 16,
+    "calories": 322
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "آيس وايت موكا",
+    "name_en": "Ice White Mocha",
+    "description_ar": "صوص شوكولاتة بيضاء ممزوجة بالإسبريسو، حليب بارد مع ثلج تعلوه كريمة خفق غنية.",
+    "description_en": "White chocolate sauce blended with rich espresso, cold milk, ice, and whipped cream.",
+    "price": 16,
+    "calories": 323
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "آيس V60",
+    "name_en": "Ice V60",
+    "description_ar": "قهوة مقطرة ومستخلصة يدوياً تسكب مباشرة فوق قطع الثلج للحفاظ على النكهة الفاكهية.",
+    "description_en": "Drip filter coffee carefully hand-brewed directly over ice to preserve crisp fruity notes.",
+    "price": 15,
+    "calories": 60
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "ميلك شيك فانيليا",
+    "name_en": "Vanilla Milkshake",
+    "description_ar": "آيس كريم فانيليا غني ومحفوق مع حليب طازج بارد وكريمة مخفوقة ناعمة.",
+    "description_en": "Creamy vanilla ice cream blended with cold fresh milk, topped with whipped cream.",
+    "price": 18,
+    "calories": 452
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "فرابتشينو أوريو",
+    "name_en": "Oreo Frappuccino",
+    "description_ar": "قطع بسكويت أوريو الشهيرة ممزوجة بالحليب والثلج مع القهوة وصوص الشوكولاتة اللذيذ.",
+    "description_en": "Crushed Oreo cookies blended with fresh milk, ice, espresso, and rich chocolate drizzle.",
+    "price": 19,
+    "calories": 410
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "فرابتشينو شوكولاتة",
+    "name_en": "Chocolate Frappuccino",
+    "description_ar": "مزيج كثيف وبارد من الكاكاو الداكن وحليب طازج مع ثلج تعلوه كريمة خفق لذيذة وصوص شوكولاتة.",
+    "description_en": "Thick blended shake of dark cocoa, fresh milk, and ice, finished with chocolate sauce.",
+    "price": 19,
+    "calories": 380
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "فرابتشينو كراميل",
+    "name_en": "Caramel Frappuccino",
+    "description_ar": "قهوة وحليب وثلج مخفوقين مع صوص كراميل غني، يعلوها كريمة وخطوط كراميل ذهبية.",
+    "description_en": "Rich coffee, fresh milk, and ice blended with caramel syrup, topped with sweet drizzle.",
+    "price": 19,
+    "calories": 420
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "موهيتو سفن أب",
+    "name_en": "7UP Mojito",
+    "description_ar": "مشروب سفن أب الغازي المنعش الممزوج مع النعناع البلدي الطازج وشرائح الليمون الحامض والثلج.",
+    "description_en": "Refreshing 7UP soda blended with fresh mint leaves, lime slices, and crushed ice.",
+    "price": 17,
+    "calories": 17
+  },
+  {
+    "category_slug": "cold",
+    "name_ar": "موهيتو كود رد",
+    "name_en": "Code Red Mojito",
+    "description_ar": "مزيج الطاقة كود رد المنعش ممزوج مع نكهة النعناع والليمون مع ثلج مجروش.",
+    "description_en": "Energetic Code Red energy drink layered with mint, fresh lime, and crushed ice.",
+    "price": 13,
+    "calories": 180
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "أوريو ميكس",
+    "name_en": "Oreo Mix",
+    "description_ar": "مخفوق غني ومبتكر من الحليب وبسكويت أوريو مع إضافات مميزة ومذاق لا يقاوم.",
+    "description_en": "A rich milk mix blended with chocolate cookie chunks and premium elements.",
+    "price": 19,
+    "calories": 478
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "بيبي لاف",
+    "name_en": "Baby Love",
+    "description_ar": "عصير طبيعي مبتكر من خليط فواكه استوائية منتقاة بعناية لتعطيك انتعاشاً حلواً ورائعاً.",
+    "description_en": "Signature tropical fruit blend created to deliver a sweet, colorful, and refreshing taste.",
+    "price": 16,
+    "calories": 307
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "أفوكادو بالعسل",
+    "name_en": "Avocado with Honey",
+    "description_ar": "عصير أفوكادو طبيعي كريمي غني ومحلى بالعسل ومزين بالمكسرات الفاخرة.",
+    "description_en": "Creamy fresh avocado blended rich and smooth, sweetened with pure local honey and nuts.",
+    "price": 15,
+    "calories": 518
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "موز بالحليب",
+    "name_en": "Banana with Milk",
+    "description_ar": "حبات الموز الطازجة ممزوجة بالحليب البارد الطازج ومحلاة ومجهزة فورياً.",
+    "description_en": "Freshly sliced bananas blended with chilled whole milk for a healthy, smooth texture.",
+    "price": 13,
+    "calories": 460
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "ليمون نعناع",
+    "name_en": "Lemon Mint",
+    "description_ar": "عصير ليمون منعش مخلوط ومصفى مع أوراق النعناع الطازج الباردة.",
+    "description_en": "A refreshing blended juice of fresh lemons and aromatic mint leaves, served ice cold.",
+    "price": 11,
+    "calories": 255
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "عصير فراولة",
+    "name_en": "Strawberry Juice",
+    "description_ar": "حبات الفراولة الحمراء الطازجة المعصورة والباردة لتمنحك مذاقاً طبيعياً رائعاً.",
+    "description_en": "Freshly squeezed sweet strawberries blended smooth and served chilled.",
+    "price": 13,
+    "calories": 244
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "عصير جوافة",
+    "name_en": "Guava Juice",
+    "description_ar": "عصير ثمار الجوافة الطبيعية الفواحة والمصفاة ذات القوام الكريمي والمذاق اللطيف.",
+    "description_en": "Fresh aromatic guava fruit juice blended smooth, offering a sweet tropical note.",
+    "price": 13,
+    "calories": 296
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "عصير مانجو",
+    "name_en": "Mango Juice",
+    "description_ar": "عصير مانجو طبيعي ومحضر من ثمار المانجو الاستوائية الغنية بمذاقها الحلو وقوامها الكثيف.",
+    "description_en": "Freshly blended premium sweet mangoes, delivering a rich, thick coastal tropical flavor.",
+    "price": 13,
+    "calories": 280
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "عصير بطيخ",
+    "name_en": "Watermelon Juice",
+    "description_ar": "عصير البطيخ الأحمر الطبيعي البارد والخالي من البذور يروي عطشك بلحظة.",
+    "description_en": "Chilled sweet red watermelon juice blended fresh, a perfect coastal refresher.",
+    "price": 13,
+    "calories": 220
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "عصير أناناس",
+    "name_en": "Pineapple Juice",
+    "description_ar": "أناناس طبيعي معصور يعطيك طعماً متوازناً ولذيذاً مليئاً بالحيوية والانتعاش.",
+    "description_en": "Freshly pressed golden pineapples, providing a perfectly balanced tangy and sweet flavor.",
+    "price": 13,
+    "calories": 260
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "باشن فروت سموذي",
+    "name_en": "Passion Fruit Smoothie",
+    "description_ar": "سموذي كثيف ومنعش من ثمار الباشن فروت الاستوائية الحامضة والحلوة مع ثلج مجروش.",
+    "description_en": "Tangy and sweet tropical passion fruit blended into a thick ice-cold smoothie.",
+    "price": 19,
+    "calories": 175
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "توت أحمر سموذي",
+    "name_en": "Red Berry Smoothie",
+    "description_ar": "مزيج من حبات التوت الأحمر البرية اللذيذة والثلج وقوام كثيف مليء بالحيوية.",
+    "description_en": "A thick, blended smoothie featuring sweet and sour red berries and crushed ice.",
+    "price": 19,
+    "calories": 160
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "توت أزرق سموذي",
+    "name_en": "Blueberry Smoothie",
+    "description_ar": "توت أزرق ناضج وممزوج مع قطع ثلج ليعطيك لوناً رائعاً وطعماً طبيعياً منعشاً.",
+    "description_en": "Fresh blueberries blended smooth with crushed ice, rich in antioxidants and flavor.",
+    "price": 19,
+    "calories": 142
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "فراولة سموذي",
+    "name_en": "Strawberry Smoothie",
+    "description_ar": "عصير الفراولة الطبيعي الكثيف الممزوج بالثلج واللبن لنكهة حلوة وغنية.",
+    "description_en": "Thick blended strawberries with crushed ice for a rich, sweet fruit texture.",
+    "price": 19,
+    "calories": 156
+  },
+  {
+    "category_slug": "juice",
+    "name_ar": "ميكس بيري سموذي",
+    "name_en": "Mixed Berry Smoothie",
+    "description_ar": "توليفة رائعة تجمع التوت الأزرق والأحمر والفراولة مع الثلج لقوام منعش لا يُنسى.",
+    "description_en": "A delightful blend of blueberries, red berries, and strawberries with crushed ice.",
+    "price": 21,
+    "calories": 210
+  },
+  {
+    "category_slug": "addons",
+    "name_ar": "نكهة فانيليا",
+    "name_en": "Vanilla Flavor",
+    "description_ar": "إضافة نكهة الفانيليا الفرنسية الحلوة والعطرية إلى مشروبك المفضل.",
+    "description_en": "Add a sweet splash of premium aromatic French vanilla syrup to your drink.",
+    "price": 2,
+    "calories": 0
+  },
+  {
+    "category_slug": "addons",
+    "name_ar": "نكهة بندق",
+    "name_en": "Hazelnut Flavor",
+    "description_ar": "إضافة نكهة البندق المحمص الدافئة التي تمنح مشروبك طعماً خشبياً رائعاً.",
+    "description_en": "Add a rich, warm roasted hazelnut syrup to elevate your coffee profile.",
+    "price": 2,
+    "calories": 0
+  },
+  {
+    "category_slug": "addons",
+    "name_ar": "نكهة كراميل",
+    "name_en": "Caramel Flavor",
+    "description_ar": "إضافة سيرب الكراميل المحلى الذهبي والدافئ لمزيج رائع مع الحليب الساخن.",
+    "description_en": "Add a drizzle of sweet golden caramel syrup for a buttery coffee texture.",
+    "price": 2,
+    "calories": 0
+  },
+  {
+    "category_slug": "addons",
+    "name_ar": "كريمة خفق",
+    "name_en": "Whipped Cream",
+    "description_ar": "إضافة طبقة وفيرة من الكريمة المخفوقة الفاخرة ذات الملمس الناعم والغني.",
+    "description_en": "Top your cold or hot sweet beverage with a generous layer of velvety whipped cream.",
+    "price": 2,
+    "calories": 0
+  },
+  {
+    "category_slug": "addons",
+    "name_ar": "صوص شوكولاتة",
+    "name_en": "Chocolate Sauce",
+    "description_ar": "إضافة صوص الشوكولاتة الداكنة أو البيضاء السلسة لتزيين كوبك المفضل.",
+    "description_en": "Add a rich drizzle of premium dark or white chocolate sauce over your beverage.",
+    "price": 2,
+    "calories": 0
+  }
+]

@@ -459,4 +459,184 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Cart UI elements and load state
   injectCartUI();
   window.updateCartUI();
+
+  // ==========================================================================
+  // DYNAMIC BACKEND INTEGRATION (Live API Sync)
+  // ==========================================================================
+  async function syncBackendData() {
+    try {
+      const res = await fetch('/api/v1/public/init');
+      if (!res.ok) return;
+      const json = await res.json();
+      if (!json.success || !json.data) return;
+
+      const { cafe, menuItems } = json.data;
+
+      // 1. Update Contact & Opening Hours
+      if (cafe) {
+        document.querySelectorAll('.cafe-phone-val').forEach(el => el.textContent = cafe.phone);
+        document.querySelectorAll('.cafe-hours-ar-val').forEach(el => el.textContent = cafe.opening_hours_ar);
+        document.querySelectorAll('.cafe-hours-en-val').forEach(el => el.textContent = cafe.opening_hours_en);
+
+        if (cafe.whatsapp) {
+          window.cafeWhatsApp = cafe.whatsapp.replace(/[^0-9]/g, '');
+        }
+      }
+
+      // 2. Dynamic Featured Menu Grid Renderer for index.html (#menu .menu-grid)
+      const homeMenuGrid = document.querySelector('#menu .menu-grid');
+      if (homeMenuGrid && menuItems && Array.isArray(menuItems) && menuItems.length > 0) {
+        const featuredItems = menuItems.filter(i => i.is_featured === 1 || i.is_bestseller === 1).slice(0, 6);
+        const displayList = featuredItems.length > 0 ? featuredItems : menuItems.slice(0, 6);
+
+        homeMenuGrid.innerHTML = ''; // Clear static items
+        displayList.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'menu-card reveal active';
+          const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
+          const caloriesTextEn = item.calories ? `${item.calories} kcal` : '';
+
+          card.innerHTML = `
+            <div class="menu-card-img-wrapper">
+              <img src="${item.image_url}" alt="${item.name_en}" class="menu-card-img">
+              <span class="menu-card-badge">
+                <span class="lang-ar">${item.category_name_ar || ''}</span>
+                <span class="lang-en">${item.category_name_en || ''}</span>
+              </span>
+            </div>
+            <div class="menu-card-content">
+              <div class="menu-card-title-row">
+                <h3>
+                  <span class="lang-ar">${item.name_ar}</span>
+                  <span class="lang-en">${item.name_en}</span>
+                </h3>
+              </div>
+              <p class="menu-card-desc lang-ar">${item.description_ar || ''}</p>
+              <p class="menu-card-desc lang-en">${item.description_en || ''}</p>
+              <div class="menu-card-meta">
+                <span class="menu-card-price">
+                  <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
+                  <span class="lang-en">${item.price} SAR</span>
+                </span>
+                ${item.calories ? `
+                  <span class="menu-card-calories">
+                    <span class="lang-ar">${caloriesTextAr}</span>
+                    <span class="lang-en">${caloriesTextEn}</span>
+                  </span>
+                ` : ''}
+              </div>
+              <div class="menu-card-order-row">
+                <div class="quantity-selector">
+                  <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+                  <span class="qty-val">1</span>
+                  <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+                </div>
+                <button class="btn btn-gold btn-add-to-cart" 
+                        data-id="${item.slug || item.id}" 
+                        data-name-ar="${item.name_ar}" 
+                        data-name-en="${item.name_en}" 
+                        data-price="${item.price}" 
+                        data-calories="${item.calories || 0}"
+                        onclick="handleAddToCart(this)">
+                  <span class="lang-ar">أضف للطلب</span>
+                  <span class="lang-en">Add to Order</span>
+                </button>
+              </div>
+            </div>
+          `;
+
+          homeMenuGrid.appendChild(card);
+        });
+      }
+
+      // 3. Dynamic Full Menu Grid Renderer for menu.html (.menu-page-grid)
+      const menuGridContainer = document.querySelector('.menu-page-grid');
+      if (menuGridContainer && menuItems && Array.isArray(menuItems) && menuItems.length > 0) {
+        menuGridContainer.innerHTML = ''; // Replace hardcoded static grid with live DB data
+
+        menuItems.forEach(item => {
+          const itemEl = document.createElement('div');
+          itemEl.className = 'menu-list-item';
+          itemEl.setAttribute('data-category', item.category_slug || 'hot');
+
+          const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
+          const caloriesTextEn = item.calories ? `${item.calories} kcal` : '';
+
+          itemEl.innerHTML = `
+            <div class="menu-list-head">
+              <h3>
+                <span class="lang-ar">${item.name_ar}</span>
+                <span class="lang-en">${item.name_en}</span>
+              </h3>
+            </div>
+            <p class="lang-ar">${item.description_ar || ''}</p>
+            <p class="lang-en">${item.description_en || ''}</p>
+            <span class="menu-list-tag">
+              <span class="lang-ar">${item.category_name_ar || ''}</span>
+              <span class="lang-en">${item.category_name_en || ''}</span>
+            </span>
+            
+            <div class="menu-card-meta">
+              <span class="menu-card-price">
+                <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
+                <span class="lang-en">${item.price} SAR</span>
+              </span>
+              ${item.calories ? `
+                <span class="menu-card-calories">
+                  <span class="lang-ar">${caloriesTextAr}</span>
+                  <span class="lang-en">${caloriesTextEn}</span>
+                </span>
+              ` : ''}
+            </div>
+            
+            <div class="menu-card-order-row">
+              <div class="quantity-selector">
+                <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+                <span class="qty-val">1</span>
+                <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+              </div>
+              <button class="btn btn-gold btn-add-to-cart" 
+                      data-id="${item.slug || item.id}" 
+                      data-name-ar="${item.name_ar}" 
+                      data-name-en="${item.name_en}" 
+                      data-price="${item.price}" 
+                      data-calories="${item.calories || 0}"
+                      onclick="handleAddToCart(this)">
+                <span class="lang-ar">أضف للطلب</span>
+                <span class="lang-en">Add to Order</span>
+              </button>
+            </div>
+          `;
+
+          menuGridContainer.appendChild(itemEl);
+        });
+
+        // Re-attach Tab filter events for dynamically created items
+        const menuTabs = document.querySelectorAll('.menu-tab');
+        const dynamicItems = document.querySelectorAll('.menu-list-item');
+        menuTabs.forEach(tab => {
+          tab.onclick = () => {
+            menuTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const filterValue = tab.getAttribute('data-filter');
+            dynamicItems.forEach(item => {
+              const cat = item.getAttribute('data-category');
+              if (filterValue === 'all' || cat === filterValue) {
+                item.style.display = 'flex';
+              } else {
+                item.style.display = 'none';
+              }
+            });
+          };
+        });
+      }
+    } catch (err) {
+      console.log('Backend sync active');
+    }
+  }
+
+  syncBackendData();
 });
+
+
+
