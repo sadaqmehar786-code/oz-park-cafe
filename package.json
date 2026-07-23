@@ -7,6 +7,9 @@
     "start": "node server.js",
     "deploy": "node deploy.js"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
