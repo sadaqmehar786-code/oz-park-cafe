@@ -356,8 +356,11 @@ router.put('/items/:id', authenticate, requirePermission('manage_menu'), async (
 
     const oldImageUrl = item.image_url;
     let targetImgUrl = image_url !== undefined ? image_url : item.image_url;
-    if (targetImgUrl && (targetImgUrl.includes('assets/images/coffee.jpg') || targetImgUrl.includes('assets/images/fresh-juice.jpg'))) {
-      targetImgUrl = '';
+    if (targetImgUrl) {
+      const cleanStr = targetImgUrl.trim();
+      if (!cleanStr.startsWith('/uploads/') && !cleanStr.startsWith('uploads/') && !cleanStr.startsWith('http')) {
+        targetImgUrl = '';
+      }
     }
     const newImageUrl = targetImgUrl;
     const imageChanged = oldImageUrl !== newImageUrl;

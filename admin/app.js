@@ -932,8 +932,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   function openMenuItemModal(item = null) {
     const isAr = state.lang === 'ar';
-    let currentImg = item ? item.image_url : 'assets/images/coffee.jpg';
-    if (!currentImg) currentImg = 'assets/images/coffee.jpg';
+    let currentImg = (item && item.image_url && (item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'))) ? item.image_url : '';
 
     const bodyHtml = `
       <form id="menu-item-form">
@@ -970,20 +969,22 @@ document.addEventListener('DOMContentLoaded', () => {
           <input type="file" id="item-image-file" style="display: none;" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
 
           <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-            <img id="item-img-preview" src="${currentImg}" style="width: 72px; height: 72px; border-radius: 10px; object-fit: cover; border: 2px solid var(--color-gold); box-shadow: var(--shadow-sm);" alt="" onerror="this.src='assets/images/coffee.jpg'">
+            <div id="item-img-preview-box" style="${currentImg ? 'display: block;' : 'display: none;'} width: 72px; height: 72px; border-radius: 10px; overflow: hidden; border: 2px solid var(--color-gold); box-shadow: var(--shadow-sm);">
+              <img id="item-img-preview" src="${currentImg}" style="width: 100%; height: 100%; object-fit: cover;" alt="">
+            </div>
             
             <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
               <div style="font-size: 0.8rem; color: var(--color-charcoal-light);" id="item-img-status">
-                ${currentImg !== 'assets/images/coffee.jpg' ? (isAr ? 'الصورة المرفوقة الحالية للمنتج' : 'Current custom product image attached') : (isAr ? 'الصورة الافتراضية النظامية' : 'Default placeholder image')}
+                ${currentImg ? (isAr ? 'الصورة المرفوقة الحالية للمنتج' : 'Current custom product image attached') : (isAr ? 'لا توجد صورة مخصصة مرفقة' : 'No custom image attached')}
               </div>
 
               <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                 <button type="button" class="btn btn-gold btn-sm" id="btn-change-item-image">
                   <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                  <span>${isAr ? 'تغيير الصورة' : 'Change Image'}</span>
+                  <span>${isAr ? 'رفع / تغيير الصورة' : 'Upload / Change Image'}</span>
                 </button>
                 
-                <button type="button" class="btn btn-danger btn-sm" id="btn-remove-item-image" style="${currentImg === 'assets/images/coffee.jpg' ? 'display: none;' : 'display: inline-flex;'}">
+                <button type="button" class="btn btn-danger btn-sm" id="btn-remove-item-image" style="${currentImg ? 'display: inline-flex;' : 'display: none;'}">
                   <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                   <span>${isAr ? 'إزالة الصورة' : 'Remove Image'}</span>
                 </button>
@@ -1044,6 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const uploadedPath = uploadRes.data[0].file_path;
           document.getElementById('item-image-url').value = uploadedPath;
           document.getElementById('item-img-preview').src = uploadedPath;
+          document.getElementById('item-img-preview-box').style.display = 'block';
           document.getElementById('btn-remove-item-image').style.display = 'inline-flex';
           statusText.textContent = isAr ? 'تم رفع وتغيير الصورة بنجاح!' : 'New image uploaded successfully!';
           showToast(isAr ? 'تم رفع الصورة بنجاح' : 'Image uploaded successfully');
@@ -1058,10 +1060,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle Image Removal
     document.getElementById('btn-remove-item-image').addEventListener('click', async () => {
-      if (confirm(isAr ? 'هل أنت تأكد من إزالة صورة هذا المنتج؟ سيتم إعادة تعيينها إلى الصورة الافتراضية.' : 'Are you sure you want to remove this product image? It will reset to the default placeholder.')) {
-        const defaultPlaceholder = 'assets/images/coffee.jpg';
-
-        // If editing existing item, delete physically on server immediately or on save
+      if (confirm(isAr ? 'هل أنت تأكد من إزالة صورة هذا المنتج؟' : 'Are you sure you want to remove this product image?')) {
         if (item) {
           try {
             await api(`/menu/items/${item.id}/image`, { method: 'DELETE' });
@@ -1071,10 +1070,11 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        document.getElementById('item-image-url').value = defaultPlaceholder;
-        document.getElementById('item-img-preview').src = defaultPlaceholder;
+        document.getElementById('item-image-url').value = '';
+        document.getElementById('item-img-preview').src = '';
+        document.getElementById('item-img-preview-box').style.display = 'none';
         document.getElementById('btn-remove-item-image').style.display = 'none';
-        document.getElementById('item-img-status').textContent = isAr ? 'تم إعادة التعيين للصورة الافتراضية' : 'Reset to default placeholder';
+        document.getElementById('item-img-status').textContent = isAr ? 'تمت إزالة الصورة' : 'Image removed';
       }
     });
 

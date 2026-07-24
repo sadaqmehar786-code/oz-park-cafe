@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const itemImgHtml = hasCustomImg ? `
             <div class="menu-item-live-img-wrapper" style="position: relative; width: 100%; height: 180px; margin-bottom: 14px; border-radius: 10px; overflow: hidden; background: var(--color-cream-dark);">
-              <img src="${item.image_url}" alt="${item.name_en}" style="width: 100%; height: 100%; object-fit: cover;">
+              <img src="${item.image_url}" alt="${item.name_en}" style="width: 100%; height: 100%; object-fit: cover;" onerror="const p = this.closest('.menu-item-live-img-wrapper'); if(p) p.remove();">
             </div>
           ` : '';
 
