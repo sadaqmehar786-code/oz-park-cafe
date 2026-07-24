@@ -300,7 +300,7 @@ router.post('/items', authenticate, requirePermission('manage_menu'), async (req
     }
 
     const slug = name_en.toLowerCase().replace(/[^a-z0-9-]/g, '-') + '-' + Date.now().toString().slice(-4);
-    const finalImageUrl = image_url || 'assets/images/coffee.jpg';
+    const finalImageUrl = (image_url && (image_url.startsWith('/uploads/') || image_url.startsWith('uploads/') || image_url.startsWith('http'))) ? image_url : '';
 
     const result = await run(`
       INSERT INTO menu_items (
@@ -355,7 +355,11 @@ router.put('/items/:id', authenticate, requirePermission('manage_menu'), async (
     } = req.body;
 
     const oldImageUrl = item.image_url;
-    const newImageUrl = image_url !== undefined ? image_url : item.image_url;
+    let targetImgUrl = image_url !== undefined ? image_url : item.image_url;
+    if (targetImgUrl && (targetImgUrl.includes('assets/images/coffee.jpg') || targetImgUrl.includes('assets/images/fresh-juice.jpg'))) {
+      targetImgUrl = '';
+    }
+    const newImageUrl = targetImgUrl;
     const imageChanged = oldImageUrl !== newImageUrl;
 
     // Track price change in audit log

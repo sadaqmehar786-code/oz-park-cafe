@@ -25,8 +25,11 @@ router.get('/init', async (req, res) => {
       ORDER BY m.display_order ASC, m.id DESC
     `);
 
-    // Attach sizes to menu items
+    // Attach sizes to menu items and filter out non-custom placeholder image URLs
     for (const item of menuItems) {
+      if (item.image_url && !item.image_url.startsWith('/uploads/') && !item.image_url.startsWith('uploads/') && !item.image_url.startsWith('http')) {
+        item.image_url = null;
+      }
       item.sizes = await query('SELECT * FROM menu_item_sizes WHERE menu_item_id = ? ORDER BY price ASC', [item.id]);
     }
 
