@@ -21,14 +21,12 @@ app.use(cookieParser());
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
-// Static file serving
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// Explicit non-cached admin asset routes
-app.get(['/admin-assets/app.js', '/admin/app.js'], (req, res) => {
+// Direct dynamic API asset endpoints to bypass static caches
+app.get(['/api/v1/public/admin-app-js', '/admin-assets/app.js', '/admin/app.js'], (req, res) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
+  res.type('application/javascript');
   res.sendFile(path.join(__dirname, 'admin', 'app.js'));
 });
 
@@ -36,6 +34,7 @@ app.get(['/admin-assets/style.css', '/admin/style.css'], (req, res) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
+  res.type('text/css');
   res.sendFile(path.join(__dirname, 'admin', 'style.css'));
 });
 
