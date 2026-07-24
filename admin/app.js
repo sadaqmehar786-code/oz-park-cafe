@@ -564,7 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="page-header">
           <div class="page-title">
             <h1>${isAr ? 'إدارة قائمة مشروبات وحلويات المقهى' : 'Café Menu Manager'}</h1>
-            <p>${isAr ? 'إضافة وتعديل وحذف الأصناف والتصنيفات وإدارة صور المنتجات' : 'Full menu item management, image controls, and category tools'}</p>
+            <p>${isAr ? 'إدارة الأصناف، تصفية بالتصنيفات، وتعديل وتصنيف المنتجات' : 'Filter by category, edit item details, upload photos, and manage categories'}</p>
           </div>
           <div class="header-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button class="btn btn-navy" id="manage-categories-btn">
@@ -579,20 +579,39 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="panel-card">
-          <div class="panel-header" style="flex-wrap: wrap; gap: 1rem;">
-            <div class="filter-bar" style="margin: 0; flex: 1;">
+          <div class="panel-header" style="flex-wrap: wrap; gap: 1rem; align-items: center;">
+            <!-- SEARCH INPUT -->
+            <div class="filter-bar" style="margin: 0; flex: 1; min-width: 200px;">
               <div class="search-box">
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input type="text" id="search-menu-input" class="form-control" placeholder="${isAr ? 'بحث عن صنف...' : 'Search items...'}">
               </div>
             </div>
+
+            <!-- CATEGORY FILTER DROPDOWN IN TOOLBAR -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 260px;">
+              <label style="font-weight: 700; white-space: nowrap; color: var(--color-navy); margin: 0;">${isAr ? 'التصنيف:' : 'Category:'}</label>
+              <select id="category-filter-select" class="form-control" style="font-weight: 600;">
+                <option value="all">${isAr ? '📁 جميع التصنيفات (All)' : '📁 All Categories'}</option>
+                ${state.categories.map(c => `<option value="${c.id}">${c.icon || '☕'} ${isAr ? c.name_ar : c.name_en} (${c.item_count || 0})</option>`).join('')}
+              </select>
+            </div>
           </div>
+
           <div class="panel-body" style="padding: 0;">
             <table class="admin-table" id="menu-items-table">
               <thead>
                 <tr>
                   <th>${isAr ? 'الصنف والصورة' : 'Item & Image'}</th>
-                  <th>${isAr ? 'التصنيف' : 'Category'}</th>
+                  <th style="min-width: 220px;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span>${isAr ? 'التصنيف' : 'Category'}</span>
+                      <select id="th-category-filter-select" class="form-control form-control-sm" style="font-size: 0.8rem; padding: 2px 6px; border: 1px solid var(--color-gold); font-weight: 600;">
+                        <option value="all">${isAr ? 'الكل' : 'All'}</option>
+                        ${state.categories.map(c => `<option value="${c.id}">${c.icon || '☕'} ${isAr ? c.name_ar : c.name_en}</option>`).join('')}
+                      </select>
+                    </div>
+                  </th>
                   <th>${isAr ? 'السعر' : 'Price'}</th>
                   <th>${isAr ? 'السعرات' : 'Calories'}</th>
                   <th>${isAr ? 'التوفر' : 'Availability'}</th>
@@ -609,7 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   `;
 
                   return `
-                    <tr data-name="${(item.name_ar + ' ' + item.name_en).toLowerCase()}">
+                    <tr data-name="${(item.name_ar + ' ' + item.name_en).toLowerCase()}" data-category-id="${item.category_id}">
                       <td>
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
                           ${imgBoxHtml}
@@ -618,39 +637,93 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div style="font-size: 0.75rem; color: var(--color-charcoal-light);">${isAr ? (item.description_ar || '') : (item.description_en || '')}</div>
                           </div>
                         </div>
-                      </td>`;
+                      </td>
+                      <td>
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+                          <span class="badge badge-info" style="font-size: 0.85rem;">${isAr ? (item.category_name_ar || 'غير مصنف') : (item.category_name_en || 'Uncategorized')}</span>
+                          ${item.category_id ? `
+                            <div style="display: flex; gap: 0.25rem;">
+                              <button class="btn btn-navy btn-xs direct-edit-cat-btn" data-id="${item.category_id}" title="${isAr ? 'تعديل هذا التصنيف' : 'Edit this category'}">✏️</button>
+                              <button class="btn btn-danger btn-xs direct-delete-cat-btn" data-id="${item.category_id}" title="${isAr ? 'حذف هذا التصنيف' : 'Delete this category'}">🗑️</button>
+                            </div>
+                          ` : ''}
+                        </div>
+                      </td>
+                      <td><strong>${item.price} ${isAr ? 'ر.س' : 'SAR'}</strong></td>
+                      <td>${item.calories ? item.calories + (isAr ? ' سعرة' : ' kcal') : '-'}</td>
+                      <td>
+                        <button class="btn btn-sm toggle-avail-btn ${item.availability_status === 'available' ? 'btn-gold' : 'btn-outline'}" data-id="${item.id}" data-status="${item.availability_status}">
+                          ${item.availability_status === 'available' ? (isAr ? 'متوفر' : 'Available') : (isAr ? 'غير متوفر' : 'Unavailable')}
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-navy btn-sm edit-item-btn" data-id="${item.id}">${isAr ? 'تعديل' : 'Edit'}</button>
+                        <button class="btn btn-danger btn-sm delete-item-btn" data-id="${item.id}">${isAr ? 'حذف' : 'Delete'}</button>
+                      </td>
+                    </tr>
+                  `;
                 }).join('')}
-                    <td><strong>${isAr ? (item.category_name_ar || 'غير مصنف') : (item.category_name_en || 'Uncategorized')}</strong></td>
-                    <td><strong>${item.price} ${isAr ? 'ر.س' : 'SAR'}</strong></td>
-                    <td>${item.calories ? item.calories + (isAr ? ' سعرة' : ' kcal') : '-'}</td>
-                    <td>
-                      <button class="btn btn-sm toggle-avail-btn ${item.availability_status === 'available' ? 'btn-gold' : 'btn-outline'}" data-id="${item.id}" data-status="${item.availability_status}">
-                        ${item.availability_status === 'available' ? (isAr ? 'متوفر' : 'Available') : (isAr ? 'غير متوفر' : 'Unavailable')}
-                      </button>
-                    </td>
-                    <td>
-                      <button class="btn btn-navy btn-sm edit-item-btn" data-id="${item.id}">${isAr ? 'تعديل' : 'Edit'}</button>
-                      <button class="btn btn-danger btn-sm delete-item-btn" data-id="${item.id}">${isAr ? 'حذف' : 'Delete'}</button>
-                    </td>
-                  </tr>
-                `).join('')}
               </tbody>
             </table>
           </div>
         </div>
       `;
 
-      document.getElementById('search-menu-input').addEventListener('input', (e) => {
-        const val = e.target.value.toLowerCase();
+      // Filter Logic Handler
+      const filterItems = () => {
+        const searchVal = document.getElementById('search-menu-input').value.toLowerCase();
+        const selectedCat = document.getElementById('category-filter-select').value;
+
         document.querySelectorAll('#menu-items-table tbody tr').forEach(tr => {
-          const text = tr.getAttribute('data-name');
-          tr.style.display = text.includes(val) ? '' : 'none';
+          const nameText = tr.getAttribute('data-name');
+          const catId = tr.getAttribute('data-category-id');
+
+          const matchesSearch = nameText.includes(searchVal);
+          const matchesCat = selectedCat === 'all' || catId === selectedCat;
+
+          tr.style.display = (matchesSearch && matchesCat) ? '' : 'none';
         });
+      };
+
+      // Sync both category dropdowns
+      const catSelect = document.getElementById('category-filter-select');
+      const thCatSelect = document.getElementById('th-category-filter-select');
+
+      catSelect.addEventListener('change', (e) => {
+        thCatSelect.value = e.target.value;
+        filterItems();
       });
+
+      thCatSelect.addEventListener('change', (e) => {
+        catSelect.value = e.target.value;
+        filterItems();
+      });
+
+      document.getElementById('search-menu-input').addEventListener('input', filterItems);
 
       document.getElementById('add-menu-item-btn').addEventListener('click', () => openMenuItemModal());
       document.getElementById('manage-categories-btn').addEventListener('click', () => openManageCategoriesModal());
 
+      // Direct Category Edit/Delete from row buttons
+      container.querySelectorAll('.direct-edit-cat-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const catId = btn.getAttribute('data-id');
+          const cat = state.categories.find(x => x.id == catId);
+          if (cat) openCategoryModal(cat);
+        });
+      });
+
+      container.querySelectorAll('.direct-delete-cat-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const catId = btn.getAttribute('data-id');
+          const cat = state.categories.find(x => x.id == catId);
+          if (cat) openDeleteCategoryModal(cat, cat.item_count || 0);
+        });
+      });
+
+      // Item Actions
       container.querySelectorAll('.toggle-avail-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.getAttribute('data-id');
