@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 const { get, query } = require('../db');
+
+// GET /api/v1/public/admin-app-js - Serve latest admin app.js directly without caching
+router.get('/admin-app-js', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.type('application/javascript');
+  res.sendFile(path.join(__dirname, '..', 'admin', 'app.js'));
+});
 
 // GET /api/v1/public/init - Single aggregated payload for public website frontend initialization
 router.get('/init', async (req, res) => {
