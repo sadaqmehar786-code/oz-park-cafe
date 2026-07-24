@@ -2111,3 +2111,11 @@ html[lang="ar"] .menu-list-item::before {
 .menu-card-title-row {
   margin-inline-end: 90px;
 }
+
+/* Safety Rule: Ensure homepage sections remain 100% visible */
+.reveal, .reveal.active {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
+

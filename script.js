@@ -50,6 +50,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================================================
+  // SCROLL REVEAL ANIMATIONS (Ensures 100% Visibility for all homepage sections)
+  // ==========================================================================
+  const revealElements = document.querySelectorAll('.reveal');
+  
+  // Make all sections visible immediately by default
+  revealElements.forEach(el => el.classList.add('active'));
+
+  if ('IntersectionObserver' in window && revealElements.length > 0) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.05 });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+  }
+
+  // ==========================================================================
   // STICKY HEADER & SCROLL BEHAVIOR
   // ==========================================================================
   const header = document.querySelector('.header-wrapper');
@@ -150,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           card.innerHTML = `
             <div class="menu-card-img-wrapper">
-              <img src="${item.image_url || 'assets/images/coffee.jpg'}" alt="${item.name_en}" class="menu-card-img" onerror="this.src='assets/images/coffee.jpg'">
+              <img src="${item.image_url || '/assets/images/coffee.jpg'}" alt="${item.name_en}" class="menu-card-img" onerror="this.src='/assets/images/coffee.jpg'">
               <span class="menu-card-badge">
                 <span class="lang-ar">${item.category_name_ar || ''}</span>
                 <span class="lang-en">${item.category_name_en || ''}</span>
@@ -194,6 +214,13 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span class="lang-en">Add to Order</span>
                 </button>
               </div>
+              <div class="menu-card-footer" style="margin-top: 1rem; border-top: 1px solid rgba(27,54,93,0.06); padding-top: 0.75rem;">
+                <a href="menu" class="menu-card-cta">
+                  <span class="lang-ar">عرض القائمة الكاملة</span>
+                  <span class="lang-en">View Full Menu</span>
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
             </div>
           `;
 
@@ -208,15 +235,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         menuItems.forEach(item => {
           const itemEl = document.createElement('div');
-          itemEl.className = 'menu-list-item';
+          itemEl.className = 'menu-list-item reveal active';
           itemEl.setAttribute('data-category', item.category_slug || 'hot');
 
           const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
           const caloriesTextEn = item.calories ? `${item.calories} kcal` : '';
 
           itemEl.innerHTML = `
-            <div class="menu-item-live-img-wrapper" style="position: relative; width: 100%; height: 160px; margin-bottom: 12px; border-radius: 10px; overflow: hidden; background: var(--color-cream-dark);">
-              <img src="${item.image_url || 'assets/images/coffee.jpg'}" alt="${item.name_en}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/images/coffee.jpg'">
+            <div class="menu-item-live-img-wrapper" style="position: relative; width: 100%; height: 180px; margin-bottom: 14px; border-radius: 10px; overflow: hidden; background: var(--color-cream-dark);">
+              <img src="${item.image_url || '/assets/images/coffee.jpg'}" alt="${item.name_en}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/assets/images/coffee.jpg'">
             </div>
 
             <div class="menu-list-head">
@@ -286,6 +313,10 @@ document.addEventListener('DOMContentLoaded', () => {
           };
         });
       }
+
+      // Re-trigger reveal active state for all elements after dynamic DOM insert
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
+
     } catch (err) {
       console.log('Backend sync active');
     }
