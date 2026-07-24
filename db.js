@@ -351,6 +351,8 @@ async function initDb() {
       ip_address TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
+  `);
+
   try {
     const items = await query('SELECT id, image_url FROM menu_items');
     for (const i of items) {

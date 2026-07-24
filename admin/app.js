@@ -600,17 +600,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
               </thead>
               <tbody>
-                ${state.menuItems.map(item => `
-                  <tr data-name="${(item.name_ar + ' ' + item.name_en).toLowerCase()}">
-                    <td>
-                      <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <img src="${item.image_url}" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid var(--color-cream-dark);" alt="" onerror="this.src='assets/images/coffee.jpg'">
-                        <div>
-                          <div style="font-weight: 700; color: var(--color-navy);">${isAr ? item.name_ar : item.name_en}</div>
-                          <div style="font-size: 0.75rem; color: var(--color-charcoal-light);">${isAr ? (item.description_ar || '') : (item.description_en || '')}</div>
+                ${state.menuItems.map(item => {
+                  const hasCustomImg = item.image_url && (item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'));
+                  const imgBoxHtml = hasCustomImg ? `
+                    <img src="${item.image_url}" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid var(--color-cream-dark);" alt="">
+                  ` : `
+                    <div style="width: 46px; height: 46px; border-radius: 8px; background: var(--color-cream); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; border: 1px solid var(--color-cream-dark);">☕</div>
+                  `;
+
+                  return `
+                    <tr data-name="${(item.name_ar + ' ' + item.name_en).toLowerCase()}">
+                      <td>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                          ${imgBoxHtml}
+                          <div>
+                            <div style="font-weight: 700; color: var(--color-navy);">${isAr ? item.name_ar : item.name_en}</div>
+                            <div style="font-size: 0.75rem; color: var(--color-charcoal-light);">${isAr ? (item.description_ar || '') : (item.description_en || '')}</div>
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>`;
+                }).join('')}
                     <td><strong>${isAr ? (item.category_name_ar || 'غير مصنف') : (item.category_name_en || 'Uncategorized')}</strong></td>
                     <td><strong>${item.price} ${isAr ? 'ر.س' : 'SAR'}</strong></td>
                     <td>${item.calories ? item.calories + (isAr ? ' سعرة' : ' kcal') : '-'}</td>

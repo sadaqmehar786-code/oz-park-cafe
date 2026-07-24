@@ -53,8 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // SCROLL REVEAL ANIMATIONS (Ensures 100% Visibility for all homepage sections)
   // ==========================================================================
   const revealElements = document.querySelectorAll('.reveal');
-  
-  // Make all sections visible immediately by default
   revealElements.forEach(el => el.classList.add('active'));
 
   if ('IntersectionObserver' in window && revealElements.length > 0) {
@@ -114,6 +112,16 @@ document.addEventListener('DOMContentLoaded', () => {
     return numStr.replace(/[0-9]/g, (w) => arabicDigits[+w]);
   };
 
+  // Helper to check if item has a custom uploaded image from backend
+  const hasCustomUploadedImage = (url) => {
+    if (!url) return false;
+    const cleanUrl = url.trim();
+    if (cleanUrl === '' || cleanUrl.includes('assets/images/coffee.jpg') || cleanUrl.includes('assets/images/fresh-juice.jpg')) {
+      return false;
+    }
+    return cleanUrl.startsWith('/uploads/') || cleanUrl.startsWith('uploads/') || cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://');
+  };
+
   // ==========================================================================
   // DYNAMIC BACKEND INTEGRATION (Live API Sync)
   // ==========================================================================
@@ -168,14 +176,27 @@ document.addEventListener('DOMContentLoaded', () => {
           const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
           const caloriesTextEn = item.calories ? `${item.calories} kcal` : '';
 
-          card.innerHTML = `
+          const hasCustomImg = hasCustomUploadedImage(item.image_url);
+
+          const imgHeaderHtml = hasCustomImg ? `
             <div class="menu-card-img-wrapper">
-              <img src="${item.image_url || '/assets/images/coffee.jpg'}" alt="${item.name_en}" class="menu-card-img" onerror="this.src='/assets/images/coffee.jpg'">
+              <img src="${item.image_url}" alt="${item.name_en}" class="menu-card-img">
               <span class="menu-card-badge">
                 <span class="lang-ar">${item.category_name_ar || ''}</span>
                 <span class="lang-en">${item.category_name_en || ''}</span>
               </span>
             </div>
+          ` : `
+            <div style="padding-top: 1rem; padding-inline: 1.25rem;">
+              <span class="menu-card-badge" style="position: static; display: inline-block;">
+                <span class="lang-ar">${item.category_name_ar || ''}</span>
+                <span class="lang-en">${item.category_name_en || ''}</span>
+              </span>
+            </div>
+          `;
+
+          card.innerHTML = `
+            ${imgHeaderHtml}
             <div class="menu-card-content">
               <div class="menu-card-title-row">
                 <h3>
@@ -241,11 +262,16 @@ document.addEventListener('DOMContentLoaded', () => {
           const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
           const caloriesTextEn = item.calories ? `${item.calories} kcal` : '';
 
-          itemEl.innerHTML = `
-            <div class="menu-item-live-img-wrapper" style="position: relative; width: 100%; height: 180px; margin-bottom: 14px; border-radius: 10px; overflow: hidden; background: var(--color-cream-dark);">
-              <img src="${item.image_url || '/assets/images/coffee.jpg'}" alt="${item.name_en}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/assets/images/coffee.jpg'">
-            </div>
+          const hasCustomImg = hasCustomUploadedImage(item.image_url);
 
+          const itemImgHtml = hasCustomImg ? `
+            <div class="menu-item-live-img-wrapper" style="position: relative; width: 100%; height: 180px; margin-bottom: 14px; border-radius: 10px; overflow: hidden; background: var(--color-cream-dark);">
+              <img src="${item.image_url}" alt="${item.name_en}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+          ` : '';
+
+          itemEl.innerHTML = `
+            ${itemImgHtml}
             <div class="menu-list-head">
               <h3>
                 <span class="lang-ar">${item.name_ar}</span>
