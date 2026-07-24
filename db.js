@@ -363,6 +363,9 @@ async function initDb() {
   } catch (e) {}
 
   await seedData();
+  try {
+    await run("UPDATE menu_items SET image_url = '' WHERE image_url LIKE '%assets/images%' OR image_url IS NULL");
+  } catch (e) {}
 }
 
 async function seedData() {
@@ -431,7 +434,7 @@ async function seedData() {
       const isHot = item.category_slug === 'hot' ? 1 : 0;
       const isCold = item.category_slug === 'cold' || item.category_slug === 'juice' ? 1 : 0;
       const isFeatured = ['Spanish Latte', 'Café Latte', 'Iced Spanish Latte', 'Oreo Frappuccino', 'Avocado with Honey', 'V60 Pour Over'].includes(item.name_en) ? 1 : 0;
-      const imagePath = (item.category_slug === 'juice') ? 'assets/images/fresh-juice.jpg' : 'assets/images/coffee.jpg';
+      const imagePath = '';
 
       await run(`
         INSERT INTO menu_items (
