@@ -115,14 +115,15 @@ router.put('/categories/:id', authenticate, requirePermission('manage_menu'), as
     }
 
     const nameChanged = cleanEn !== category.name_en || cleanAr !== category.name_ar;
+    const newSlug = cleanEn.toLowerCase().replace(/[^a-z0-9-]/g, '-');
 
     await run(`
       UPDATE menu_categories SET
-        name_en = ?, name_ar = ?, icon = ?, description_en = ?, description_ar = ?,
+        name_en = ?, name_ar = ?, slug = ?, icon = ?, description_en = ?, description_ar = ?,
         display_order = ?, status = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `, [
-      cleanEn, cleanAr,
+      cleanEn, cleanAr, newSlug,
       icon || category.icon,
       description_en !== undefined ? description_en : category.description_en,
       description_ar !== undefined ? description_ar : category.description_ar,
