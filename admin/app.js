@@ -15,6 +15,26 @@ document.addEventListener('DOMContentLoaded', () => {
     roles: []
   };
 
+  const routePermissions = {
+    'dashboard': 'view_dashboard',
+    'pages': 'manage_pages',
+    'menu': 'manage_menu',
+    'offers': 'manage_offers',
+    'blog': 'manage_blog',
+    'seo': 'manage_seo',
+    'media': 'manage_media',
+    'gallery': 'manage_gallery',
+    'users': 'manage_users',
+    'settings': 'manage_settings',
+    'activity': 'manage_users'
+  };
+
+  function hasPermission(permission) {
+    if (!state.user || !state.user.permissions) return false;
+    if (state.user.permissions.includes('*')) return true;
+    return state.user.permissions.includes(permission);
+  }
+
   // Helper API Fetcher
   async function api(endpoint, options = {}) {
     options.headers = options.headers || {};
@@ -32,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (!res.ok) {
-        throw new Error(data.error || 'Server error');
+        throw new Error(data.error || (state.lang === 'ar' ? 'حدث خطأ في النظام' : 'Server error'));
       }
 
       return data;
@@ -109,6 +129,28 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('user-display-name').textContent = state.user.name;
       document.getElementById('user-display-role').textContent = state.user.roleName;
       document.getElementById('user-avatar-text').textContent = state.user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+
+      // STRICT RBAC VISIBILITY ENFORCEMENT: Completely hide unauthorized modules from navigation
+      document.querySelectorAll('.sidebar-menu a[data-route]').forEach(link => {
+        const route = link.getAttribute('data-route');
+        const perm = routePermissions[route];
+        const li = link.closest('li');
+
+        if (perm && !hasPermission(perm)) {
+          if (li) li.style.display = 'none';
+        } else {
+          if (li) li.style.display = '';
+        }
+      });
+
+      // Hide section labels if all items in section are hidden
+      document.querySelectorAll('.sidebar-nav .nav-section-label').forEach(label => {
+        const nextUl = label.nextElementSibling;
+        if (nextUl && nextUl.tagName === 'UL') {
+          const visibleItems = nextUl.querySelectorAll('li:not([style*="display: none"])');
+          label.style.display = visibleItems.length === 0 ? 'none' : '';
+        }
+      });
     }
   }
 
@@ -144,7 +186,10 @@ document.addEventListener('DOMContentLoaded', () => {
         state.user = data.user;
         showAdminApp();
         showToast(state.lang === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Logged in successfully');
-        window.location.hash = '#/dashboard';
+
+        // Redirect to first permitted route
+        const firstRoute = Object.keys(routePermissions).find(r => hasPermission(routePermissions[r])) || 'dashboard';
+        window.location.hash = `#/${firstRoute}`;
         handleHashRoute();
       }
     } catch (err) {
@@ -165,6 +210,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleHashRoute() {
     const hash = window.location.hash || '#/dashboard';
     const route = hash.replace('#/', '').split('/')[0] || 'dashboard';
+
+    // Route Permission Check & Auto Redirect
+    const requiredPerm = routePermissions[route];
+    if (requiredPerm && !hasPermission(requiredPerm)) {
+      const allowedRoute = Object.keys(routePermissions).find(r => hasPermission(routePermissions[r]));
+      if (allowedRoute) {
+        state.currentRoute = allowedRoute;
+        window.location.hash = `#/${allowedRoute}`;
+        renderRoute(allowedRoute);
+        return;
+      }
+    }
+
     state.currentRoute = route;
 
     document.querySelectorAll('.sidebar-menu a').forEach(a => {
@@ -178,6 +236,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderRoute(route) {
     const viewport = document.getElementById('app-viewport');
+    const requiredPerm = routePermissions[route];
+
+    // Access Denied Protection
+    if (requiredPerm && !hasPermission(requiredPerm)) {
+      renderAccessDenied(viewport);
+      return;
+    }
+
     viewport.innerHTML = `<div style="padding: 3rem; text-align: center; color: var(--color-navy);">${state.lang === 'ar' ? 'جاري التحميل...' : 'Loading...'}</div>`;
 
     switch (route) {
@@ -196,6 +262,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function renderAccessDenied(container) {
+    const isAr = state.lang === 'ar';
+    container.innerHTML = `
+      <div class="panel-card" style="padding: 4rem 2rem; text-align: center; margin-top: 2rem;">
+        <svg width="64" height="64" fill="none" stroke="var(--color-gold-dark)" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom: 1rem;"><path d="M12 15v2m0-8v4m9 1a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <h2 style="color: var(--color-navy); margin-bottom: 0.5rem;">${isAr ? 'تم رفض الوصول (غير مصرح)' : 'Access Denied (Unauthorized)'}</h2>
+        <p style="color: var(--color-charcoal-light); font-size: 0.95rem; max-width: 480px; margin: 0 auto 1.5rem;">${isAr ? 'ليس لديك الصلاحية المطلوبة لعرض هذه الصفحة. تم تقييد الوصول حسب أدوار المستخدمين.' : 'You do not have the required permissions to view this section. Access is restricted based on user roles.'}</p>
+        <button class="btn btn-navy" onclick="window.location.hash='#/${Object.keys(routePermissions).find(r => hasPermission(routePermissions[r])) || 'dashboard'}'">${isAr ? 'العودة للصفحة المسموحة' : 'Return to Permitted Section'}</button>
+      </div>
+    `;
+  }
+
   // ==========================================================================
   // VIEW 1: MAIN DASHBOARD OVERVIEW
   // ==========================================================================
@@ -211,12 +289,14 @@ document.addEventListener('DOMContentLoaded', () => {
             <h1>${isAr ? 'نظرة عامة على المقهى' : 'Café Dashboard Overview'}</h1>
             <p>${isAr ? 'إحصائيات مباشرة وأنشطة وتنبيهات أوز بارك كافيه' : 'Real-time performance metrics and café activities'}</p>
           </div>
-          <div class="header-actions">
-            <button class="btn btn-gold" id="btn-quick-add-menu">
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
-              <span>${isAr ? 'إضافة صنف جديد' : 'Add Menu Item'}</span>
-            </button>
-          </div>
+          ${hasPermission('manage_menu') ? `
+            <div class="header-actions">
+              <button class="btn btn-gold" id="btn-quick-add-menu">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+                <span>${isAr ? 'إضافة صنف جديد' : 'Add Menu Item'}</span>
+              </button>
+            </div>
+          ` : ''}
         </div>
 
         <div class="card-grid">
@@ -241,70 +321,79 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="stat-icon" style="background: rgba(230,126,34,0.15); color: #e67e22;">📂</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-info">
-              <div class="number" style="color: ${stats.seoIssues.totalIssues > 0 ? '#e74c3c' : '#27ae60'};">${stats.seoIssues.totalIssues}</div>
-              <div class="label">${isAr ? 'تنبيهات محركات البحث' : 'SEO Audit Alerts'}</div>
+          ${hasPermission('manage_seo') ? `
+            <div class="stat-card">
+              <div class="stat-info">
+                <div class="number" style="color: ${stats.seoIssues.totalIssues > 0 ? '#e74c3c' : '#27ae60'};">${stats.seoIssues.totalIssues}</div>
+                <div class="label">${isAr ? 'تنبيهات محركات البحث' : 'SEO Audit Alerts'}</div>
+              </div>
+              <div class="stat-icon" style="background: rgba(231,76,60,0.15); color: #e74c3c;">🔍</div>
             </div>
-            <div class="stat-icon" style="background: rgba(231,76,60,0.15); color: #e74c3c;">🔍</div>
-          </div>
+          ` : ''}
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
-          <div class="panel-card">
-            <div class="panel-header">
-              <h3>${isAr ? 'أحدث الأصناف بالقائمة' : 'Recent Menu Items'}</h3>
-              <a href="#/menu" class="btn btn-outline btn-sm">${isAr ? 'عرض الكل' : 'View All'}</a>
-            </div>
-            <div class="panel-body" style="padding: 0;">
-              <table class="admin-table">
-                <thead>
-                  <tr>
-                    <th>${isAr ? 'الصنف' : 'Item'}</th>
-                    <th>${isAr ? 'التصنيف' : 'Category'}</th>
-                    <th>${isAr ? 'السعر' : 'Price'}</th>
-                    <th>${isAr ? 'الحالة' : 'Status'}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${stats.recentMenuItems.map(m => `
+          ${hasPermission('manage_menu') ? `
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3>${isAr ? 'أحدث الأصناف بالقائمة' : 'Recent Menu Items'}</h3>
+                <a href="#/menu" class="btn btn-outline btn-sm">${isAr ? 'عرض الكل' : 'View All'}</a>
+              </div>
+              <div class="panel-body" style="padding: 0;">
+                <table class="admin-table">
+                  <thead>
                     <tr>
-                      <td><strong>${isAr ? m.name_ar : m.name_en}</strong></td>
-                      <td>${m.category_name || '-'}</td>
-                      <td><strong>${m.price} ${isAr ? 'ر.س' : 'SAR'}</strong></td>
-                      <td>
-                        <span class="badge ${m.availability_status === 'available' ? 'badge-success' : 'badge-danger'}">
-                          ${m.availability_status === 'available' ? (isAr ? 'متوفر' : 'Available') : (isAr ? 'غير متوفر' : 'Unavailable')}
-                        </span>
-                      </td>
+                      <th>${isAr ? 'الصنف' : 'Item'}</th>
+                      <th>${isAr ? 'التصنيف' : 'Category'}</th>
+                      <th>${isAr ? 'السعر' : 'Price'}</th>
+                      <th>${isAr ? 'الحالة' : 'Status'}</th>
                     </tr>
-                  `).join('')}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    ${stats.recentMenuItems.map(m => `
+                      <tr>
+                        <td><strong>${isAr ? m.name_ar : m.name_en}</strong></td>
+                        <td>${m.category_name || '-'}</td>
+                        <td><strong>${m.price} ${isAr ? 'ر.س' : 'SAR'}</strong></td>
+                        <td>
+                          <span class="badge ${m.availability_status === 'available' ? 'badge-success' : 'badge-danger'}">
+                            ${m.availability_status === 'available' ? (isAr ? 'متوفر' : 'Available') : (isAr ? 'غير متوفر' : 'Unavailable')}
+                          </span>
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          ` : ''}
 
-          <div class="panel-card">
-            <div class="panel-header">
-              <h3>${isAr ? 'سجل العمليات الأخير' : 'Recent Activity Log'}</h3>
-              <a href="#/activity" class="btn btn-outline btn-sm">${isAr ? 'عرض سجل النشاط' : 'Full Log'}</a>
+          ${hasPermission('manage_users') ? `
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3>${isAr ? 'سجل العمليات الأخير' : 'Recent Activity Log'}</h3>
+                <a href="#/activity" class="btn btn-outline btn-sm">${isAr ? 'عرض سجل النشاط' : 'Full Log'}</a>
+              </div>
+              <div class="panel-body">
+                <ul style="list-style: none; padding: 0;">
+                  ${stats.recentActivity.map(a => `
+                    <li style="padding: 0.6rem 0; border-bottom: 1px solid var(--color-cream-dark); font-size: 0.85rem;">
+                      <div style="font-weight: 600; color: var(--color-navy);">${a.action}</div>
+                      <div style="color: var(--color-charcoal-light);">${a.details || ''}</div>
+                      <div style="font-size: 0.75rem; color: #95a5a6;">${a.user_email} • ${new Date(a.created_at).toLocaleString()}</div>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
             </div>
-            <div class="panel-body">
-              <ul style="list-style: none; padding: 0;">
-                ${stats.recentActivity.map(a => `
-                  <li style="padding: 0.6rem 0; border-bottom: 1px solid var(--color-cream-dark); font-size: 0.85rem;">
-                    <div style="font-weight: 600; color: var(--color-navy);">${a.action}</div>
-                    <div style="color: var(--color-charcoal-light);">${a.details || ''}</div>
-                    <div style="font-size: 0.75rem; color: #95a5a6;">${a.user_email} • ${new Date(a.created_at).toLocaleString()}</div>
-                  </li>
-                `).join('')}
-              </ul>
-            </div>
-          </div>
+          ` : ''}
         </div>
       `;
 
-      document.getElementById('btn-quick-add-menu').addEventListener('click', () => window.location.hash = '#/menu');
+      if (hasPermission('manage_menu')) {
+        const btnQuickAdd = document.getElementById('btn-quick-add-menu');
+        if (btnQuickAdd) btnQuickAdd.addEventListener('click', () => window.location.hash = '#/menu');
+      }
 
     } catch (e) {
       container.innerHTML = `<div class="badge badge-danger">${state.lang === 'ar' ? 'فشل تحميل إحصائيات الإدارة' : 'Failed to load stats'}</div>`;
@@ -458,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
-  // VIEW 3: CAFÉ MENU MANAGEMENT
+  // VIEW 3: CAFÉ MENU MANAGEMENT (FULL PRODUCT IMAGE & CATEGORY MANAGEMENT)
   // ==========================================================================
   async function renderMenu(container) {
     try {
@@ -475,11 +564,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="page-header">
           <div class="page-title">
             <h1>${isAr ? 'إدارة قائمة مشروبات وحلويات المقهى' : 'Café Menu Manager'}</h1>
-            <p>${isAr ? 'إضافة وتعديل وحذف المشروبات الساخنة والباردة والحلويات والأسعار' : 'Add, edit, and delete coffee, juices, desserts, prices, and availability'}</p>
+            <p>${isAr ? 'إضافة وتعديل وحذف الأصناف والتصنيفات وإدارة صور المنتجات' : 'Full menu item management, image controls, and category tools'}</p>
           </div>
-          <div class="header-actions" style="display: flex; gap: 0.5rem;">
-            <button class="btn btn-navy" id="add-category-btn">
-              <span>${isAr ? '+ تصنيف جديد' : '+ New Category'}</span>
+          <div class="header-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-navy" id="manage-categories-btn">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+              <span>${isAr ? 'إدارة التصنيفات' : 'Manage Categories'}</span>
             </button>
             <button class="btn btn-gold" id="add-menu-item-btn">
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
@@ -489,8 +579,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="panel-card">
-          <div class="panel-header">
-            <div class="filter-bar" style="margin: 0; width: 100%;">
+          <div class="panel-header" style="flex-wrap: wrap; gap: 1rem;">
+            <div class="filter-bar" style="margin: 0; flex: 1;">
               <div class="search-box">
                 <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input type="text" id="search-menu-input" class="form-control" placeholder="${isAr ? 'بحث عن صنف...' : 'Search items...'}">
@@ -514,14 +604,14 @@ document.addEventListener('DOMContentLoaded', () => {
                   <tr data-name="${(item.name_ar + ' ' + item.name_en).toLowerCase()}">
                     <td>
                       <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <img src="${item.image_url}" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;" alt="">
+                        <img src="${item.image_url}" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid var(--color-cream-dark);" alt="" onerror="this.src='assets/images/coffee.jpg'">
                         <div>
                           <div style="font-weight: 700; color: var(--color-navy);">${isAr ? item.name_ar : item.name_en}</div>
                           <div style="font-size: 0.75rem; color: var(--color-charcoal-light);">${isAr ? (item.description_ar || '') : (item.description_en || '')}</div>
                         </div>
                       </div>
                     </td>
-                    <td><strong>${isAr ? item.category_name_ar : item.category_name_en}</strong></td>
+                    <td><strong>${isAr ? (item.category_name_ar || 'غير مصنف') : (item.category_name_en || 'Uncategorized')}</strong></td>
                     <td><strong>${item.price} ${isAr ? 'ر.س' : 'SAR'}</strong></td>
                     <td>${item.calories ? item.calories + (isAr ? ' سعرة' : ' kcal') : '-'}</td>
                     <td>
@@ -550,7 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       document.getElementById('add-menu-item-btn').addEventListener('click', () => openMenuItemModal());
-      document.getElementById('add-category-btn').addEventListener('click', () => openCategoryModal());
+      document.getElementById('manage-categories-btn').addEventListener('click', () => openManageCategoriesModal());
 
       container.querySelectorAll('.toggle-avail-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -583,7 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (confirm(isAr ? 'هل أنت تأكد من إزالة هذا الصنف من القائمة؟' : 'Are you sure you want to delete this menu item?')) {
             try {
               await api(`/menu/items/${btn.getAttribute('data-id')}`, { method: 'DELETE' });
-              showToast(isAr ? 'تم حذف الصنف' : 'Menu item deleted');
+              showToast(isAr ? 'تم حذف الصنف بنجاح' : 'Menu item deleted');
               renderMenu(container);
             } catch (err) {
               showToast(err.message, 'error');
@@ -597,57 +687,244 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function openCategoryModal() {
+  // ==========================================================================
+  // REQUIREMENT 2: FULL CATEGORY MANAGEMENT MODALS & ACTIONS
+  // ==========================================================================
+  async function openManageCategoriesModal() {
+    const isAr = state.lang === 'ar';
+
+    try {
+      const data = await api('/menu/categories');
+      state.categories = data.data;
+
+      const bodyHtml = `
+        <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+          <h4 style="color: var(--color-navy); margin: 0;">${isAr ? 'قائمة تصنيفات المقهى' : 'Café Categories List'}</h4>
+          <button class="btn btn-gold btn-sm" id="btn-create-new-cat">${isAr ? '+ تصنيف جديد' : '+ Add New Category'}</button>
+        </div>
+
+        <div style="max-height: 400px; overflow-y: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>${isAr ? 'الأيقونة والتصنيف' : 'Icon & Name'}</th>
+                <th>${isAr ? 'عدد الأصناف' : 'Items Count'}</th>
+                <th>${isAr ? 'إجراءات' : 'Actions'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.categories.map(c => `
+                <tr>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span style="font-size: 1.25rem;">${c.icon || '☕'}</span>
+                      <div>
+                        <strong>${isAr ? c.name_ar : c.name_en}</strong>
+                        <div style="font-size: 0.75rem; color: var(--color-charcoal-light);">${isAr ? c.name_en : c.name_ar}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-info">${c.item_count || 0} ${isAr ? 'صنف' : 'items'}</span></td>
+                  <td>
+                    <button class="btn btn-navy btn-sm edit-cat-btn" data-id="${c.id}">${isAr ? 'تعديل / إعادة تسمية' : 'Edit / Rename'}</button>
+                    <button class="btn btn-danger btn-sm delete-cat-btn" data-id="${c.id}" data-count="${c.item_count || 0}">${isAr ? 'حذف' : 'Delete'}</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      const footerHtml = `<button class="btn btn-outline" onclick="closeModal()">${isAr ? 'إغلاق' : 'Close'}</button>`;
+
+      openModal(isAr ? 'إدارة تصنيفات المأكولات والمشروبات' : 'Category Management', bodyHtml, footerHtml);
+
+      document.getElementById('btn-create-new-cat').addEventListener('click', () => openCategoryModal());
+
+      document.querySelectorAll('.edit-cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cat = state.categories.find(x => x.id == btn.getAttribute('data-id'));
+          if (cat) openCategoryModal(cat);
+        });
+      });
+
+      document.querySelectorAll('.delete-cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cat = state.categories.find(x => x.id == btn.getAttribute('data-id'));
+          const count = parseInt(btn.getAttribute('data-count') || '0');
+          if (cat) openDeleteCategoryModal(cat, count);
+        });
+      });
+
+    } catch (err) {
+      showToast(isAr ? 'فشل تحميل التصنيفات' : 'Failed to load categories', 'error');
+    }
+  }
+
+  function openCategoryModal(category = null) {
     const isAr = state.lang === 'ar';
     const bodyHtml = `
       <form id="category-modal-form">
         <div class="form-group">
           <label>${isAr ? 'اسم التصنيف (بالعربية) *' : 'Category Name (Arabic) *'}</label>
-          <input type="text" id="cat-name-ar" class="form-control" required placeholder="مثال: مشروبات مثلجة">
+          <input type="text" id="cat-name-ar" class="form-control" required value="${category ? category.name_ar : ''}" placeholder="مثال: مشروبات مثلجة">
         </div>
         <div class="form-group">
           <label>${isAr ? 'اسم التصنيف (English) *' : 'Category Name (English) *'}</label>
-          <input type="text" id="cat-name-en" class="form-control" required placeholder="e.g. Blended Frappes">
+          <input type="text" id="cat-name-en" class="form-control" required value="${category ? category.name_en : ''}" placeholder="e.g. Blended Frappes">
         </div>
         <div class="form-group">
           <label>${isAr ? 'أيقونة التصنيف' : 'Category Icon'}</label>
-          <input type="text" id="cat-icon" class="form-control" value="☕">
+          <input type="text" id="cat-icon" class="form-control" value="${category ? (category.icon || '☕') : '☕'}">
+        </div>
+        <div class="form-group">
+          <label>${isAr ? 'ترتيب العرض' : 'Display Order'}</label>
+          <input type="number" id="cat-order" class="form-control" value="${category ? category.display_order : '0'}">
         </div>
       </form>
     `;
 
     const footerHtml = `
       <button class="btn btn-outline" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
-      <button class="btn btn-gold" id="save-cat-btn">${isAr ? 'حفظ التصنيف' : 'Save Category'}</button>
+      <button class="btn btn-gold" id="save-cat-btn">${category ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'حفظ التصنيف' : 'Save Category')}</button>
     `;
 
-    openModal(isAr ? 'إضافة تصنيف جديد' : 'Add New Category', bodyHtml, footerHtml);
+    openModal(category ? (isAr ? 'تعديل / إعادة تسمية التصنيف' : 'Edit / Rename Category') : (isAr ? 'إضافة تصنيف جديد' : 'Add New Category'), bodyHtml, footerHtml);
 
     document.getElementById('save-cat-btn').addEventListener('click', async () => {
-      const name_ar = document.getElementById('cat-name-ar').value;
-      const name_en = document.getElementById('cat-name-en').value;
-      const icon = document.getElementById('cat-icon').value;
+      const btn = document.getElementById('save-cat-btn');
+      const name_ar = document.getElementById('cat-name-ar').value.trim();
+      const name_en = document.getElementById('cat-name-en').value.trim();
+      const icon = document.getElementById('cat-icon').value.trim();
+      const display_order = parseInt(document.getElementById('cat-order').value) || 0;
 
-      if (!name_ar || !name_en) return showToast(isAr ? 'أدخل الأسماء المطلوبة' : 'Fill required names', 'error');
+      if (!name_ar || !name_en) {
+        return showToast(isAr ? 'أدخل اسم التصنيف باللغتين' : 'Please fill category names in English and Arabic', 'error');
+      }
 
       try {
-        await api('/menu/categories', {
-          method: 'POST',
-          body: JSON.stringify({ name_ar, name_en, icon })
-        });
-        showToast(isAr ? 'تم إضافة التصنيف' : 'Category added');
+        btn.disabled = true;
+        btn.textContent = isAr ? 'جاري الحفظ...' : 'Saving...';
+
+        if (category) {
+          await api(`/menu/categories/${category.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({ name_ar, name_en, icon, display_order })
+          });
+          showToast(isAr ? 'تم تعديل التصنيف بنجاح' : 'Category updated');
+        } else {
+          await api('/menu/categories', {
+            method: 'POST',
+            body: JSON.stringify({ name_ar, name_en, icon, display_order })
+          });
+          showToast(isAr ? 'تم إضافة التصنيف بنجاح' : 'Category added');
+        }
+
         closeModal();
         renderMenu(document.getElementById('app-viewport'));
       } catch (err) {
+        btn.disabled = false;
+        btn.textContent = category ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'حفظ التصنيف' : 'Save Category');
         showToast(err.message, 'error');
       }
     });
   }
 
-  // ITEM MODAL WITH FILE UPLOADER INSTEAD OF IMAGE URL INPUT
+  function openDeleteCategoryModal(category, itemsCount) {
+    const isAr = state.lang === 'ar';
+    const otherCategories = state.categories.filter(c => c.id !== category.id);
+
+    let bodyHtml = '';
+
+    if (itemsCount === 0) {
+      bodyHtml = `
+        <div style="text-align: center; padding: 1rem 0;">
+          <svg width="48" height="48" fill="none" stroke="#e74c3c" stroke-width="2" viewBox="0 0 24 24" style="margin-bottom: 1rem;"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          <h4 style="color: var(--color-navy); margin-bottom: 0.5rem;">${isAr ? 'تأكيد حذف التصنيف' : 'Confirm Category Deletion'}</h4>
+          <p style="color: var(--color-charcoal-light);">${isAr ? `هل أنت تأكد من حذف التصنيف "${category.name_ar}"؟ لا يمكن التراجع عن هذا الإجراء.` : `Are you sure you want to delete category "${category.name_en}"? This action cannot be undone.`}</p>
+        </div>
+      `;
+    } else {
+      bodyHtml = `
+        <div style="padding: 0.5rem 0;">
+          <div style="background: rgba(231, 76, 60, 0.1); border-left: 4px solid #e74c3c; padding: 1rem; border-radius: 6px; margin-bottom: 1.25rem;">
+            <strong style="color: #c0392b; font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">
+              ⚠️ ${isAr ? 'التصنيف يحتوي على أصناف!' : 'Category Contains Products!'}
+            </strong>
+            <span style="font-size: 0.85rem; color: #7f8c8d;">
+              ${isAr ? `التصنيف "${category.name_ar}" يحتوي حالياً على ${itemsCount} صنف. يرجى اختيار إجراء لهذه الأصناف قبل الحذف:` : `Category "${category.name_en}" contains ${itemsCount} active product(s). Please choose what to do with these products before deleting:`}
+            </span>
+          </div>
+
+          <form id="delete-cat-action-form">
+            <div class="form-group">
+              <label>${isAr ? 'الإجراء المطلوب للأصناف *' : 'Action for existing products *'}</label>
+              <select id="del-cat-action-select" class="form-control" style="font-weight: 600;">
+                <option value="move">${isAr ? 'نقل جميع الأصناف إلى تصنيف آخر' : 'Move all products to another category'}</option>
+                <option value="uncategorize">${isAr ? 'تعيين الأصناف كـ (غير مصنف)' : 'Mark products as Uncategorized'}</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="target-category-group">
+              <label>${isAr ? 'اختر التصنيف المستهدف *' : 'Select Target Category *'}</label>
+              <select id="del-cat-target-select" class="form-control">
+                ${otherCategories.map(c => `<option value="${c.id}">${isAr ? c.name_ar : c.name_en}</option>`).join('')}
+              </select>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    const footerHtml = `
+      <button class="btn btn-outline" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
+      <button class="btn btn-danger" id="confirm-del-cat-btn">${isAr ? 'حذف التصنيف' : 'Delete Category'}</button>
+    `;
+
+    openModal(isAr ? 'حذف التصنيف' : 'Delete Category', bodyHtml, footerHtml);
+
+    const actionSelect = document.getElementById('del-cat-action-select');
+    if (actionSelect) {
+      actionSelect.addEventListener('change', () => {
+        const targetGroup = document.getElementById('target-category-group');
+        if (targetGroup) targetGroup.style.display = actionSelect.value === 'move' ? 'block' : 'none';
+      });
+    }
+
+    document.getElementById('confirm-del-cat-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('confirm-del-cat-btn');
+
+      try {
+        btn.disabled = true;
+        btn.textContent = isAr ? 'جاري الحذف...' : 'Deleting...';
+
+        let url = `/menu/categories/${category.id}`;
+        if (itemsCount > 0) {
+          const action = document.getElementById('del-cat-action-select').value;
+          const targetId = document.getElementById('del-cat-target-select') ? document.getElementById('del-cat-target-select').value : null;
+          url += `?action=${action}${action === 'move' ? `&target_category_id=${targetId}` : ''}`;
+        }
+
+        await api(url, { method: 'DELETE' });
+        showToast(isAr ? 'تم حذف التصنيف بنجاح' : 'Category deleted successfully');
+        closeModal();
+        renderMenu(document.getElementById('app-viewport'));
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = isAr ? 'حذف التصنيف' : 'Delete Category';
+        showToast(err.message, 'error');
+      }
+    });
+  }
+
+  // ==========================================================================
+  // REQUIREMENT 1: PRODUCT IMAGE MANAGEMENT IN MENU MANAGER MODAL
+  // ==========================================================================
   function openMenuItemModal(item = null) {
     const isAr = state.lang === 'ar';
-    const currentImg = item ? item.image_url : 'assets/images/coffee.jpg';
+    let currentImg = item ? item.image_url : 'assets/images/coffee.jpg';
+    if (!currentImg) currentImg = 'assets/images/coffee.jpg';
 
     const bodyHtml = `
       <form id="menu-item-form">
@@ -674,16 +951,35 @@ document.addEventListener('DOMContentLoaded', () => {
           <input type="number" id="item-calories" class="form-control" value="${item && item.calories ? item.calories : ''}">
         </div>
 
-        <!-- UPLOAD IMAGE CONTROL -->
-        <div class="form-group">
-          <label>${isAr ? 'رفع صورة الصنف (Upload Item Image) *' : 'Upload Item Image *'}</label>
-          <input type="file" id="item-image-file" class="form-control" accept="image/*">
+        <!-- PRODUCT IMAGE MANAGEMENT CONTROL -->
+        <div class="form-group" style="background: var(--color-cream); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--color-cream-dark);">
+          <label style="font-weight: 700; color: var(--color-navy); margin-bottom: 0.75rem; display: block;">
+            ${isAr ? 'إدارة صورة المنتج (Product Image Management)' : 'Product Image Management'}
+          </label>
+          
           <input type="hidden" id="item-image-url" value="${currentImg}">
-          <div style="margin-top: 0.75rem; display: flex; align-items: center; gap: 0.75rem; background: var(--color-cream); padding: 0.6rem; border-radius: 8px;">
-            <img id="item-img-preview" src="${currentImg}" style="width: 54px; height: 54px; border-radius: 8px; object-fit: cover; border: 1px solid var(--color-cream-dark);" alt="">
-            <span style="font-size: 0.8rem; color: var(--color-charcoal-light);" id="item-img-status">
-              ${isAr ? 'اختر ملف صورة من جهازك لتحديث الصورة فوراً' : 'Select an image file from your device to upload'}
-            </span>
+          <input type="file" id="item-image-file" style="display: none;" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
+
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <img id="item-img-preview" src="${currentImg}" style="width: 72px; height: 72px; border-radius: 10px; object-fit: cover; border: 2px solid var(--color-gold); box-shadow: var(--shadow-sm);" alt="" onerror="this.src='assets/images/coffee.jpg'">
+            
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
+              <div style="font-size: 0.8rem; color: var(--color-charcoal-light);" id="item-img-status">
+                ${currentImg !== 'assets/images/coffee.jpg' ? (isAr ? 'الصورة المرفوقة الحالية للمنتج' : 'Current custom product image attached') : (isAr ? 'الصورة الافتراضية النظامية' : 'Default placeholder image')}
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-gold btn-sm" id="btn-change-item-image">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  <span>${isAr ? 'تغيير الصورة' : 'Change Image'}</span>
+                </button>
+                
+                <button type="button" class="btn btn-danger btn-sm" id="btn-remove-item-image" style="${currentImg === 'assets/images/coffee.jpg' ? 'display: none;' : 'display: inline-flex;'}">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  <span>${isAr ? 'إزالة الصورة' : 'Remove Image'}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -700,37 +996,84 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const footerHtml = `
       <button class="btn btn-outline" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
-      <button class="btn btn-gold" id="save-item-btn">${isAr ? 'حفظ الصنف' : 'Save Item'}</button>
+      <button class="btn btn-gold" id="save-item-btn">${item ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'حفظ الصنف' : 'Save Item')}</button>
     `;
 
     openModal(item ? (isAr ? 'تعديل صنف بالقائمة' : 'Edit Menu Item') : (isAr ? 'إضافة صنف جديد' : 'Add New Menu Item'), bodyHtml, footerHtml);
 
-    // Bind Instant Image Upload Event
+    // Bind Image Change trigger
+    document.getElementById('btn-change-item-image').addEventListener('click', () => {
+      document.getElementById('item-image-file').click();
+    });
+
+    // Handle File Selection, Validation & Upload
     document.getElementById('item-image-file').addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
-      const formData = new FormData();
-      formData.append('files', file);
+      // File validation: Size max 10MB, mime type check
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+      if (!allowedTypes.includes(file.type)) {
+        return showToast(isAr ? 'نوع الملف غير مدعوم. اختر صورة (JPG, PNG, WEBP, GIF, SVG)' : 'Unsupported image format. Select a valid image (JPG, PNG, WEBP, GIF, SVG)', 'error');
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        return showToast(isAr ? 'حجم الصورة كبير جداً (الأقصى 10 ميجابايت)' : 'Image file size too large (Maximum 10MB)', 'error');
+      }
+
+      const btnChange = document.getElementById('btn-change-item-image');
+      const statusText = document.getElementById('item-img-status');
 
       try {
-        document.getElementById('item-img-status').textContent = isAr ? 'جاري رفع الصورة...' : 'Uploading image...';
+        btnChange.disabled = true;
+        statusText.textContent = isAr ? 'جاري رفع الصورة الجديدة...' : 'Uploading new image...';
+
+        const formData = new FormData();
+        formData.append('files', file);
+
         const uploadRes = await api('/media/upload', { method: 'POST', body: formData });
         if (uploadRes.success && uploadRes.data.length > 0) {
           const uploadedPath = uploadRes.data[0].file_path;
           document.getElementById('item-image-url').value = uploadedPath;
           document.getElementById('item-img-preview').src = uploadedPath;
-          document.getElementById('item-img-status').textContent = isAr ? 'تم رفع الصورة بنجاح!' : 'Image uploaded successfully!';
+          document.getElementById('btn-remove-item-image').style.display = 'inline-flex';
+          statusText.textContent = isAr ? 'تم رفع وتغيير الصورة بنجاح!' : 'New image uploaded successfully!';
+          showToast(isAr ? 'تم رفع الصورة بنجاح' : 'Image uploaded successfully');
         }
       } catch (err) {
-        showToast(isAr ? 'فشل رفع الصورة' : 'Image upload failed', 'error');
+        statusText.textContent = isAr ? 'فشل رفع الصورة' : 'Image upload failed';
+        showToast(err.message || (isAr ? 'فشل رفع الصورة' : 'Image upload failed'), 'error');
+      } finally {
+        btnChange.disabled = false;
+      }
+    });
+
+    // Handle Image Removal
+    document.getElementById('btn-remove-item-image').addEventListener('click', async () => {
+      if (confirm(isAr ? 'هل أنت تأكد من إزالة صورة هذا المنتج؟ سيتم إعادة تعيينها إلى الصورة الافتراضية.' : 'Are you sure you want to remove this product image? It will reset to the default placeholder.')) {
+        const defaultPlaceholder = 'assets/images/coffee.jpg';
+
+        // If editing existing item, delete physically on server immediately or on save
+        if (item) {
+          try {
+            await api(`/menu/items/${item.id}/image`, { method: 'DELETE' });
+            showToast(isAr ? 'تمت إزالة صورة المنتج بنجاح' : 'Product image removed successfully');
+          } catch (e) {
+            console.log('Remove image endpoint fallback');
+          }
+        }
+
+        document.getElementById('item-image-url').value = defaultPlaceholder;
+        document.getElementById('item-img-preview').src = defaultPlaceholder;
+        document.getElementById('btn-remove-item-image').style.display = 'none';
+        document.getElementById('item-img-status').textContent = isAr ? 'تم إعادة التعيين للصورة الافتراضية' : 'Reset to default placeholder';
       }
     });
 
     document.getElementById('save-item-btn').addEventListener('click', async () => {
+      const btnSave = document.getElementById('save-item-btn');
       const payload = {
-        name_ar: document.getElementById('item-name-ar').value,
-        name_en: document.getElementById('item-name-en').value,
+        name_ar: document.getElementById('item-name-ar').value.trim(),
+        name_en: document.getElementById('item-name-en').value.trim(),
         category_id: parseInt(document.getElementById('item-category-id').value),
         price: parseFloat(document.getElementById('item-price').value),
         calories: document.getElementById('item-calories').value,
@@ -739,16 +1082,25 @@ document.addEventListener('DOMContentLoaded', () => {
         description_en: document.getElementById('item-desc-en').value
       };
 
+      if (!payload.name_ar || !payload.name_en || isNaN(payload.price) || !payload.category_id) {
+        return showToast(isAr ? 'يرجى تعبئة كافة الحقول المطلوبة' : 'Please fill all required fields', 'error');
+      }
+
       try {
+        btnSave.disabled = true;
+        btnSave.textContent = isAr ? 'جاري الحفظ...' : 'Saving...';
+
         if (item) {
           await api(`/menu/items/${item.id}`, { method: 'PUT', body: JSON.stringify(payload) });
         } else {
           await api('/menu/items', { method: 'POST', body: JSON.stringify(payload) });
         }
-        showToast(isAr ? 'تم حفظ الصنف بنجاح' : 'Menu item saved');
+        showToast(isAr ? 'تم حفظ الصنف بنجاح' : 'Menu item saved successfully');
         closeModal();
         renderMenu(document.getElementById('app-viewport'));
       } catch (err) {
+        btnSave.disabled = false;
+        btnSave.textContent = item ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'حفظ الصنف' : 'Save Item');
         showToast(err.message, 'error');
       }
     });
@@ -1455,7 +1807,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
-  // VIEW 9: USERS & ROLES
+  // REQUIREMENT 4: USERS & ROLES WITH USER DELETION CONTROLS
   // ==========================================================================
   async function renderUsers(container) {
     try {
@@ -1472,7 +1824,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="page-header">
           <div class="page-title">
             <h1>${isAr ? 'إدارة موظفي المقهى والصلاحيات' : 'Users & Permissions'}</h1>
-            <p>${isAr ? 'إضافة وتعديل حسابات الموظفين ومنح وتحديد أدوار الإدارة' : 'Add, edit, and assign roles for café staff accounts'}</p>
+            <p>${isAr ? 'إضافة وتعديل وحذف حسابات الموظفين وتعيين أدوار الإدارة' : 'Add, edit, delete, and assign roles for café staff accounts'}</p>
           </div>
           <div class="header-actions">
             <button class="btn btn-gold" id="add-user-btn">
@@ -1500,14 +1852,20 @@ document.addEventListener('DOMContentLoaded', () => {
               <tbody>
                 ${state.users.map(u => `
                   <tr>
-                    <td><strong>${u.full_name}</strong></td>
+                    <td><strong>${u.full_name} ${u.id === state.user.id ? `<span class="badge badge-info" style="font-size:0.7rem;">${isAr ? 'أنت' : 'You'}</span>` : ''}</strong></td>
                     <td>${u.email}</td>
                     <td><span class="badge badge-info">${u.role_name}</span></td>
                     <td><span class="badge ${u.status === 'active' ? 'badge-success' : 'badge-danger'}">${u.status}</span></td>
                     <td>
-                      <button class="btn btn-navy btn-sm toggle-user-status-btn" data-id="${u.id}" data-status="${u.status}">
-                        ${u.status === 'active' ? (isAr ? 'تعطيل الحساب' : 'Deactivate') : (isAr ? 'تنشيط الحساب' : 'Activate')}
-                      </button>
+                      <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                        <button class="btn btn-navy btn-sm edit-user-btn" data-id="${u.id}">${isAr ? 'تعديل' : 'Edit'}</button>
+                        <button class="btn btn-sm toggle-user-status-btn ${u.status === 'active' ? 'btn-outline' : 'btn-gold'}" data-id="${u.id}" data-status="${u.status}" ${u.id === state.user.id ? 'disabled' : ''}>
+                          ${u.status === 'active' ? (isAr ? 'تعطيل' : 'Deactivate') : (isAr ? 'تنشيط' : 'Activate')}
+                        </button>
+                        ${u.id !== state.user.id ? `
+                          <button class="btn btn-danger btn-sm delete-user-btn" data-id="${u.id}">${isAr ? 'حذف المستخدم' : 'Delete User'}</button>
+                        ` : ''}
+                      </div>
                     </td>
                   </tr>
                 `).join('')}
@@ -1518,6 +1876,13 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       document.getElementById('add-user-btn').addEventListener('click', () => openUserModal());
+
+      container.querySelectorAll('.edit-user-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const u = state.users.find(x => x.id == btn.getAttribute('data-id'));
+          if (u) openUserModal(u);
+        });
+      });
 
       container.querySelectorAll('.toggle-user-status-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -1534,31 +1899,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
+      container.querySelectorAll('.delete-user-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const u = state.users.find(x => x.id == btn.getAttribute('data-id'));
+          if (u) openDeleteUserModal(u);
+        });
+      });
+
     } catch (e) {
       container.innerHTML = `<div class="badge badge-danger">${state.lang === 'ar' ? 'فشل تحميل الحسابات' : 'Failed to load users'}</div>`;
     }
   }
 
-  function openUserModal() {
+  function openUserModal(user = null) {
     const isAr = state.lang === 'ar';
     const bodyHtml = `
       <form id="user-modal-form">
         <div class="form-group">
           <label>${isAr ? 'الاسم الكامل *' : 'Full Name *'}</label>
-          <input type="text" id="user-name" class="form-control" required placeholder="أحمد سعيد">
+          <input type="text" id="user-name" class="form-control" required value="${user ? user.full_name : ''}" placeholder="أحمد سعيد">
         </div>
         <div class="form-group">
           <label>${isAr ? 'البريد الإلكتروني *' : 'Email Address *'}</label>
-          <input type="email" id="user-email" class="form-control" required placeholder="staff@ozparkcafe.com">
+          <input type="email" id="user-email" class="form-control" required value="${user ? user.email : ''}" placeholder="staff@ozparkcafe.com">
         </div>
         <div class="form-group">
-          <label>${isAr ? 'كلمة المرور *' : 'Password *'}</label>
-          <input type="password" id="user-password" class="form-control" required placeholder="••••••••">
+          <label>${isAr ? `كلمة المرور ${user ? '(اتركها فارغة للتعديل دون تغيير)' : '*'}` : `Password ${user ? '(leave blank to keep current)' : '*'}`}</label>
+          <input type="password" id="user-password" class="form-control" ${user ? '' : 'required'} placeholder="••••••••">
         </div>
         <div class="form-group">
           <label>${isAr ? 'الدور والصلاحيات *' : 'Assigned Role *'}</label>
           <select id="user-role-id" class="form-control" required>
-            ${state.roles.map(r => `<option value="${r.id}">${r.name} (${r.description})</option>`).join('')}
+            ${state.roles.map(r => `<option value="${r.id}" ${user && user.role_id === r.id ? 'selected' : ''}>${r.name} (${r.description})</option>`).join('')}
           </select>
         </div>
       </form>
@@ -1566,26 +1938,92 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const footerHtml = `
       <button class="btn btn-outline" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
-      <button class="btn btn-gold" id="save-user-btn">${isAr ? 'إنشاء حساب الموظف' : 'Create User'}</button>
+      <button class="btn btn-gold" id="save-user-btn">${user ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'إنشاء حساب الموظف' : 'Create User')}</button>
     `;
 
-    openModal(isAr ? 'إضافة حساب موظف جديد' : 'Add New Staff User', bodyHtml, footerHtml);
+    openModal(user ? (isAr ? 'تعديل حساب موظف' : 'Edit Staff User Account') : (isAr ? 'إضافة حساب موظف جديد' : 'Add New Staff User'), bodyHtml, footerHtml);
 
     document.getElementById('save-user-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('save-user-btn');
+      const payload = {
+        full_name: document.getElementById('user-name').value.trim(),
+        email: document.getElementById('user-email').value.trim(),
+        password: document.getElementById('user-password').value,
+        role_id: parseInt(document.getElementById('user-role-id').value)
+      };
+
+      if (!payload.full_name || !payload.email || (!user && !payload.password) || !payload.role_id) {
+        return showToast(isAr ? 'يرجى تعبئة كافة الحقول المطلوبة' : 'Please fill all required fields', 'error');
+      }
+
       try {
-        await api('/users', {
-          method: 'POST',
-          body: JSON.stringify({
-            full_name: document.getElementById('user-name').value,
-            email: document.getElementById('user-email').value,
-            password: document.getElementById('user-password').value,
-            role_id: parseInt(document.getElementById('user-role-id').value)
-          })
-        });
-        showToast(isAr ? 'تم إنشاء حساب الموظف بنجاح' : 'Staff user created');
+        btn.disabled = true;
+        btn.textContent = isAr ? 'جاري الحفظ...' : 'Saving...';
+
+        if (user) {
+          await api(`/users/${user.id}`, { method: 'PUT', body: JSON.stringify(payload) });
+          showToast(isAr ? 'تم تعديل بيانات الموظف بنجاح' : 'Staff user account updated');
+        } else {
+          await api('/users', { method: 'POST', body: JSON.stringify(payload) });
+          showToast(isAr ? 'تم إنشاء حساب الموظف بنجاح' : 'Staff user created');
+        }
         closeModal();
         renderUsers(document.getElementById('app-viewport'));
       } catch (err) {
+        btn.disabled = false;
+        btn.textContent = user ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'إنشاء حساب الموظف' : 'Create User');
+        showToast(err.message, 'error');
+      }
+    });
+  }
+
+  function openDeleteUserModal(user) {
+    const isAr = state.lang === 'ar';
+    const roleObj = state.roles.find(r => r.id === user.role_id) || { name: user.role_name, permissions: user.permissions || '[]' };
+    const permsList = JSON.parse(roleObj.permissions || '[]');
+
+    const bodyHtml = `
+      <div style="padding: 0.5rem 0;">
+        <div style="text-align: center; margin-bottom: 1.25rem;">
+          <svg width="48" height="48" fill="none" stroke="#e74c3c" stroke-width="2" viewBox="0 0 24 24" style="margin-bottom: 0.5rem;"><path d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6"/></svg>
+          <h4 style="color: var(--color-navy); margin: 0;">${isAr ? 'تأكيد حذف حساب الموظف' : 'Confirm User Account Deletion'}</h4>
+        </div>
+
+        <div style="background: var(--color-cream); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-cream-dark); margin-bottom: 1.25rem;">
+          <div style="margin-bottom: 0.4rem;"><strong>${isAr ? 'اسم الموظف:' : 'Name:'}</strong> ${user.full_name}</div>
+          <div style="margin-bottom: 0.4rem;"><strong>${isAr ? 'البريد الإلكتروني:' : 'Email:'}</strong> <code>${user.email}</code></div>
+          <div style="margin-bottom: 0.4rem;"><strong>${isAr ? 'الدور الموكل:' : 'Assigned Role:'}</strong> <span class="badge badge-info">${user.role_name}</span></div>
+          <div style="margin-bottom: 0.4rem;"><strong>${isAr ? 'حالة الحساب:' : 'Status:'}</strong> <span class="badge ${user.status === 'active' ? 'badge-success' : 'badge-danger'}">${user.status}</span></div>
+          <div><strong>${isAr ? 'الصلاحيات:' : 'Assigned Permissions:'}</strong> <code style="font-size:0.75rem;">${permsList.join(', ')}</code></div>
+        </div>
+
+        <p style="color: #c0392b; font-size: 0.88rem; text-align: center; margin: 0;">
+          ⚠️ ${isAr ? 'سيتم إلغاء تفعيل كافة جلسات الدخول الفعالة لهذا المستخدم فوراً ومنعه من دخول النظام.' : 'All active login sessions for this user will be revoked immediately.'}
+        </p>
+      </div>
+    `;
+
+    const footerHtml = `
+      <button class="btn btn-outline" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
+      <button class="btn btn-danger" id="confirm-del-user-btn">${isAr ? 'تأكيد حذف المستخدم' : 'Delete User Account'}</button>
+    `;
+
+    openModal(isAr ? 'حذف حساب موظف' : 'Delete Staff Account', bodyHtml, footerHtml);
+
+    document.getElementById('confirm-del-user-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('confirm-del-user-btn');
+
+      try {
+        btn.disabled = true;
+        btn.textContent = isAr ? 'جاري الحذف...' : 'Deleting...';
+
+        await api(`/users/${user.id}`, { method: 'DELETE' });
+        showToast(isAr ? 'تم حذف حساب الموظف بنجاح' : 'Staff user deleted successfully');
+        closeModal();
+        renderUsers(document.getElementById('app-viewport'));
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = isAr ? 'تأكيد حذف المستخدم' : 'Delete User Account';
         showToast(err.message, 'error');
       }
     });
@@ -1688,7 +2126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="page-header">
           <div class="page-title">
             <h1>${isAr ? 'سجل العمليات والأمان (Audit Log)' : 'Audit Activity Log'}</h1>
-            <p>${isAr ? 'تتبع عمليات الدخول وتعديل الأصناف وتغييرات الأسعار' : 'Complete security and system audit trail'}</p>
+            <p>${isAr ? 'تتبع عمليات الدخول وتعديل الأصناف وتغييرات الأسعار وتغييرات المستخدمين' : 'Complete security and system audit trail'}</p>
           </div>
         </div>
 
