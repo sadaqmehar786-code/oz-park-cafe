@@ -351,7 +351,14 @@ async function initDb() {
       ip_address TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
-  `);
+  try {
+    const items = await query('SELECT id, image_url FROM menu_items');
+    for (const i of items) {
+      if (i.image_url && !i.image_url.startsWith('/') && !i.image_url.startsWith('http')) {
+        await run('UPDATE menu_items SET image_url = ? WHERE id = ?', ['/' + i.image_url, i.id]);
+      }
+    }
+  } catch (e) {}
 
   await seedData();
 }

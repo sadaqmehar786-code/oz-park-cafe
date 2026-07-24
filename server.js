@@ -24,7 +24,10 @@ app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 // Static file serving
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/admin-assets', express.static(path.join(__dirname, 'admin')));
+app.use('/admin-assets', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  next();
+}, express.static(path.join(__dirname, 'admin')));
 
 // API Routes
 app.use('/api/v1/auth', require('./routes/auth'));
