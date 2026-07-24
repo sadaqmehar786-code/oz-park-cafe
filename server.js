@@ -6,6 +6,16 @@ const cookieParser = require('cookie-parser');
 const { initDb } = require('./db');
 
 const app = express();
+
+// Direct dynamic API asset endpoints to bypass static caches
+app.get(['/api/v1/public/admin-app-js', '/admin-assets/app.js', '/admin/app.js'], (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.type('application/javascript');
+  res.sendFile(path.join(__dirname, 'admin', 'app.js'));
+});
+
 const PORT = process.env.PORT || 3000;
 
 // Initialize Database
