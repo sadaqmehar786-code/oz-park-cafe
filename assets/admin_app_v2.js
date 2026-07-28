@@ -847,7 +847,43 @@ document.addEventListener('DOMContentLoaded', () => {
   function openCategoryModal(category = null) {
     const isAr = state.lang === 'ar';
     const bodyHtml = `
+      <div style="margin-bottom: 1.25rem; background: var(--color-cream); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-cream-dark);">
+        <label style="font-weight: 700; color: var(--color-navy); margin-bottom: 0.5rem; display: block;">
+          ${isAr ? 'التصنيفات الحالية في المقهى (اضغط تعديل لتغيير الاسم أو حذف للحذف)' : 'Existing Café Categories (Click Edit to Rename or Delete)'}
+        </label>
+        <div style="max-height: 180px; overflow-y: auto;">
+          <table class="admin-table" style="margin: 0; background: #fff;">
+            <thead>
+              <tr>
+                <th>${isAr ? 'التصنيف' : 'Category'}</th>
+                <th>${isAr ? 'الأصناف' : 'Items'}</th>
+                <th>${isAr ? 'إجراءات' : 'Actions'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.categories.map(c => `
+                <tr style="${category && category.id === c.id ? 'background: #fff8e7;' : ''}">
+                  <td>
+                    <strong>${c.icon || '☕'} ${isAr ? c.name_ar : c.name_en}</strong>
+                    <div style="font-size: 0.75rem; color: var(--color-charcoal-light);">${isAr ? c.name_en : c.name_ar}</div>
+                  </td>
+                  <td><span class="badge badge-info">${c.item_count || 0}</span></td>
+                  <td>
+                    <button type="button" class="btn btn-navy btn-xs modal-edit-cat-btn" data-id="${c.id}">${isAr ? 'تعديل / تغيير الاسم' : 'Edit / Rename'}</button>
+                    <button type="button" class="btn btn-danger btn-xs modal-delete-cat-btn" data-id="${c.id}" data-count="${c.item_count || 0}">${isAr ? 'حذف' : 'Delete'}</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <form id="category-modal-form">
+        <h5 style="color: var(--color-navy); margin-bottom: 0.75rem;" id="cat-form-title">
+          ${category ? (isAr ? `تعديل التصنيف: ${category.name_ar}` : `Edit Category: ${category.name_en}`) : (isAr ? '+ إضافة تصنيف جديد' : '+ Add New Category')}
+        </h5>
+
         <div class="form-group">
           <label>${isAr ? 'اسم التصنيف (بالعربية) *' : 'Category Name (Arabic) *'}</label>
           <input type="text" id="cat-name-ar" class="form-control" required value="${category ? category.name_ar : ''}" placeholder="مثال: مشروبات مثلجة">
@@ -872,7 +908,26 @@ document.addEventListener('DOMContentLoaded', () => {
       <button class="btn btn-gold" id="save-cat-btn">${category ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'حفظ التصنيف' : 'Save Category')}</button>
     `;
 
-    openModal(category ? (isAr ? 'تعديل / إعادة تسمية التصنيف' : 'Edit / Rename Category') : (isAr ? 'إضافة تصنيف جديد' : 'Add New Category'), bodyHtml, footerHtml);
+    openModal(isAr ? 'إدارة وتعديل تصنيفات المأكولات والمشروبات' : 'Category Management & Editing', bodyHtml, footerHtml);
+
+    // Bind Edit/Rename buttons inside modal
+    document.querySelectorAll('.modal-edit-cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const catId = btn.getAttribute('data-id');
+        const cat = state.categories.find(x => x.id == catId);
+        if (cat) openCategoryModal(cat);
+      });
+    });
+
+    // Bind Delete buttons inside modal
+    document.querySelectorAll('.modal-delete-cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const catId = btn.getAttribute('data-id');
+        const cat = state.categories.find(x => x.id == catId);
+        const count = parseInt(btn.getAttribute('data-count') || '0');
+        if (cat) openDeleteCategoryModal(cat, count);
+      });
+    });
 
     document.getElementById('save-cat-btn').addEventListener('click', async () => {
       const btn = document.getElementById('save-cat-btn');
