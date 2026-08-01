@@ -382,10 +382,28 @@ async function initDb() {
   } catch (e) {}
 
   await seedData();
-  const isFinalizedSynced = await get('SELECT COUNT(*) as count FROM menu_items WHERE name_en = "Spanish Latte" AND price = 14');
-  if (!isFinalizedSynced || isFinalizedSynced.count === 0) {
-    await syncFinalizedMenu();
-  }
+  await syncFinalizedMenu();
+
+  // Purge any legacy demo items not present in official 52 finalized menu list
+  await run(`
+    DELETE FROM menu_items 
+    WHERE name_en IN ('Signature Sea Breeze Cold Brew', 'V60 Pour Over', 'Iced Spanish Latte')
+    OR name_en NOT IN (
+      'Spanish Latte', 'Café Latte', 'Cappuccino', 'Double Espresso', 'Turkish Coffee', 
+      'Turkish Coffee with Milk', 'Cortado', 'French Coffee', 'Macchiato', 'Americano', 
+      'Flat White', 'Mocha', 'White Mocha', 'V60', 'Arabic Coffee Pot', 'Arabic Coffee Cup', 
+      'Red Tea', 'Green Tea', 'Tea Pot', 'Herbal Tea Blend', 
+      'Add-ons (Vanilla, Hazelnut, Caramel, Whipped Cream, Chocolate Sauce)', 
+      'Ice Americano', 'Ice Spanish Latte', 'Ice Caramel Macchiato', 'Ice White Mocha', 
+      'Ice V60', 'Vanilla Milkshake', 'Oreo Frappuccino', 'Chocolate Frappuccino', 
+      'Caramel Frappuccino', '7UP Mojito', 'Code Red Mojito', 
+      'Oreo Mix', 'Baby Love', 'Avocado with Honey', 'Banana with Milk', 'Lemon Mint', 
+      'Strawberry Juice', 'Guava Juice', 'Mango Juice', 'Watermelon Juice', 'Pineapple Juice', 
+      'Passion Fruit Smoothie', 'Red Berry Smoothie', 'Blueberry Smoothie', 'Strawberry Smoothie', 
+      'Mixed Berry Smoothie', 'Red Velvet Cake', 'Pistachio Cake', 'Oreo Cake', 
+      'Chocolate Hazelnut Cake', 'Lotus Cake'
+    )
+  `);
   try {
     await run("UPDATE menu_items SET image_url = '' WHERE image_url LIKE '%assets/images%' OR image_url IS NULL");
   } catch (e) {}
