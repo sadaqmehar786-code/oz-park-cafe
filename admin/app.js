@@ -622,7 +622,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${state.menuItems.map(item => {
                   const hasCustomImg = item.image_url && (item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'));
                   const imgBoxHtml = hasCustomImg ? `
-                    <img src="${item.image_url}" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid var(--color-cream-dark);" alt="">
+                    <div style="position: relative; width: 46px; height: 46px;">
+                      <img src="${item.image_url}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid var(--color-cream-dark);" alt="">
+                      <div style="display: none; width: 46px; height: 46px; border-radius: 8px; background: var(--color-cream); align-items: center; justify-content: center; font-size: 1.25rem; border: 1px solid var(--color-cream-dark);">☕</div>
+                    </div>
                   ` : `
                     <div style="width: 46px; height: 46px; border-radius: 8px; background: var(--color-cream); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; border: 1px solid var(--color-cream-dark);">☕</div>
                   `;
@@ -1097,8 +1100,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <input type="file" id="item-image-file" style="display: none;" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
 
           <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-            <div id="item-img-preview-box" style="${currentImg ? 'display: block;' : 'display: none;'} width: 72px; height: 72px; border-radius: 10px; overflow: hidden; border: 2px solid var(--color-gold); box-shadow: var(--shadow-sm);">
-              <img id="item-img-preview" src="${currentImg}" style="width: 100%; height: 100%; object-fit: cover;" alt="">
+            <div id="item-img-preview-box" style="${currentImg ? 'display: block;' : 'display: none;'} width: 72px; height: 72px; border-radius: 10px; overflow: hidden; border: 2px solid var(--color-gold); box-shadow: var(--shadow-sm); background: #f8f9fa;">
+              <img id="item-img-preview" src="${currentImg}" onerror="this.parentElement.style.display='none'; const st = document.getElementById('item-img-status'); if(st) st.innerHTML='<span style=\"color:#c0392b;font-weight:600;\">⚠️ ${isAr ? 'الملف القديم غير موجود بالخادم. اضغط إزالة الصورة للمسح أو رفع/تغيير الصورة للرفع' : 'File missing on server. Click Remove Image to clear or Upload / Change Image to replace'}</span>';" style="width: 100%; height: 100%; object-fit: cover;" alt="">
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
