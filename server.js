@@ -6,16 +6,6 @@ const cookieParser = require('cookie-parser');
 const { initDb } = require('./db');
 
 const app = express();
-
-// Direct dynamic API asset endpoints to bypass static caches
-app.get(['/api/v1/public/admin-app-js', '/admin-assets/app.js', '/admin/app.js', '/assets/admin_app_v2.js'], (req, res) => {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-  res.type('application/javascript');
-  res.sendFile(path.join(__dirname, 'assets', 'admin_app_v2.js'));
-});
-
 const PORT = process.env.PORT || 3000;
 
 // Initialize Database
@@ -31,8 +21,8 @@ app.use(cookieParser());
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
-// Direct dynamic API asset endpoints to bypass static caches
-app.get(['/api/v1/public/admin-app-js', '/admin-assets/app.js', '/admin/app.js', '/assets/admin_app_v2.js'], (req, res) => {
+// Direct dynamic API asset endpoints to bypass static caches (Express 5 compatible)
+app.get('/api/v1/public/admin-app-js', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
@@ -40,7 +30,39 @@ app.get(['/api/v1/public/admin-app-js', '/admin-assets/app.js', '/admin/app.js',
   res.sendFile(path.join(__dirname, 'assets', 'admin_app_v2.js'));
 });
 
-app.get(['/admin-assets/style.css', '/admin/style.css'], (req, res) => {
+app.get('/admin-assets/app.js', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.type('application/javascript');
+  res.sendFile(path.join(__dirname, 'assets', 'admin_app_v2.js'));
+});
+
+app.get('/admin/app.js', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.type('application/javascript');
+  res.sendFile(path.join(__dirname, 'assets', 'admin_app_v2.js'));
+});
+
+app.get('/assets/admin_app_v2.js', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.type('application/javascript');
+  res.sendFile(path.join(__dirname, 'assets', 'admin_app_v2.js'));
+});
+
+app.get('/admin-assets/style.css', (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.type('text/css');
+  res.sendFile(path.join(__dirname, 'admin', 'style.css'));
+});
+
+app.get('/admin/style.css', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
@@ -70,9 +92,14 @@ app.use('/api/v1/public', require('./routes/public'));
 app.get('/sitemap.xml', require('./routes/seo'));
 app.get('/robots.txt', require('./routes/seo'));
 
-// Serve Admin SPA Dashboard for any /admin* URL
+// Serve Admin SPA Dashboard
 app.use('/admin', express.static(path.join(__dirname, 'admin')));
-app.get(['/admin', '/admin/*'], (req, res) => {
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin', 'index.html'));
+});
+
+// Express 5 regex route for admin subroutes
+app.get(/^\/admin\/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });
 
@@ -90,7 +117,6 @@ app.use((req, res) => {
   }
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-
 
 // Start Server
 app.listen(PORT, () => {
