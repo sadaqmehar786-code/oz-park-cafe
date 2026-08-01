@@ -266,8 +266,8 @@
     "name_en": "7UP Mojito",
     "description_ar": "مشروب سفن أب الغازي المنعش الممزوج مع النعناع البلدي الطازج وشرائح الليمون الحامض والثلج.",
     "description_en": "Refreshing 7UP soda blended with fresh mint leaves, lime slices, and crushed ice.",
-    "price": 17,
-    "calories": 17
+    "price": 13,
+    "calories": 170
   },
   {
     "category_slug": "cold",
@@ -275,7 +275,7 @@
     "name_en": "Code Red Mojito",
     "description_ar": "مزيج الطاقة كود رد المنعش ممزوج مع نكهة النعناع والليمون مع ثلج مجروش.",
     "description_en": "Energetic Code Red energy drink layered with mint, fresh lime, and crushed ice.",
-    "price": 13,
+    "price": 17,
     "calories": 180
   },
   {

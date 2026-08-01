@@ -779,8 +779,8 @@ async function syncFinalizedMenu() {
     { cat_slug: 'cold', name_en: 'Oreo Frappuccino', name_ar: 'فربتشينو اوريو', calories: 410, price: 19, is_hot: 0, is_cold: 1 },
     { cat_slug: 'cold', name_en: 'Chocolate Frappuccino', name_ar: 'فربتشينو شيكوالته', calories: 380, price: 19, is_hot: 0, is_cold: 1 },
     { cat_slug: 'cold', name_en: 'Caramel Frappuccino', name_ar: 'فربتشينو كراميل', calories: 420, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: '7UP Mojito', name_ar: 'موهيتو سفن اب', calories: 170, price: 17, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Code Red Mojito', name_ar: 'موهيتو كود رد', calories: 180, price: 13, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'cold', name_en: '7UP Mojito', name_ar: 'موهيتو سفن اب', calories: 170, price: 13, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'cold', name_en: 'Code Red Mojito', name_ar: 'موهيتو كود رد', calories: 180, price: 17, is_hot: 0, is_cold: 1 },
 
     // Fresh Juice & Smoothies
     { cat_slug: 'juice', name_en: 'Oreo Mix', name_ar: 'اوريو ميكس', calories: 478, price: 19, is_hot: 0, is_cold: 1 },
