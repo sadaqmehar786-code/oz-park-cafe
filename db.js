@@ -767,6 +767,11 @@ async function syncFinalizedMenu() {
   ];
 
   try {
+    const dessertsCat = await get('SELECT id FROM menu_categories WHERE slug = "desserts" OR name_en LIKE "%Dessert%"');
+    if (!dessertsCat) {
+      await run('INSERT INTO menu_categories (name_en, name_ar, slug, icon, display_order) VALUES (?, ?, ?, ?, ?)', ['Desserts & Cakes', 'الحلويات والكيك', 'desserts', '🍰', 5]);
+    }
+
     for (const c of finalCategories) {
       await run(`
         INSERT OR IGNORE INTO menu_categories (name_en, name_ar, slug, icon, display_order)
