@@ -42,6 +42,25 @@ async function initDb() {
   await run('PRAGMA foreign_keys = ON;');
 
   await run(`
+    CREATE TABLE IF NOT EXISTS menu_categories (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name_en TEXT NOT NULL,
+      name_ar TEXT NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      icon TEXT,
+      display_order INTEGER DEFAULT 0
+    )
+  `);
+
+  await run(`
+    INSERT OR IGNORE INTO menu_categories (id, name_en, name_ar, slug, icon, display_order)
+    VALUES (5, 'Desserts & Cakes', 'الحلويات والكيك', 'desserts', '🍰', 5)
+  `);
+  await run(`
+    UPDATE menu_categories SET name_en = 'Desserts & Cakes', name_ar = 'الحلويات والكيك', icon = '🍰', display_order = 5 WHERE slug = 'desserts' OR id = 5
+  `);
+
+  await run(`
     CREATE TABLE IF NOT EXISTS roles (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
