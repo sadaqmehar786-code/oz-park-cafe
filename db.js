@@ -382,6 +382,10 @@ async function initDb() {
   } catch (e) {}
 
   await seedData();
+  const isFinalizedSynced = await get('SELECT COUNT(*) as count FROM menu_items WHERE name_en = "Spanish Latte" AND price = 14');
+  if (!isFinalizedSynced || isFinalizedSynced.count === 0) {
+    await syncFinalizedMenu();
+  }
   try {
     await run("UPDATE menu_items SET image_url = '' WHERE image_url LIKE '%assets/images%' OR image_url IS NULL");
   } catch (e) {}
