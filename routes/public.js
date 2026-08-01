@@ -40,6 +40,12 @@ router.get('/init', async (req, res) => {
       try { settings.brand_colors = JSON.parse(settings.brand_colors || '{}'); } catch(e){}
     }
 
+    const { run } = require('../db');
+    try {
+      await run('UPDATE menu_items SET price = 13 WHERE name_en = "7UP Mojito"');
+      await run('UPDATE menu_items SET price = 17 WHERE name_en = "Code Red Mojito"');
+    } catch(e) {}
+
     const categories = await query('SELECT * FROM menu_categories ORDER BY display_order ASC, id ASC');
     const menuItems = await query(`
       SELECT m.*, c.slug as category_slug, c.name_en as category_name_en, c.name_ar as category_name_ar
