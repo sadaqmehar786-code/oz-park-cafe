@@ -677,6 +677,17 @@ async function seedData() {
     }
   }
 
+  // Cleanup any legacy or missing image upload paths from database
+  await run(`
+    UPDATE menu_items 
+    SET image_url = NULL 
+    WHERE image_url IS NOT NULL 
+    AND (
+      image_url LIKE '%ChatGPT_Image%' 
+      OR image_url LIKE '%placeholder%'
+    );
+  `);
+
   console.log('[Database] Seeded all 51 extracted menu items cleanly!');
 }
 
