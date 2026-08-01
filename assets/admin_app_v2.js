@@ -1175,8 +1175,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (uploadRes.success && uploadRes.data.length > 0) {
           const uploadedPath = uploadRes.data[0].file_path;
           document.getElementById('item-image-url').value = uploadedPath;
-          document.getElementById('item-img-preview').src = uploadedPath;
-          document.getElementById('item-img-preview-box').style.display = 'block';
+          
+          const previewImg = document.getElementById('item-img-preview');
+          const previewBox = document.getElementById('item-img-preview-box');
+
+          if (previewImg) {
+            previewImg.onerror = null;
+            previewImg.onload = function() {
+              if (previewBox) previewBox.style.setProperty('display', 'block', 'important');
+              statusText.textContent = isAr ? 'تم رفع وتغيير الصورة بنجاح!' : 'New image uploaded successfully!';
+            };
+            previewImg.onerror = function() {
+              if (previewBox) previewBox.style.setProperty('display', 'none', 'important');
+              statusText.innerHTML = `<span style="color:#c0392b;font-weight:600;">⚠️ ${isAr ? 'تعذر تحميل معاينة الصورة' : 'Unable to load image preview'}</span>`;
+            };
+            previewImg.src = uploadedPath;
+          }
+
+          if (previewBox) previewBox.style.setProperty('display', 'block', 'important');
           document.getElementById('btn-remove-item-image').style.display = 'inline-flex';
           statusText.textContent = isAr ? 'تم رفع وتغيير الصورة بنجاح!' : 'New image uploaded successfully!';
           showToast(isAr ? 'تم رفع الصورة بنجاح' : 'Image uploaded successfully');
@@ -1191,22 +1207,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle Image Removal
     document.getElementById('btn-remove-item-image').addEventListener('click', async () => {
-      if (confirm(isAr ? 'هل أنت تأكد من إزالة صورة هذا المنتج؟' : 'Are you sure you want to remove this product image?')) {
-        if (item) {
-          try {
-            await api(`/menu/items/${item.id}/image`, { method: 'DELETE' });
-            showToast(isAr ? 'تمت إزالة صورة المنتج بنجاح' : 'Product image removed successfully');
-          } catch (e) {
-            console.log('Remove image endpoint fallback');
-          }
-        }
-
-        document.getElementById('item-image-url').value = '';
-        document.getElementById('item-img-preview').src = '';
-        document.getElementById('item-img-preview-box').style.display = 'none';
-        document.getElementById('btn-remove-item-image').style.display = 'none';
-        document.getElementById('item-img-status').textContent = isAr ? 'تمت إزالة الصورة' : 'Image removed';
+      if (item && item.id) {
+        try {
+          await api(`/menu/items/${item.id}/image`, { method: 'DELETE' });
+        } catch (e) {}
       }
+      document.getElementById('item-image-url').value = '';
+      const previewBox = document.getElementById('item-img-preview-box');
+      if (previewBox) previewBox.style.setProperty('display', 'none', 'important');
+      const previewImg = document.getElementById('item-img-preview');
+      if (previewImg) {
+        previewImg.onerror = null;
+        previewImg.onload = null;
+        previewImg.src = '';
+      }
+      document.getElementById('btn-remove-item-image').style.display = 'none';
+      statusText.textContent = isAr ? 'لا توجد صورة مخصصة مرفقة' : 'No custom image attached';
+      showToast(isAr ? 'تمت إزالة الصورة بنجاح' : 'Image removed successfully');
     });
 
     document.getElementById('save-item-btn').addEventListener('click', async () => {
