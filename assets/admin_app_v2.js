@@ -1100,8 +1100,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <input type="file" id="item-image-file" style="display: none;" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
 
           <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-            <div id="item-img-preview-box" style="${currentImg ? 'display: block;' : 'display: none;'} width: 72px; height: 72px; border-radius: 10px; overflow: hidden; border: 2px solid var(--color-gold); box-shadow: var(--shadow-sm); background: #f8f9fa;">
-              <img id="item-img-preview" src="${currentImg}" onerror="this.parentElement.style.display='none'; const st = document.getElementById('item-img-status'); if(st) st.innerHTML='<span style=\"color:#c0392b;font-weight:600;\">⚠️ ${isAr ? 'الملف القديم غير موجود بالخادم. اضغط إزالة الصورة للمسح أو رفع/تغيير الصورة للرفع' : 'File missing on server. Click Remove Image to clear or Upload / Change Image to replace'}</span>';" style="width: 100%; height: 100%; object-fit: cover;" alt="">
+            <div id="item-img-preview-box" style="${currentImg ? 'display: block;' : 'display: none;'} width: 72px; height: 72px; border-radius: 10px; overflow: hidden; border: 2px solid var(--color-gold); box-shadow: var(--shadow-sm); background: #f8f9fa; flex-shrink: 0;">
+              <img id="item-img-preview" src="${currentImg}" onerror="document.getElementById('item-img-preview-box').style.setProperty('display', 'none', 'important'); const st = document.getElementById('item-img-status'); if(st) st.innerHTML='<span style=\"color:#c0392b;font-weight:600;\">⚠️ ${isAr ? 'الملف القديم غير موجود بالخادم. انقر إزالة الصورة أو رفع صورة جديدة' : 'Old image file missing on server. Click Remove Image or Upload new image'}</span>';" style="width: 100%; height: 100%; object-fit: cover;" alt="">
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
