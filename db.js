@@ -767,12 +767,13 @@ async function syncFinalizedMenu() {
 
   try {
     for (const c of finalCategories) {
-      const existing = await get('SELECT id FROM menu_categories WHERE slug = ? OR name_en = ?', [c.slug, c.name_en]);
-      if (!existing) {
-        await run('INSERT INTO menu_categories (name_en, name_ar, slug, icon, display_order) VALUES (?, ?, ?, ?, ?)', [c.name_en, c.name_ar, c.slug, c.icon, c.order]);
-      } else {
-        await run('UPDATE menu_categories SET name_en = ?, name_ar = ?, icon = ?, display_order = ? WHERE id = ?', [c.name_en, c.name_ar, c.icon, c.order, existing.id]);
-      }
+      await run(`
+        INSERT OR IGNORE INTO menu_categories (name_en, name_ar, slug, icon, display_order)
+        VALUES (?, ?, ?, ?, ?)
+      `, [c.name_en, c.name_ar, c.slug, c.icon, c.order]);
+      await run(`
+        UPDATE menu_categories SET name_en = ?, name_ar = ?, icon = ?, display_order = ? WHERE slug = ?
+      `, [c.name_en, c.name_ar, c.icon, c.order, c.slug]);
     }
 
     const categories = await query('SELECT id, slug FROM menu_categories');
