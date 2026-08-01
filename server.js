@@ -73,6 +73,16 @@ app.get('/admin/style.css', (req, res) => {
 app.use('/admin-assets', express.static(path.join(__dirname, 'admin')));
 
 // API Routes
+app.get('/api/v1/public/force-sync-menu', async (req, res) => {
+  try {
+    const { syncFinalizedMenu, query } = require('./db');
+    await syncFinalizedMenu();
+    const items = await query('SELECT id, name_en, price FROM menu_items ORDER BY id ASC');
+    res.json({ success: true, count: items.length, sample: items.slice(0, 5) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/dashboard', require('./routes/dashboard'));
 app.use('/api/v1/pages', require('./routes/pages'));

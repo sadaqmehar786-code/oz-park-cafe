@@ -856,5 +856,6 @@ module.exports = {
   query,
   get,
   run,
-  initDb
+  initDb,
+  syncFinalizedMenu
 };
