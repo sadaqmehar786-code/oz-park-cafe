@@ -12,6 +12,20 @@ router.get('/admin-app-js', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'admin', 'app.js'));
 });
 
+// GET /api/v1/public/force-sync-menu - Force sync finalized 52 menu items
+router.get('/force-sync-menu', async (req, res) => {
+  try {
+    const { syncFinalizedMenu } = require('../db');
+    if (typeof syncFinalizedMenu === 'function') {
+      await syncFinalizedMenu();
+    }
+    const items = await query('SELECT id, name_en, price FROM menu_items ORDER BY id ASC');
+    res.json({ success: true, count: items.length, sample: items.slice(0, 5) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // GET /api/v1/public/init - Single aggregated payload for public website frontend initialization
 router.get('/init', async (req, res) => {
   try {
@@ -26,21 +40,20 @@ router.get('/init', async (req, res) => {
       try { settings.brand_colors = JSON.parse(settings.brand_colors || '{}'); } catch(e){}
     }
 
-    const categories = await query('SELECT * FROM menu_categories WHERE status = "active" ORDER BY display_order ASC');
+    const categories = await query('SELECT * FROM menu_categories ORDER BY display_order ASC, id ASC');
     const menuItems = await query(`
       SELECT m.*, c.slug as category_slug, c.name_en as category_name_en, c.name_ar as category_name_ar
       FROM menu_items m
-      JOIN menu_categories c ON m.category_id = c.id
-      WHERE m.deleted_at IS NULL AND m.availability_status = 'available'
-      ORDER BY m.display_order ASC, m.id DESC
+      LEFT JOIN menu_categories c ON m.category_id = c.id
+      WHERE m.deleted_at IS NULL
+      ORDER BY m.display_order ASC, m.id ASC
     `);
 
-    // Attach sizes to menu items and filter out non-custom placeholder image URLs
+    // Clean invalid placeholder image URLs
     for (const item of menuItems) {
       if (item.image_url && !item.image_url.startsWith('/uploads/') && !item.image_url.startsWith('uploads/') && !item.image_url.startsWith('http')) {
         item.image_url = null;
       }
-      item.sizes = await query('SELECT * FROM menu_item_sizes WHERE menu_item_id = ? ORDER BY price ASC', [item.id]);
     }
 
     const offers = await query(`
@@ -73,7 +86,7 @@ router.get('/init', async (req, res) => {
     });
   } catch (err) {
     console.error('Public init error:', err);
-    res.status(500).json({ success: false, error: 'Failed to fetch public website data' });
+    res.status(500).json({ success: false, error: 'Failed to fetch public website data: ' + err.message });
   }
 });
 
