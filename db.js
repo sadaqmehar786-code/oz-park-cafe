@@ -404,7 +404,8 @@ async function seedData() {
       { name_en: 'Hot Drinks', name_ar: 'المشروبات الساخنة', slug: 'hot', icon: '☕', order: 1 },
       { name_en: 'Cold Drinks', name_ar: 'المشروبات الباردة', slug: 'cold', icon: '🥤', order: 2 },
       { name_en: 'Fresh Juices & Smoothies', name_ar: 'العصائر الطازجة والسموذي', slug: 'juice', icon: '🍹', order: 3 },
-      { name_en: 'Add-ons & Flavors', name_ar: 'الإضافات والنكهات', slug: 'addons', icon: '✨', order: 4 }
+      { name_en: 'Add-ons & Flavors', name_ar: 'الإضافات والنكهات', slug: 'addons', icon: '✨', order: 4 },
+      { name_en: 'Desserts & Cakes', name_ar: 'الحلويات والكيك', slug: 'desserts', icon: '🍰', order: 5 }
     ];
 
     for (const c of categories) {

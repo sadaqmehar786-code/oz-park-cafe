@@ -1,6 +1,6 @@
 {
   "name": "oz-park-cafe",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "OZ Park Cafe website & backend",
   "main": "server.js",
   "scripts": {
