@@ -57,7 +57,12 @@ router.get('/init', async (req, res) => {
 
     // Clean invalid placeholder image URLs
     for (const item of menuItems) {
-      if (item.image_url && !item.image_url.startsWith('/uploads/') && !item.image_url.startsWith('uploads/') && !item.image_url.startsWith('http')) {
+      if (item.image_url && 
+          !item.image_url.startsWith('data:image/') && 
+          !item.image_url.startsWith('/api/') && 
+          !item.image_url.startsWith('/uploads/') && 
+          !item.image_url.startsWith('uploads/') && 
+          !item.image_url.startsWith('http')) {
         item.image_url = null;
       }
     }

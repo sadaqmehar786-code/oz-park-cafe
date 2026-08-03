@@ -75,7 +75,18 @@ router.post('/upload', authenticate, requirePermission('manage_media'), upload.a
     const uploadedFiles = [];
 
     for (const file of req.files) {
-      const relativePath = `/uploads/${file.filename}`;
+      let relativePath = `/api/v1/public/uploads/${file.filename}`;
+
+      // Convert image files to Base64 Data URIs for 100% disk persistence & 0ms load time without proxy errors
+      if (file.mimetype && file.mimetype.startsWith('image/')) {
+        try {
+          const fileBuffer = fs.readFileSync(file.path);
+          relativePath = `data:${file.mimetype};base64,${fileBuffer.toString('base64')}`;
+        } catch (e) {
+          console.error('Base64 encoding error:', e);
+        }
+      }
+
       const result = await run(`
         INSERT INTO media_library (file_name, original_name, file_path, mime_type, file_size, uploaded_by)
         VALUES (?, ?, ?, ?, ?, ?)

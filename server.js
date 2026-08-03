@@ -18,8 +18,12 @@ initDb().then(() => {
 // Middleware
 app.use(cors());
 app.use(cookieParser());
-app.use(express.json({ limit: '15mb' }));
-app.use(express.urlencoded({ extended: true, limit: '15mb' }));
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+
+// Serve uploads statically via public API path for Amplify proxying
+app.use('/api/v1/public/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Direct dynamic API asset endpoints to bypass static caches (Express 5 compatible)
 app.get('/api/v1/public/admin-app-js', (req, res) => {
