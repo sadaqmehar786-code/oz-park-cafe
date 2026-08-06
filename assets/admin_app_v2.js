@@ -620,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </thead>
               <tbody>
                 ${state.menuItems.map(item => {
-                  const hasCustomImg = item.image_url && (item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'));
+                  const hasCustomImg = item.image_url && (item.image_url.startsWith('data:image/') || item.image_url.startsWith('/api/') || item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'));
                   const imgBoxHtml = hasCustomImg ? `
                     <div style="position: relative; width: 46px; height: 46px;">
                       <img src="${item.image_url}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid var(--color-cream-dark);" alt="">
@@ -1063,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   function openMenuItemModal(item = null) {
     const isAr = state.lang === 'ar';
-    let currentImg = (item && item.image_url && (item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'))) ? item.image_url : '';
+    let currentImg = (item && item.image_url && (item.image_url.startsWith('data:image/') || item.image_url.startsWith('/api/') || item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'))) ? item.image_url : '';
 
     const bodyHtml = `
       <form id="menu-item-form">

@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cleanUrl === '' || cleanUrl.includes('assets/images/coffee.jpg') || cleanUrl.includes('assets/images/fresh-juice.jpg')) {
       return false;
     }
-    return cleanUrl.startsWith('/uploads/') || cleanUrl.startsWith('uploads/') || cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://');
+    return cleanUrl.startsWith('data:image/') || cleanUrl.startsWith('/api/') || cleanUrl.startsWith('/uploads/') || cleanUrl.startsWith('uploads/') || cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://');
   };
 
   // ==========================================================================

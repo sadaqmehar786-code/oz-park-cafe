@@ -300,7 +300,17 @@ router.post('/items', authenticate, requirePermission('manage_menu'), async (req
     }
 
     const slug = name_en.toLowerCase().replace(/[^a-z0-9-]/g, '-') + '-' + Date.now().toString().slice(-4);
-    const finalImageUrl = (image_url && (image_url.startsWith('/uploads/') || image_url.startsWith('uploads/') || image_url.startsWith('http'))) ? image_url : '';
+    
+    function sanitizeImg(url) {
+      if (!url) return '';
+      const str = url.trim();
+      if (str.startsWith('data:image/') || str.startsWith('/api/') || str.startsWith('/uploads/') || str.startsWith('uploads/') || str.startsWith('http://') || str.startsWith('https://')) {
+        return str;
+      }
+      return '';
+    }
+
+    const finalImageUrl = sanitizeImg(image_url);
 
     const result = await run(`
       INSERT INTO menu_items (
@@ -358,7 +368,7 @@ router.put('/items/:id', authenticate, requirePermission('manage_menu'), async (
     let targetImgUrl = image_url !== undefined ? image_url : item.image_url;
     if (targetImgUrl) {
       const cleanStr = targetImgUrl.trim();
-      if (!cleanStr.startsWith('/uploads/') && !cleanStr.startsWith('uploads/') && !cleanStr.startsWith('http')) {
+      if (!cleanStr.startsWith('data:image/') && !cleanStr.startsWith('/api/') && !cleanStr.startsWith('/uploads/') && !cleanStr.startsWith('uploads/') && !cleanStr.startsWith('http://') && !cleanStr.startsWith('https://')) {
         targetImgUrl = '';
       }
     }
