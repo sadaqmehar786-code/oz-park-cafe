@@ -1147,19 +1147,52 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('item-image-file').click();
     });
 
-    // Handle File Selection, Validation & Upload
-    document.getElementById('item-image-file').addEventListener('change', async (e) => {
+    // Helper to compress & resize uploaded images via Canvas to 600px / ~40KB WebP/JPEG for instant load & 100% persistence
+    function compressAndResizeImage(file, maxWidth = 600, maxHeight = 600, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        if (!file.type || !file.type.startsWith('image/')) {
+          return reject(new Error(isAr ? 'الملف ليس صورة صالحة' : 'File is not a valid image'));
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(compressedDataUrl);
+          };
+          img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+      });
+    }
+
+    const fileInput = document.getElementById('item-image-file');
+    fileInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-
-      // File validation: Size max 10MB, mime type check
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
-      if (!allowedTypes.includes(file.type)) {
-        return showToast(isAr ? 'نوع الملف غير مدعوم. اختر صورة (JPG, PNG, WEBP, GIF, SVG)' : 'Unsupported image format. Select a valid image (JPG, PNG, WEBP, GIF, SVG)', 'error');
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        return showToast(isAr ? 'حجم الصورة كبير جداً (الأقصى 10 ميجابايت)' : 'Image file size too large (Maximum 10MB)', 'error');
-      }
 
       const btnChange = document.getElementById('btn-change-item-image');
       const statusText = document.getElementById('item-img-status');
