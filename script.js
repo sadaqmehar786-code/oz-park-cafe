@@ -262,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
           const caloriesTextEn = item.calories ? `${item.calories} kcal` : '';
+          const hasCustomImg = hasCustomUploadedImage(item.image_url);
 
           const itemImgHtml = hasCustomImg ? `
             <div class="menu-list-thumb-wrapper">
