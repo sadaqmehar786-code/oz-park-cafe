@@ -1392,23 +1392,90 @@ html[lang="ar"] .footer-links a:hover {
   margin-bottom: 80px;
 }
 
-/* Custom list layout for standard menu items */
+/* Custom compact list layout for menu.html */
 .menu-list-item {
   background: var(--color-white);
-  padding: 24px;
+  padding: 20px;
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(27, 54, 93, 0.03);
+  border: 1px solid rgba(27, 54, 93, 0.05);
   transition: var(--transition-smooth);
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 18px;
 }
 
 .menu-list-item:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
-  border-color: rgba(197, 160, 89, 0.25);
+  border-color: rgba(197, 160, 89, 0.3);
+}
+
+.menu-list-thumb-wrapper {
+  width: 90px;
+  height: 90px;
+  min-width: 90px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #F8F5EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.menu-list-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-smooth);
+}
+
+.menu-list-item:hover .menu-list-thumb {
+  transform: scale(1.08);
+}
+
+.menu-list-thumb-placeholder {
+  background: linear-gradient(135deg, #1B365D 0%, #0F2038 100%);
+  color: #C5A059;
+}
+
+.menu-list-thumb-placeholder .thumb-icon {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+}
+
+.menu-list-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.menu-list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.menu-list-tag {
+  background-color: rgba(27, 54, 93, 0.06);
+  color: var(--color-navy);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+
+.menu-desc-text {
+  font-size: 0.85rem;
+  color: var(--color-charcoal-light);
+  margin-bottom: 10px;
 }
 
 .menu-list-item::before {

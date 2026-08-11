@@ -263,58 +263,62 @@ document.addEventListener('DOMContentLoaded', () => {
           const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
           const caloriesTextEn = item.calories ? `${item.calories} kcal` : '';
 
-          const hasCustomImg = hasCustomUploadedImage(item.image_url);
-
           const itemImgHtml = hasCustomImg ? `
-            <div class="menu-item-live-img-wrapper" style="position: relative; width: 100%; height: 180px; margin-bottom: 14px; border-radius: 10px; overflow: hidden; background: var(--color-cream-dark);">
-              <img src="${item.image_url}" alt="${item.name_en}" style="width: 100%; height: 100%; object-fit: cover;" onerror="const p = this.closest('.menu-item-live-img-wrapper'); if(p) p.remove();">
+            <div class="menu-list-thumb-wrapper">
+              <img src="${item.image_url}" alt="${item.name_en}" class="menu-list-thumb">
             </div>
-          ` : '';
+          ` : `
+            <div class="menu-list-thumb-wrapper menu-list-thumb-placeholder">
+              <span class="thumb-icon">☕</span>
+            </div>
+          `;
 
           itemEl.innerHTML = `
             ${itemImgHtml}
-            <div class="menu-list-head">
-              <h3>
-                <span class="lang-ar">${item.name_ar}</span>
-                <span class="lang-en">${item.name_en}</span>
-              </h3>
-            </div>
-            <p class="lang-ar">${item.description_ar || ''}</p>
-            <p class="lang-en">${item.description_en || ''}</p>
-            <span class="menu-list-tag">
-              <span class="lang-ar">${item.category_name_ar || ''}</span>
-              <span class="lang-en">${item.category_name_en || ''}</span>
-            </span>
-            
-            <div class="menu-card-meta">
-              <span class="menu-card-price">
-                <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
-                <span class="lang-en">${item.price} SAR</span>
-              </span>
-              ${item.calories ? `
-                <span class="menu-card-calories">
-                  <span class="lang-ar">${caloriesTextAr}</span>
-                  <span class="lang-en">${caloriesTextEn}</span>
+            <div class="menu-list-details">
+              <div class="menu-list-head">
+                <h3>
+                  <span class="lang-ar">${item.name_ar}</span>
+                  <span class="lang-en">${item.name_en}</span>
+                </h3>
+                <span class="menu-list-tag">
+                  <span class="lang-ar">${item.category_name_ar || ''}</span>
+                  <span class="lang-en">${item.category_name_en || ''}</span>
                 </span>
-              ` : ''}
-            </div>
-            
-            <div class="menu-card-order-row">
-              <div class="quantity-selector">
-                <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
-                <span class="qty-val">1</span>
-                <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
               </div>
-              <button class="btn btn-gold btn-add-to-cart" 
-                      data-id="${item.slug || item.id}" 
-                      data-name-ar="${item.name_ar}" 
-                      data-name-en="${item.name_en}" 
-                      data-price="${item.price}" 
-                      data-calories="${item.calories || 0}"
-                      onclick="handleAddToCart(this)">
-                <span class="lang-ar">أضف للطلب</span>
-                <span class="lang-en">Add to Order</span>
-              </button>
+              <p class="lang-ar menu-desc-text">${item.description_ar || ''}</p>
+              <p class="lang-en menu-desc-text">${item.description_en || ''}</p>
+              
+              <div class="menu-card-meta">
+                <span class="menu-card-price">
+                  <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
+                  <span class="lang-en">${item.price} SAR</span>
+                </span>
+                ${item.calories ? `
+                  <span class="menu-card-calories">
+                    <span class="lang-ar">${caloriesTextAr}</span>
+                    <span class="lang-en">${caloriesTextEn}</span>
+                  </span>
+                ` : ''}
+              </div>
+              
+              <div class="menu-card-order-row">
+                <div class="quantity-selector">
+                  <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+                  <span class="qty-val">1</span>
+                  <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+                </div>
+                <button class="btn btn-gold btn-add-to-cart" 
+                        data-id="${item.slug || item.id}" 
+                        data-name-ar="${item.name_ar}" 
+                        data-name-en="${item.name_en}" 
+                        data-price="${item.price}" 
+                        data-calories="${item.calories || 0}"
+                        onclick="handleAddToCart(this)">
+                  <span class="lang-ar">أضف للطلب</span>
+                  <span class="lang-en">Add to Order</span>
+                </button>
+              </div>
             </div>
           `;
 
