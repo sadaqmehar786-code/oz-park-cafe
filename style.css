@@ -603,10 +603,13 @@ html[lang="ar"] .hero-floating-card {
 
 .menu-card-img-wrapper {
   position: relative;
-  height: 250px;
+  aspect-ratio: 1 / 1;
   width: 100%;
   overflow: hidden;
-  background-color: var(--color-cream-dark);
+  background-color: #F8F5EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .menu-card-img {
@@ -617,7 +620,25 @@ html[lang="ar"] .hero-floating-card {
 }
 
 .menu-card:hover .menu-card-img {
-  transform: scale(1.08);
+  transform: scale(1.06);
+}
+
+.menu-card-placeholder-header {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  background: linear-gradient(135deg, #1B365D 0%, #0F2038 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #C5A059;
+}
+
+.menu-card-placeholder-icon {
+  font-size: 3.5rem;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
 }
 
 .menu-card-badge {

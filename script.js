@@ -187,8 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
               </span>
             </div>
           ` : `
-            <div style="padding-top: 1rem; padding-inline: 1.25rem;">
-              <span class="menu-card-badge" style="position: static; display: inline-block;">
+            <div class="menu-card-placeholder-header">
+              <span class="menu-card-placeholder-icon">☕</span>
+              <span class="menu-card-badge">
                 <span class="lang-ar">${item.category_name_ar || ''}</span>
                 <span class="lang-en">${item.category_name_en || ''}</span>
               </span>
