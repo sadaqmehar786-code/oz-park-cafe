@@ -1,5 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
+/* FF Shamel Family Web Font Declarations */
+@font-face {
+  font-family: 'FF Shamel Family';
+  src: url('https://cdn.jsdelivr.net/gh/mooly/arabic-fonts@master/ff-shamel-sans-one-book/FFShamelSansOne-Book.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/mooly/arabic-fonts@master/ff-shamel-sans-one-book/FFShamelSansOne-Book.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FF Shamel Family';
+  src: url('https://cdn.jsdelivr.net/gh/mooly/arabic-fonts@master/ff-shamel-sans-one-bold/FFShamelSansOne-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/mooly/arabic-fonts@master/ff-shamel-sans-one-bold/FFShamelSansOne-Bold.ttf') format('truetype');
+  font-weight: 600 700 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FF Shamel';
+  src: url('https://cdn.jsdelivr.net/gh/mooly/arabic-fonts@master/ff-shamel-sans-one-book/FFShamelSansOne-Book.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/mooly/arabic-fonts@master/ff-shamel-sans-one-book/FFShamelSansOne-Book.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FF Shamel';
+  src: url('https://cdn.jsdelivr.net/gh/mooly/arabic-fonts@master/ff-shamel-sans-one-bold/FFShamelSansOne-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/mooly/arabic-fonts@master/ff-shamel-sans-one-bold/FFShamelSansOne-Bold.ttf') format('truetype');
+  font-weight: 600 700 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ==========================================================================
    DESIGN TOKENS & SYSTEM VARIABLES
    ========================================================================== */
@@ -34,8 +71,8 @@
   /* Typography Defaults */
   --font-en-head: 'Playfair Display', Georgia, serif;
   --font-en-body: 'Montserrat', 'Inter', sans-serif;
-  --font-ar-head: 'Amiri', serif;
-  --font-ar-body: 'Tajawal', sans-serif;
+  --font-ar-head: 'FF Shamel Family', 'FF Shamel', 'FF Shamel Sans One', 'Tajawal', sans-serif;
+  --font-ar-body: 'FF Shamel Family', 'FF Shamel', 'FF Shamel Sans One', 'Tajawal', sans-serif;
 
   /* Elevation */
   --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.03);
