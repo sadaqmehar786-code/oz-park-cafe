@@ -117,12 +117,17 @@ app.get(/^\/admin\/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });
 
-// Serve Public Website
-app.use(express.static(__dirname));
+// Clean URL Redirects: /menu.html -> /menu
+app.get('/menu.html', (req, res) => {
+  res.redirect(301, '/menu');
+});
 
 app.get('/menu', (req, res) => {
   res.sendFile(path.join(__dirname, 'menu.html'));
 });
+
+// Serve Public Website Static Assets
+app.use(express.static(__dirname));
 
 // Catch-all handler for public website
 app.use((req, res) => {
