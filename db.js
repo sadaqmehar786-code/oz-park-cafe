@@ -444,9 +444,10 @@ async function seedData() {
     const categories = [
       { name_en: 'Hot Drinks', name_ar: 'المشروبات الساخنة', slug: 'hot', icon: '☕', order: 1 },
       { name_en: 'Cold Drinks', name_ar: 'المشروبات الباردة', slug: 'cold', icon: '🥤', order: 2 },
-      { name_en: 'Fresh Juices & Smoothies', name_ar: 'العصائر الطازجة والسموذي', slug: 'juice', icon: '🍹', order: 3 },
-      { name_en: 'Add-ons & Flavors', name_ar: 'الإضافات والنكهات', slug: 'addons', icon: '✨', order: 4 },
-      { name_en: 'Desserts & Cakes', name_ar: 'الحلويات والكيك', slug: 'desserts', icon: '🍰', order: 5 }
+      { name_en: 'Fresh Juices', name_ar: 'العصائر الطازجة', slug: 'juices', icon: '🍹', order: 3 },
+      { name_en: 'Smoothies', name_ar: 'السموذي', slug: 'smoothies', icon: '🧃', order: 4 },
+      { name_en: 'Add-ons & Flavors', name_ar: 'الإضافات والنكهات', slug: 'addons', icon: '✨', order: 5 },
+      { name_en: 'Desserts & Cakes', name_ar: 'الحلويات والكيك', slug: 'desserts', icon: '🍰', order: 6 }
     ];
 
     for (const c of categories) {
@@ -738,9 +739,10 @@ async function syncFinalizedMenu() {
   const finalCategories = [
     { name_en: 'Hot Drinks', name_ar: 'المشروبات الساخنة', slug: 'hot', icon: '☕', order: 1 },
     { name_en: 'Cold Drinks', name_ar: 'المشروبات الباردة', slug: 'cold', icon: '🥤', order: 2 },
-    { name_en: 'Fresh Juice & Smoothies', name_ar: 'العصائر الطازجة والسموذي', slug: 'juice', icon: '🍹', order: 3 },
-    { name_en: 'Add-ons & Flavors', name_ar: 'الإضافات والنكهات', slug: 'addons', icon: '✨', order: 4 },
-    { name_en: 'Desserts & Cakes', name_ar: 'الحلويات والكيك', slug: 'desserts', icon: '🍰', order: 5 }
+    { name_en: 'Fresh Juices', name_ar: 'العصائر الطازجة', slug: 'juices', icon: '🍹', order: 3 },
+    { name_en: 'Smoothies', name_ar: 'السموذي', slug: 'smoothies', icon: '🧃', order: 4 },
+    { name_en: 'Add-ons & Flavors', name_ar: 'الإضافات والنكهات', slug: 'addons', icon: '✨', order: 5 },
+    { name_en: 'Desserts & Cakes', name_ar: 'الحلويات والكيك', slug: 'desserts', icon: '🍰', order: 6 }
   ];
 
   const finalMenuItems = [
@@ -782,22 +784,24 @@ async function syncFinalizedMenu() {
     { cat_slug: 'cold', name_en: '7UP Mojito', name_ar: 'موهيتو سفن اب', calories: 170, price: 13, is_hot: 0, is_cold: 1 },
     { cat_slug: 'cold', name_en: 'Code Red Mojito', name_ar: 'موهيتو كود رد', calories: 180, price: 17, is_hot: 0, is_cold: 1 },
 
-    // Fresh Juice & Smoothies
-    { cat_slug: 'juice', name_en: 'Oreo Mix', name_ar: 'اوريو ميكس', calories: 478, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Baby Love', name_ar: 'باي لاف', calories: 307, price: 16, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Avocado with Honey', name_ar: 'افوكادو بالعسل', calories: 518, price: 15, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Banana with Milk', name_ar: 'موز حليب', calories: 460, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Lemon Mint', name_ar: 'ليمون نعناع', calories: 255, price: 11, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Strawberry Juice', name_ar: 'فراولة', calories: 244, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Guava Juice', name_ar: 'جوافة', calories: 296, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Mango Juice', name_ar: 'مانجو', calories: 280, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Watermelon Juice', name_ar: 'بطيخ', calories: 220, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Pineapple Juice', name_ar: 'أناناس', calories: 260, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Passion Fruit Smoothie', name_ar: 'باشن فروت اسموذى', calories: 175, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Red Berry Smoothie', name_ar: 'توت احمر اسموذى', calories: 160, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Blueberry Smoothie', name_ar: 'توت ازرق اسموذى', calories: 142, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Strawberry Smoothie', name_ar: 'فراولة اسموذى', calories: 156, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juice', name_en: 'Mixed Berry Smoothie', name_ar: 'ميكس بيري اسموذى', calories: 210, price: 21, is_hot: 0, is_cold: 1 },
+    // Fresh Juices
+    { cat_slug: 'juices', name_en: 'Oreo Mix', name_ar: 'اوريو ميكس', calories: 478, price: 19, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'juices', name_en: 'Baby Love', name_ar: 'باي لاف', calories: 307, price: 16, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'juices', name_en: 'Avocado with Honey', name_ar: 'افوكادو بالعسل', calories: 518, price: 15, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'juices', name_en: 'Banana with Milk', name_ar: 'موز حليب', calories: 460, price: 13, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'juices', name_en: 'Lemon Mint', name_ar: 'ليمون نعناع', calories: 255, price: 11, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'juices', name_en: 'Strawberry Juice', name_ar: 'فراولة', calories: 244, price: 13, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'juices', name_en: 'Guava Juice', name_ar: 'جوافة', calories: 296, price: 13, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'juices', name_en: 'Mango Juice', name_ar: 'مانجو', calories: 280, price: 13, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'juices', name_en: 'Watermelon Juice', name_ar: 'بطيخ', calories: 220, price: 13, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'juices', name_en: 'Pineapple Juice', name_ar: 'أناناس', calories: 260, price: 13, is_hot: 0, is_cold: 1 },
+
+    // Smoothies
+    { cat_slug: 'smoothies', name_en: 'Passion Fruit Smoothie', name_ar: 'باشن فروت اسموذى', calories: 175, price: 19, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'smoothies', name_en: 'Red Berry Smoothie', name_ar: 'توت احمر اسموذى', calories: 160, price: 19, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'smoothies', name_en: 'Blueberry Smoothie', name_ar: 'توت ازرق اسموذى', calories: 142, price: 19, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'smoothies', name_en: 'Strawberry Smoothie', name_ar: 'فراولة اسموذى', calories: 156, price: 19, is_hot: 0, is_cold: 1 },
+    { cat_slug: 'smoothies', name_en: 'Mixed Berry Smoothie', name_ar: 'ميكس بيري اسموذى', calories: 210, price: 21, is_hot: 0, is_cold: 1 },
 
     // Desserts & Cakes
     { cat_slug: 'desserts', name_en: 'Red Velvet Cake', name_ar: 'ريد فلفيت كيك', calories: 450, price: 21, is_hot: 0, is_cold: 0 },
