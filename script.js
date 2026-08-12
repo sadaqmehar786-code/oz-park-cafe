@@ -277,30 +277,28 @@ document.addEventListener('DOMContentLoaded', () => {
           itemEl.innerHTML = `
             ${itemImgHtml}
             <div class="menu-list-details">
-              <div class="menu-list-head">
-                <h3>
-                  <span class="lang-ar">${item.name_ar}</span>
-                  <span class="lang-en">${item.name_en}</span>
-                </h3>
+              <div class="menu-list-corner-box">
                 <span class="menu-list-tag">
                   <span class="lang-ar">${item.category_name_ar || ''}</span>
                   <span class="lang-en">${item.category_name_en || ''}</span>
                 </span>
-              </div>
-              <p class="lang-ar menu-desc-text">${item.description_ar || ''}</p>
-              <p class="lang-en menu-desc-text">${item.description_en || ''}</p>
-              
-              <div class="menu-card-meta">
-                <span class="menu-card-price">
-                  <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
-                  <span class="lang-en">${item.price} SAR</span>
-                </span>
                 ${item.calories ? `
-                  <span class="menu-card-calories">
+                  <span class="menu-list-calories">
                     <span class="lang-ar">${caloriesTextAr}</span>
                     <span class="lang-en">${caloriesTextEn}</span>
                   </span>
                 ` : ''}
+              </div>
+
+              <div class="menu-list-title-row">
+                <h3>
+                  <span class="lang-ar">${item.name_ar}</span>
+                  <span class="lang-en">${item.name_en}</span>
+                </h3>
+                <span class="menu-card-price">
+                  <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
+                  <span class="lang-en">${item.price} SAR</span>
+                </span>
               </div>
               
               <div class="menu-card-order-row">

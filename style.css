@@ -1454,87 +1454,65 @@ html[lang="ar"] .footer-links a:hover {
   min-width: 0;
 }
 
-.menu-list-head {
+.menu-list-corner-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  margin-bottom: 6px;
+}
+
+html[lang="ar"] .menu-list-corner-box {
+  align-items: flex-start;
+}
+
+.menu-list-tag {
+  background-color: #FAF7F2;
+  color: #C5A059;
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.menu-list-calories {
+  background-color: rgba(27, 54, 93, 0.06);
+  color: var(--color-charcoal-light);
+  font-size: 0.60rem; /* Smaller than category button size! */
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.menu-list-title-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
-}
-
-.menu-list-tag {
-  background-color: rgba(27, 54, 93, 0.06);
-  color: var(--color-navy);
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 50px;
-  white-space: nowrap;
-}
-
-.menu-desc-text {
-  font-size: 0.85rem;
-  color: var(--color-charcoal-light);
-  margin-bottom: 10px;
-}
-
-.menu-list-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 0;
-  background-color: var(--color-gold);
-  transition: var(--transition-smooth);
-  border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
-}
-
-html[lang="ar"] .menu-list-item::before {
-  left: auto;
-  right: 0;
-  border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
-}
-
-.menu-list-item:hover::before {
-  height: 100%;
-}
-
-.menu-list-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   margin-bottom: 8px;
-  margin-inline-end: 90px;
 }
 
-.menu-list-item h3 {
-  font-size: 1.2rem;
+.menu-list-title-row h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--color-navy);
+  margin: 0;
 }
 
-.menu-list-item h3 span.sub-title {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--color-charcoal-light);
-  margin-top: 2px;
-}
-
-.menu-list-item p {
-  display: none;
-}
-
-.menu-list-tag {
-  position: absolute;
-  top: 24px;
-  inset-inline-end: 24px;
-  background-color: rgba(197, 160, 89, 0.1);
-  color: var(--color-gold-dark);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--border-radius-sm);
+.menu-list-title-row .menu-card-price {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  white-space: nowrap;
 }
 
 /* Category Filter Transition Anim */
