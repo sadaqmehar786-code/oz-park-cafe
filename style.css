@@ -1395,7 +1395,7 @@ html[lang="ar"] .footer-links a:hover {
 /* Custom compact list layout for menu.html */
 .menu-list-item {
   background: var(--color-white);
-  padding: 20px;
+  padding: 18px 20px;
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(27, 54, 93, 0.05);
@@ -1403,7 +1403,7 @@ html[lang="ar"] .footer-links a:hover {
   position: relative;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center; /* Vertically align image with card details */
   gap: 18px;
 }
 
@@ -1424,6 +1424,7 @@ html[lang="ar"] .footer-links a:hover {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
 }
 
 .menu-list-thumb {
@@ -1452,17 +1453,49 @@ html[lang="ar"] .footer-links a:hover {
   flex-direction: column;
   flex-grow: 1;
   min-width: 0;
+  justify-content: center;
 }
 
-.menu-list-corner-box {
+.menu-list-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.menu-list-info-stack {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
-  margin-bottom: 6px;
+  gap: 2px;
 }
 
-html[lang="ar"] .menu-list-corner-box {
+.menu-list-info-stack h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.menu-list-info-stack .menu-card-price {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-top: 3px;
+  display: block;
+}
+
+.menu-list-meta-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+html[lang="ar"] .menu-list-meta-stack {
   align-items: flex-start;
 }
 
@@ -1483,7 +1516,7 @@ html[lang="ar"] .menu-list-corner-box {
 .menu-list-calories {
   background-color: rgba(27, 54, 93, 0.06);
   color: var(--color-charcoal-light);
-  font-size: 0.60rem; /* Smaller than category button size! */
+  font-size: 0.60rem; /* Smaller than category tag! */
   font-weight: 500;
   padding: 1px 6px;
   border-radius: 4px;
@@ -1491,28 +1524,6 @@ html[lang="ar"] .menu-list-corner-box {
   display: inline-flex;
   align-items: center;
   line-height: 1.2;
-}
-
-.menu-list-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.menu-list-title-row h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--color-navy);
-  margin: 0;
-}
-
-.menu-list-title-row .menu-card-price {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--color-navy);
-  white-space: nowrap;
 }
 
 /* Category Filter Transition Anim */

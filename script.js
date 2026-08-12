@@ -277,28 +277,30 @@ document.addEventListener('DOMContentLoaded', () => {
           itemEl.innerHTML = `
             ${itemImgHtml}
             <div class="menu-list-details">
-              <div class="menu-list-corner-box">
-                <span class="menu-list-tag">
-                  <span class="lang-ar">${item.category_name_ar || ''}</span>
-                  <span class="lang-en">${item.category_name_en || ''}</span>
-                </span>
-                ${item.calories ? `
-                  <span class="menu-list-calories">
-                    <span class="lang-ar">${caloriesTextAr}</span>
-                    <span class="lang-en">${caloriesTextEn}</span>
-                  </span>
-                ` : ''}
-              </div>
+              <div class="menu-list-top-row">
+                <div class="menu-list-info-stack">
+                  <h3>
+                    <span class="lang-ar">${item.name_ar}</span>
+                    <span class="lang-en">${item.name_en}</span>
+                  </h3>
+                  <div class="menu-card-price">
+                    <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
+                    <span class="lang-en">${item.price} SAR</span>
+                  </div>
+                </div>
 
-              <div class="menu-list-title-row">
-                <h3>
-                  <span class="lang-ar">${item.name_ar}</span>
-                  <span class="lang-en">${item.name_en}</span>
-                </h3>
-                <span class="menu-card-price">
-                  <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
-                  <span class="lang-en">${item.price} SAR</span>
-                </span>
+                <div class="menu-list-meta-stack">
+                  <span class="menu-list-tag">
+                    <span class="lang-ar">${item.category_name_ar || ''}</span>
+                    <span class="lang-en">${item.category_name_en || ''}</span>
+                  </span>
+                  ${item.calories ? `
+                    <span class="menu-list-calories">
+                      <span class="lang-ar">${caloriesTextAr}</span>
+                      <span class="lang-en">${caloriesTextEn}</span>
+                    </span>
+                  ` : ''}
+                </div>
               </div>
               
               <div class="menu-card-order-row">
