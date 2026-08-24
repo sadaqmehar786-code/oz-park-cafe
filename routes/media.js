@@ -74,7 +74,17 @@ router.post('/upload', authenticate, requirePermission('manage_media'), upload.a
 
     const uploadedFiles = [];
 
-    for (const file of req.files) {
+      // Auto-compress uploaded images to sharp ~20-30KB thumbnails
+      if (file.mimetype && file.mimetype.startsWith('image/')) {
+        try {
+          const { execSync } = require('child_process');
+          const pyScript = `from PIL import Image; import sys; im = Image.open(sys.argv[1]); im = im.convert('RGB'); im.thumbnail((500, 500), Image.Resampling.LANCZOS); im.save(sys.argv[1], 'JPEG', quality=82, optimize=True)`;
+          execSync(`python3 -c "${pyScript}" "${file.path}"`);
+        } catch (e) {
+          console.error('Auto upload compression error:', e);
+        }
+      }
+
       let relativePath = `/api/v1/public/uploads/${file.filename}`;
 
       const result = await run(`
