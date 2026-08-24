@@ -811,11 +811,13 @@ async function syncFinalizedMenu() {
       { cat_slug: 'smoothies', name_en: 'Mixed Berry Smoothie', name_ar: 'ميكس بيري اسموذى', calories: 210, price: 21, is_hot: 0, is_cold: 1 },
 
       // Desserts & Cakes
-      { cat_slug: 'desserts', name_en: 'Red Velvet Cake', name_ar: 'ريد فلفيت كيك', calories: 450, price: 21, is_hot: 0, is_cold: 0 },
-      { cat_slug: 'desserts', name_en: 'Pistachio Cake', name_ar: 'كيك الفستق', calories: 970, price: 25, is_hot: 0, is_cold: 0 },
-      { cat_slug: 'desserts', name_en: 'Oreo Cake', name_ar: 'اوريو كيك', calories: 650, price: 21, is_hot: 0, is_cold: 0 },
-      { cat_slug: 'desserts', name_en: 'Chocolate Hazelnut Cake', name_ar: 'كيكة شيكولاتة البندق', calories: 510, price: 21, is_hot: 0, is_cold: 0 },
-      { cat_slug: 'desserts', name_en: 'Lotus Cake', name_ar: 'كيك اللوتس', calories: 460, price: 21, is_hot: 0, is_cold: 0 }
+      { cat_slug: 'desserts', name_en: 'Dolce Delice Cake', name_ar: 'دولتشي ديليتشي كيك', calories: 450, price: 20, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Molten Lava Cake', name_ar: 'مولتن لافا كيك', calories: 472, price: 21, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Chocolate Cake Box', name_ar: 'كيكة الشوكولاتة علبة', calories: 518, price: 21, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Blueberry Cheesecake', name_ar: 'تشيزكيك مقلوب', calories: 475, price: 25, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Cheese Croissant', name_ar: 'كرواسون جبن', calories: 320, price: 9, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Fresh Mini Pancakes', name_ar: 'ميني بانكيك طازج', calories: 217, price: 20, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Fresh Waffles', name_ar: 'وافل طازج', calories: 370, price: 20, is_hot: 0, is_cold: 0 }
     ];
 
     for (const c of finalCategories) {
@@ -846,11 +848,48 @@ async function syncFinalizedMenu() {
   }
 }
 
+async function updateDessertsMenu() {
+  const desserts = [
+    { name_en: 'Dolce Delice Cake', name_ar: 'دولتشي ديليتشي كيك', calories: 450, price: 20 },
+    { name_en: 'Molten Lava Cake', name_ar: 'مولتن لافا كيك', calories: 472, price: 21 },
+    { name_en: 'Chocolate Cake Box', name_ar: 'كيكة الشوكولاتة علبة', calories: 518, price: 21 },
+    { name_en: 'Blueberry Cheesecake', name_ar: 'تشيزكيك مقلوب', calories: 475, price: 25 },
+    { name_en: 'Cheese Croissant', name_ar: 'كرواسون جبن', calories: 320, price: 9 },
+    { name_en: 'Fresh Mini Pancakes', name_ar: 'ميني بانكيك طازج', calories: 217, price: 20 },
+    { name_en: 'Fresh Waffles', name_ar: 'وافل طازج', calories: 370, price: 20 }
+  ];
+
+  try {
+    await run(`
+      INSERT OR IGNORE INTO menu_categories (name_en, name_ar, slug, icon, display_order)
+      VALUES ('Desserts & Cakes', 'الحلويات والكيك', 'desserts', '🍰', 6)
+    `);
+
+    const cat = await get('SELECT id FROM menu_categories WHERE slug = "desserts"');
+    if (!cat) return;
+
+    await run('DELETE FROM menu_items WHERE category_id = ?', [cat.id]);
+
+    for (const item of desserts) {
+      const slug = item.name_en.toLowerCase().replace(/[^a-z0-9-]/g, '-') + '-' + Math.floor(Math.random()*1000);
+      await run(`
+        INSERT INTO menu_items (
+          category_id, name_en, name_ar, slug, price, calories, is_hot, is_cold, is_featured, image_url
+        ) VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, NULL)
+      `, [cat.id, item.name_en, item.name_ar, slug, item.price, item.calories]);
+    }
+    console.log('[Database] Updated desserts category with 7 new items cleanly!');
+  } catch (err) {
+    console.error('[Database] Failed to update desserts:', err);
+  }
+}
+
 module.exports = {
   db,
   query,
   get,
   run,
   initDb,
-  syncFinalizedMenu
+  syncFinalizedMenu,
+  updateDessertsMenu
 };
