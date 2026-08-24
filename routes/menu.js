@@ -352,7 +352,7 @@ router.post('/items', authenticate, requirePermission('manage_menu'), async (req
 // PUT /api/v1/menu/items/:id (Update product details & handle image replacement/cleanup)
 router.put('/items/:id', authenticate, requirePermission('manage_menu'), async (req, res) => {
   try {
-    const item = await get('SELECT * FROM menu_items WHERE id = ? AND deleted_at IS NULL', [req.params.id]);
+    const item = await get('SELECT * FROM menu_items WHERE (id = ? OR slug = ?) AND deleted_at IS NULL', [req.params.id, req.params.id]);
     if (!item) {
       return res.status(404).json({ success: false, error: 'Menu item not found' });
     }
@@ -449,7 +449,7 @@ router.put('/items/:id', authenticate, requirePermission('manage_menu'), async (
 // DELETE /api/v1/menu/items/:id/image (Explicit endpoint to remove image & reset to default)
 router.delete('/items/:id/image', authenticate, requirePermission('manage_menu'), async (req, res) => {
   try {
-    const item = await get('SELECT * FROM menu_items WHERE id = ? AND deleted_at IS NULL', [req.params.id]);
+    const item = await get('SELECT * FROM menu_items WHERE (id = ? OR slug = ?) AND deleted_at IS NULL', [req.params.id, req.params.id]);
     if (!item) {
       return res.status(404).json({ success: false, error: 'Menu item not found' });
     }
@@ -478,10 +478,14 @@ router.patch('/items/:id/availability', authenticate, requirePermission('manage_
       return res.status(400).json({ success: false, error: 'Invalid availability status' });
     }
 
-    const item = await get('SELECT name_en FROM menu_items WHERE id = ?', [req.params.id]);
-    await run('UPDATE menu_items SET availability_status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [status, req.params.id]);
+    const item = await get('SELECT name_en, id FROM menu_items WHERE (id = ? OR slug = ?) AND deleted_at IS NULL', [req.params.id, req.params.id]);
+    if (!item) {
+      return res.status(404).json({ success: false, error: 'Menu item not found' });
+    }
 
-    await logAudit(req, 'TOGGLE_MENU_AVAILABILITY', `Set availability of '${item ? item.name_en : req.params.id}' to '${status}'`);
+    await run('UPDATE menu_items SET availability_status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [status, item.id]);
+
+    await logAudit(req, 'TOGGLE_MENU_AVAILABILITY', `Set availability of '${item.name_en}' to '${status}'`);
     res.json({ success: true, message: `Menu item status updated to ${status}` });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to update availability' });
@@ -491,10 +495,14 @@ router.patch('/items/:id/availability', authenticate, requirePermission('manage_
 // DELETE /api/v1/menu/items/:id (Soft Delete)
 router.delete('/items/:id', authenticate, requirePermission('manage_menu'), async (req, res) => {
   try {
-    const item = await get('SELECT name_en FROM menu_items WHERE id = ?', [req.params.id]);
-    await run('UPDATE menu_items SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?', [req.params.id]);
+    const item = await get('SELECT name_en, id FROM menu_items WHERE (id = ? OR slug = ?) AND deleted_at IS NULL', [req.params.id, req.params.id]);
+    if (!item) {
+      return res.status(404).json({ success: false, error: 'Menu item not found' });
+    }
 
-    await logAudit(req, 'DELETE_MENU_ITEM', `Deleted menu item '${item ? item.name_en : req.params.id}'`);
+    await run('UPDATE menu_items SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?', [item.id]);
+
+    await logAudit(req, 'DELETE_MENU_ITEM', `Deleted menu item '${item.name_en}'`);
     res.json({ success: true, message: 'Menu item deleted successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to delete menu item' });
