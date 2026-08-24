@@ -250,9 +250,21 @@ router.get('/items', async (req, res) => {
     }
 
     const items = await query(sql, params);
+    const itemIds = items.map(i => i.id);
+
+    let allSizes = [];
+    if (itemIds.length > 0) {
+      allSizes = await query(`SELECT * FROM menu_item_sizes WHERE menu_item_id IN (${itemIds.map(() => '?').join(',')}) ORDER BY price ASC`, itemIds);
+    }
+
+    const sizesByItemId = {};
+    for (const size of allSizes) {
+      if (!sizesByItemId[size.menu_item_id]) sizesByItemId[size.menu_item_id] = [];
+      sizesByItemId[size.menu_item_id].push(size);
+    }
 
     for (const item of items) {
-      item.sizes = await query('SELECT * FROM menu_item_sizes WHERE menu_item_id = ? ORDER BY price ASC', [item.id]);
+      item.sizes = sizesByItemId[item.id] || [];
     }
 
     res.json({ success: true, data: items });
