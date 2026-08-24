@@ -123,6 +123,284 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ==========================================================================
+  // SHOPPING CART & WHATSAPP CHECKOUT SYSTEM
+  // ==========================================================================
+  let cart = JSON.parse(localStorage.getItem('oz_cart')) || [];
+
+  window.increaseQty = (btn) => {
+    const qtyVal = btn.parentElement.querySelector('.qty-val');
+    if (qtyVal) {
+      let current = parseInt(qtyVal.textContent, 10) || 1;
+      qtyVal.textContent = current + 1;
+    }
+  };
+
+  window.decreaseQty = (btn) => {
+    const qtyVal = btn.parentElement.querySelector('.qty-val');
+    if (qtyVal) {
+      let current = parseInt(qtyVal.textContent, 10) || 1;
+      if (current > 1) {
+        qtyVal.textContent = current - 1;
+      }
+    }
+  };
+
+  window.handleAddToCart = (btn) => {
+    const id = btn.getAttribute('data-id');
+    const nameAr = btn.getAttribute('data-name-ar');
+    const nameEn = btn.getAttribute('data-name-en');
+    const price = parseFloat(btn.getAttribute('data-price')) || 0;
+    
+    const qtyEl = btn.parentElement ? btn.parentElement.querySelector('.qty-val') : null;
+    const qty = qtyEl ? parseInt(qtyEl.textContent, 10) || 1 : 1;
+
+    const existingIdx = cart.findIndex(item => item.id === id);
+    if (existingIdx > -1) {
+      cart[existingIdx].qty += qty;
+    } else {
+      cart.push({ id, nameAr, nameEn, price, qty });
+    }
+
+    // Reset qty display to 1
+    if (qtyEl) qtyEl.textContent = 1;
+
+    window.updateCartUI();
+    
+    // Open drawer on add
+    const drawer = document.querySelector('.cart-drawer');
+    const backdrop = document.querySelector('.cart-backdrop');
+    if (drawer) drawer.classList.add('active');
+    if (backdrop) backdrop.classList.add('active');
+  };
+
+  const injectCartUI = () => {
+    if (document.querySelector('.floating-cart-btn')) return;
+
+    // Floating Cart Trigger Button
+    const triggerBtn = document.createElement('div');
+    triggerBtn.className = 'floating-cart-btn';
+    triggerBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      <span class="cart-badge" style="display:none;">0</span>
+    `;
+
+    // Drawer HTML
+    const drawerEl = document.createElement('div');
+    drawerEl.className = 'cart-drawer';
+    drawerEl.innerHTML = `
+      <div class="cart-drawer-header">
+        <h3>
+          <span class="lang-ar">سلة الطلبات</span>
+          <span class="lang-en">Your Order Cart</span>
+        </h3>
+        <button class="cart-close-btn">&times;</button>
+      </div>
+      
+      <div class="cart-items-list"></div>
+      
+      <div class="cart-drawer-footer">
+        <div class="cart-subtotal">
+          <span>
+            <span class="lang-ar">المجموع الإجمالي:</span>
+            <span class="lang-en">Subtotal:</span>
+          </span>
+          <strong class="subtotal-val">0 SAR</strong>
+        </div>
+        
+        <form class="cart-order-form" onsubmit="handleCheckout(event)">
+          <label for="table-room-num">
+            <span class="lang-ar">رقم الغرفة أو الطاولة *</span>
+            <span class="lang-en">Room or Table Number *</span>
+          </label>
+          <input type="text" id="table-room-num" placeholder="مثال: غرفة 102 أو طاولة 5" required>
+          
+          <button type="submit" class="btn-checkout">
+            <span>💬</span>
+            <span class="lang-ar">إرسال الطلب عبر الواتساب</span>
+            <span class="lang-en">Send Order via WhatsApp</span>
+          </button>
+        </form>
+      </div>
+    `;
+
+    const backdropEl = document.createElement('div');
+    backdropEl.className = 'cart-backdrop';
+
+    document.body.appendChild(triggerBtn);
+    document.body.appendChild(drawerEl);
+    document.body.appendChild(backdropEl);
+
+    // Event Listeners for drawer
+    const closeBtn = drawerEl.querySelector('.cart-close-btn');
+    const toggleDrawer = (open) => {
+      if (open) {
+        drawerEl.classList.add('active');
+        backdropEl.classList.add('active');
+      } else {
+        drawerEl.classList.remove('active');
+        backdropEl.classList.remove('active');
+      }
+    };
+
+    triggerBtn.addEventListener('click', () => toggleDrawer(true));
+    closeBtn.addEventListener('click', () => toggleDrawer(false));
+    backdropEl.addEventListener('click', () => toggleDrawer(false));
+  };
+
+  window.updateCartUI = () => {
+    const lang = document.documentElement.lang || 'ar';
+    const badge = document.querySelector('.cart-badge');
+    const listContainer = document.querySelector('.cart-items-list');
+    
+    if (!badge || !listContainer) return;
+    
+    let totalCount = 0;
+    let totalPrice = 0;
+    
+    listContainer.innerHTML = '';
+    
+    if (cart.length === 0) {
+      listContainer.innerHTML = `
+        <div class="cart-empty-msg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <p class="lang-ar">سلتك فارغة حالياً</p>
+          <p class="lang-en">Your cart is currently empty</p>
+        </div>
+      `;
+      badge.style.display = 'none';
+    } else {
+      cart.forEach(item => {
+        totalCount += item.qty;
+        totalPrice += item.price * item.qty;
+        
+        const itemRow = document.createElement('div');
+        itemRow.className = 'cart-item-row';
+        const nameText = lang === 'ar' ? item.nameAr : item.nameEn;
+        const priceText = lang === 'ar' ? `${toArabicNum(item.price * item.qty)} ر.س` : `${item.price * item.qty} SAR`;
+        
+        itemRow.innerHTML = `
+          <div class="cart-item-info">
+            <h4>${nameText}</h4>
+            <span class="cart-item-price">${priceText}</span>
+          </div>
+          <div class="quantity-selector">
+            <button class="qty-btn" onclick="updateCartItemQty('${item.id}', -1)">−</button>
+            <span class="qty-val">${item.qty}</span>
+            <button class="qty-btn" onclick="updateCartItemQty('${item.id}', 1)">+</button>
+          </div>
+          <button class="cart-item-delete" onclick="removeFromCart('${item.id}')">&times;</button>
+        `;
+        listContainer.appendChild(itemRow);
+      });
+      
+      badge.textContent = totalCount;
+      badge.style.display = 'flex';
+    }
+    
+    const subtotalValSpan = document.querySelector('.subtotal-val');
+    if (subtotalValSpan) {
+      if (lang === 'ar') {
+        subtotalValSpan.textContent = `${toArabicNum(totalPrice)} ر.س`;
+      } else {
+        subtotalValSpan.textContent = `${totalPrice} SAR`;
+      }
+    }
+    
+    localStorage.setItem('oz_cart', JSON.stringify(cart));
+  };
+
+  // Adjust item quantity inside drawer
+  window.updateCartItemQty = (id, change) => {
+    const idx = cart.findIndex(item => item.id === id);
+    if (idx > -1) {
+      cart[idx].qty += change;
+      if (cart[idx].qty <= 0) {
+        cart.splice(idx, 1);
+      }
+      window.updateCartUI();
+    }
+  };
+
+  // Remove individual item
+  window.removeFromCart = (id) => {
+    cart = cart.filter(item => item.id !== id);
+    window.updateCartUI();
+  };
+
+  // Checkout redirect via WhatsApp API
+  window.handleCheckout = (event) => {
+    event.preventDefault();
+    const roomInput = document.getElementById('table-room-num');
+    if (!roomInput || cart.length === 0) return;
+    
+    const roomNum = roomInput.value.trim();
+    if (!roomNum) {
+      alert(document.documentElement.lang === 'ar' ? 'يرجى إدخال رقم الغرفة أو الطاولة' : 'Please enter your Room or Table number');
+      roomInput.focus();
+      return;
+    }
+
+    const lang = document.documentElement.lang || 'ar';
+    const whatsappNum = window.cafeWhatsApp || '966550222986';
+    
+    let message = "";
+    let total = 0;
+    
+    if (lang === 'ar') {
+      message += `*طلب جديد - أوز بارك كافيه Coffee Lounge*\n`;
+      message += `------------------------------------\n`;
+      message += `*رقم الطاولة / الغرفة:* ${roomNum}\n\n`;
+      message += `*الطلبات:*\n`;
+      cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        message += `• ${item.nameAr} × ${item.qty} (${itemTotal} ر.س)\n`;
+      });
+      message += `\n*المجموع الإجمالي:* ${total} ر.س\n`;
+      message += `------------------------------------`;
+    } else {
+      message += `*New Order - OZ Park Cafe Coffee Lounge*\n`;
+      message += `------------------------------------\n`;
+      message += `*Room / Table Number:* ${roomNum}\n\n`;
+      message += `*Items:*\n`;
+      cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        message += `• ${item.nameEn} x ${item.qty} (${itemTotal} SAR)\n`;
+      });
+      message += `\n*Total Amount:* ${total} SAR\n`;
+      message += `------------------------------------`;
+    }
+    
+    const encodedText = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${whatsappNum}?text=${encodedText}`;
+    
+    // Reset Cart
+    cart = [];
+    window.updateCartUI();
+    roomInput.value = '';
+    
+    const drawer = document.querySelector('.cart-drawer');
+    const backdrop = document.querySelector('.cart-backdrop');
+    if (drawer) drawer.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('active');
+    
+    window.open(whatsappUrl, '_blank');
+  };
+
+  // Initialize Cart UI elements and load state
+  injectCartUI();
+  window.updateCartUI();
+
+  // ==========================================================================
   // DYNAMIC BACKEND INTEGRATION (Live API Sync)
   // ==========================================================================
   async function syncBackendData() {
