@@ -1450,6 +1450,27 @@ html[lang="ar"] .footer-links a:hover {
   border-color: rgba(197, 160, 89, 0.3);
 }
 
+/* Hide paragraph descriptions inside menu cards for sleek layout */
+.menu-list-item p,
+.menu-list-item .menu-desc-text {
+  display: none !important;
+}
+
+/* Fallback rules for static HTML markup structure */
+.menu-list-item > .menu-list-head {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.menu-list-item > .menu-card-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin-left: auto;
+}
+
 .menu-list-thumb-wrapper {
   width: 90px;
   height: 90px;
