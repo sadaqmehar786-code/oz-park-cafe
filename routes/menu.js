@@ -148,68 +148,66 @@ router.put('/categories/:id', authenticate, requirePermission('manage_menu'), as
 // DELETE /api/v1/menu/categories/:id (With product handling options)
 router.delete('/categories/:id', authenticate, requirePermission('manage_menu'), async (req, res) => {
   try {
-    const categoryId = parseInt(req.params.id);
-    const category = await get('SELECT * FROM menu_categories WHERE id = ?', [categoryId]);
+    const rawParam = req.params.id;
+    const parsedId = parseInt(rawParam);
+
+    const category = await get(`
+      SELECT * FROM menu_categories 
+      WHERE (id = ? OR slug = ?)
+    `, [!isNaN(parsedId) ? parsedId : -1, rawParam]);
+
     if (!category) {
       return res.status(404).json({ success: false, error: 'Category not found' });
     }
+
+    const categoryId = category.id;
 
     // Check count of items in this category
     const itemsCountRow = await get('SELECT COUNT(*) as count FROM menu_items WHERE category_id = ? AND deleted_at IS NULL', [categoryId]);
     const itemsCount = itemsCountRow ? itemsCountRow.count : 0;
 
-    const { action, target_category_id } = req.query.action ? req.query : req.body;
-
-    if (itemsCount > 0 && !action) {
-      return res.status(400).json({
-        success: false,
-        has_products: true,
-        item_count: itemsCount,
-        error: `Category '${category.name_en}' contains ${itemsCount} product(s). Specify action to move products or mark as uncategorized before deleting.`
-      });
-    }
+    const reqData = req.query.action ? req.query : (req.body || {});
+    const action = reqData.action;
+    const target_category_id = reqData.target_category_id;
 
     if (itemsCount > 0) {
       if (action === 'move') {
         const targetId = parseInt(target_category_id);
-        if (!targetId || targetId === categoryId) {
-          return res.status(400).json({ success: false, error: 'Invalid target category selected for moving products' });
+        if (targetId && targetId !== categoryId) {
+          const targetCategory = await get('SELECT id, name_en FROM menu_categories WHERE id = ?', [targetId]);
+          if (targetCategory) {
+            await run('UPDATE menu_items SET category_id = ? WHERE category_id = ? AND deleted_at IS NULL', [targetId, categoryId]);
+            await logAudit(req, 'MOVE_CATEGORY_ITEMS', `Moved ${itemsCount} items from category '${category.name_en}' to '${targetCategory.name_en}'`);
+          }
         }
-        const targetCategory = await get('SELECT id, name_en FROM menu_categories WHERE id = ?', [targetId]);
-        if (!targetCategory) {
-          return res.status(400).json({ success: false, error: 'Target category does not exist' });
-        }
-
-        // Reassign all items to target category
-        await run('UPDATE menu_items SET category_id = ? WHERE category_id = ? AND deleted_at IS NULL', [targetId, categoryId]);
-        await logAudit(req, 'MOVE_CATEGORY_ITEMS', `Moved ${itemsCount} items from category '${category.name_en}' to '${targetCategory.name_en}'`);
-
-      } else if (action === 'uncategorize') {
-        // Ensure an 'Uncategorized' category exists or pick the first available alternative category
+      } else {
+        // Default action: uncategorize or soft-delete remaining items to ensure clean category deletion
         let uncategorized = await get('SELECT id FROM menu_categories WHERE slug = "uncategorized" AND id != ?', [categoryId]);
         if (!uncategorized) {
           const createUncat = await run(`
-            INSERT INTO menu_categories (name_en, name_ar, slug, icon, description_en, description_ar, display_order)
+            INSERT OR IGNORE INTO menu_categories (name_en, name_ar, slug, icon, description_en, description_ar, display_order)
             VALUES ('Uncategorized', 'غير مصنف', 'uncategorized', '📂', 'Default category for items', 'التصنيف الافتراضي للأصناف', 999)
           `);
-          uncategorized = { id: createUncat.id };
+          uncategorized = await get('SELECT id FROM menu_categories WHERE slug = "uncategorized"');
         }
 
-        await run('UPDATE menu_items SET category_id = ? WHERE category_id = ? AND deleted_at IS NULL', [uncategorized.id, categoryId]);
-        await logAudit(req, 'UNCATEGORIZE_ITEMS', `Marked ${itemsCount} items from category '${category.name_en}' as uncategorized`);
-      } else {
-        return res.status(400).json({ success: false, error: 'Invalid deletion action specified' });
+        if (uncategorized && uncategorized.id) {
+          await run('UPDATE menu_items SET category_id = ? WHERE category_id = ? AND deleted_at IS NULL', [uncategorized.id, categoryId]);
+          await logAudit(req, 'UNCATEGORIZE_ITEMS', `Marked ${itemsCount} items from category '${category.name_en}' as uncategorized`);
+        } else {
+          await run('UPDATE menu_items SET deleted_at = CURRENT_TIMESTAMP WHERE category_id = ? AND deleted_at IS NULL', [categoryId]);
+        }
       }
     }
 
-    // Delete category
+    // Delete category cleanly
     await run('DELETE FROM menu_categories WHERE id = ?', [categoryId]);
     await logAudit(req, 'category_deleted', `Deleted category '${category.name_en}' (ID ${categoryId})`);
 
-    res.json({ success: true, message: 'Category deleted successfully' });
+    res.json({ success: true, message: `Category '${category.name_en}' deleted successfully` });
   } catch (err) {
     console.error('Delete category error:', err);
-    res.status(500).json({ success: false, error: 'Failed to delete category' });
+    res.status(500).json({ success: false, error: 'Failed to delete category: ' + err.message });
   }
 });
 
