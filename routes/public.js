@@ -3,6 +3,9 @@ const router = express.Router();
 const path = require('path');
 const { get, query } = require('../db');
 
+// Serve uploaded media files publicly via /api/v1/public/uploads/*
+router.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
 // GET /api/v1/public/admin-app-js - Serve latest admin app.js directly without caching
 router.get('/admin-app-js', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
