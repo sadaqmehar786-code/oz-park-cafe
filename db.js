@@ -736,107 +736,98 @@ async function seedData() {
 }
 
 async function syncFinalizedMenu() {
-  const finalCategories = [
-    { name_en: 'Hot Drinks', name_ar: 'المشروبات الساخنة', slug: 'hot', icon: '☕', order: 1 },
-    { name_en: 'Cold Drinks', name_ar: 'المشروبات الباردة', slug: 'cold', icon: '🥤', order: 2 },
-    { name_en: 'Fresh Juices', name_ar: 'العصائر الطازجة', slug: 'juices', icon: '🍹', order: 3 },
-    { name_en: 'Smoothies', name_ar: 'السموذي', slug: 'smoothies', icon: '🧃', order: 4 },
-    { name_en: 'Add-ons & Flavors', name_ar: 'الإضافات والنكهات', slug: 'addons', icon: '✨', order: 5 },
-    { name_en: 'Desserts & Cakes', name_ar: 'الحلويات والكيك', slug: 'desserts', icon: '🍰', order: 6 }
-  ];
-
-  const finalMenuItems = [
-    // Hot Drinks
-    { cat_slug: 'hot', name_en: 'Spanish Latte', name_ar: 'إسبانيش لاتيه', calories: 235, price: 14, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Café Latte', name_ar: 'لاتيه', calories: 122, price: 13, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Cappuccino', name_ar: 'كابتشينو', calories: 162, price: 13, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Double Espresso', name_ar: 'إسبراسو دبل', calories: 15, price: 10, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Turkish Coffee', name_ar: 'قهوة تركي', calories: 21, price: 9, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Turkish Coffee with Milk', name_ar: 'قهوة تركي بالحليب', calories: 70, price: 12, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Cortado', name_ar: 'كورتادو', calories: 52, price: 12, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'French Coffee', name_ar: 'قهوة فرنسي', calories: 264, price: 13, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Macchiato', name_ar: 'المكياتو', calories: 159, price: 12, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Americano', name_ar: 'قهوة أمريكي', calories: 7, price: 7, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Flat White', name_ar: 'فلات وايت', calories: 120, price: 14, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Mocha', name_ar: 'موكا', calories: 289, price: 16, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'White Mocha', name_ar: 'وايت موكا', calories: 298, price: 17, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'V60', name_ar: 'في 60', calories: 5, price: 15, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Arabic Coffee Pot', name_ar: 'دلة قهوة عربي', calories: 25, price: 15, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Arabic Coffee Cup', name_ar: 'كاس قهوة عربي', calories: 15, price: 9, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Red Tea', name_ar: 'شاي أحمر', calories: 5, price: 5, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Green Tea', name_ar: 'شاي أخضر', calories: 3, price: 5, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Tea Pot', name_ar: 'براد شاي', calories: 10, price: 10, is_hot: 1, is_cold: 0 },
-    { cat_slug: 'hot', name_en: 'Herbal Tea Blend', name_ar: 'كوكتيل أعشاب', calories: 80, price: 15, is_hot: 1, is_cold: 0 },
-
-    // Add-ons
-    { cat_slug: 'addons', name_en: 'Add-ons (Vanilla, Hazelnut, Caramel, Whipped Cream, Chocolate Sauce)', name_ar: 'الإضافات (نكهة فانيليا - نكهة بندق - نكهة كراميل - كريمة خفق - شوكلت صوص)', calories: 0, price: 2, is_hot: 0, is_cold: 0 },
-
-    // Cold Drinks
-    { cat_slug: 'cold', name_en: 'Ice Americano', name_ar: 'ايس امريكانو', calories: 13, price: 8, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Ice Spanish Latte', name_ar: 'ايس سبانش لاتيه', calories: 347, price: 16, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Ice Caramel Macchiato', name_ar: 'ايس كراميل مكياتو', calories: 322, price: 16, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Ice White Mocha', name_ar: 'ايس وايت موكا', calories: 323, price: 16, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Ice V60', name_ar: 'ايس V60', calories: 60, price: 15, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Vanilla Milkshake', name_ar: 'ميلك تشيك فانيليا', calories: 452, price: 18, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Oreo Frappuccino', name_ar: 'فربتشينو اوريو', calories: 410, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Chocolate Frappuccino', name_ar: 'فربتشينو شيكوالته', calories: 380, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Caramel Frappuccino', name_ar: 'فربتشينو كراميل', calories: 420, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: '7UP Mojito', name_ar: 'موهيتو سفن اب', calories: 170, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'cold', name_en: 'Code Red Mojito', name_ar: 'موهيتو كود رد', calories: 180, price: 17, is_hot: 0, is_cold: 1 },
-
-    // Fresh Juices
-    { cat_slug: 'juices', name_en: 'Oreo Mix', name_ar: 'اوريو ميكس', calories: 478, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juices', name_en: 'Baby Love', name_ar: 'باي لاف', calories: 307, price: 16, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juices', name_en: 'Avocado with Honey', name_ar: 'افوكادو بالعسل', calories: 518, price: 15, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juices', name_en: 'Banana with Milk', name_ar: 'موز حليب', calories: 460, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juices', name_en: 'Lemon Mint', name_ar: 'ليمون نعناع', calories: 255, price: 11, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juices', name_en: 'Strawberry Juice', name_ar: 'فراولة', calories: 244, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juices', name_en: 'Guava Juice', name_ar: 'جوافة', calories: 296, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juices', name_en: 'Mango Juice', name_ar: 'مانجو', calories: 280, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juices', name_en: 'Watermelon Juice', name_ar: 'بطيخ', calories: 220, price: 13, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'juices', name_en: 'Pineapple Juice', name_ar: 'أناناس', calories: 260, price: 13, is_hot: 0, is_cold: 1 },
-
-    // Smoothies
-    { cat_slug: 'smoothies', name_en: 'Passion Fruit Smoothie', name_ar: 'باشن فروت اسموذى', calories: 175, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'smoothies', name_en: 'Red Berry Smoothie', name_ar: 'توت احمر اسموذى', calories: 160, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'smoothies', name_en: 'Blueberry Smoothie', name_ar: 'توت ازرق اسموذى', calories: 142, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'smoothies', name_en: 'Strawberry Smoothie', name_ar: 'فراولة اسموذى', calories: 156, price: 19, is_hot: 0, is_cold: 1 },
-    { cat_slug: 'smoothies', name_en: 'Mixed Berry Smoothie', name_ar: 'ميكس بيري اسموذى', calories: 210, price: 21, is_hot: 0, is_cold: 1 },
-
-    // Desserts & Cakes
-    { cat_slug: 'desserts', name_en: 'Red Velvet Cake', name_ar: 'ريد فلفيت كيك', calories: 450, price: 21, is_hot: 0, is_cold: 0 },
-    { cat_slug: 'desserts', name_en: 'Pistachio Cake', name_ar: 'كيك الفستق', calories: 970, price: 25, is_hot: 0, is_cold: 0 },
-    { cat_slug: 'desserts', name_en: 'Oreo Cake', name_ar: 'اوريو كيك', calories: 650, price: 21, is_hot: 0, is_cold: 0 },
-    { cat_slug: 'desserts', name_en: 'Chocolate Hazelnut Cake', name_ar: 'كيكة شيكولاتة البندق', calories: 510, price: 21, is_hot: 0, is_cold: 0 },
-    { cat_slug: 'desserts', name_en: 'Lotus Cake', name_ar: 'كيك اللوتس', calories: 460, price: 21, is_hot: 0, is_cold: 0 }
-  ];
-
   try {
-    await run(`
-      INSERT INTO menu_categories (name_en, name_ar, slug, icon, display_order)
-      SELECT 'Desserts & Cakes', 'الحلويات والكيك', 'desserts', '🍰', 5
-      WHERE NOT EXISTS (SELECT 1 FROM menu_categories WHERE slug = 'desserts');
-    `);
-    const dessertsCat = await get('SELECT id FROM menu_categories WHERE slug = "desserts" OR name_en LIKE "%Dessert%"');
-    if (!dessertsCat) {
-      await run('INSERT INTO menu_categories (name_en, name_ar, slug, icon, display_order) VALUES (?, ?, ?, ?, ?)', ['Desserts & Cakes', 'الحلويات والكيك', 'desserts', '🍰', 5]);
+    const existingCount = await get('SELECT COUNT(*) as count FROM menu_items WHERE deleted_at IS NULL');
+    if (existingCount && existingCount.count > 0) {
+      console.log(`[Database] Menu items table already populated (${existingCount.count} items). Skipping re-seed to preserve user-uploaded images and edits.`);
+      return;
     }
+
+    const finalCategories = [
+      { name_en: 'Hot Drinks', name_ar: 'المشروبات الساخنة', slug: 'hot', icon: '☕', order: 1 },
+      { name_en: 'Cold Drinks', name_ar: 'المشروبات الباردة', slug: 'cold', icon: '🥤', order: 2 },
+      { name_en: 'Fresh Juices', name_ar: 'العصائر الطازجة', slug: 'juices', icon: '🍹', order: 3 },
+      { name_en: 'Smoothies', name_ar: 'السموذي', slug: 'smoothies', icon: '🧃', order: 4 },
+      { name_en: 'Add-ons & Flavors', name_ar: 'الإضافات والنكهات', slug: 'addons', icon: '✨', order: 5 },
+      { name_en: 'Desserts & Cakes', name_ar: 'الحلويات والكيك', slug: 'desserts', icon: '🍰', order: 6 }
+    ];
+
+    const finalMenuItems = [
+      // Hot Drinks
+      { cat_slug: 'hot', name_en: 'Spanish Latte', name_ar: 'إسبانيش لاتيه', calories: 235, price: 14, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Café Latte', name_ar: 'لاتيه', calories: 122, price: 13, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Cappuccino', name_ar: 'كابتشينو', calories: 162, price: 13, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Double Espresso', name_ar: 'إسبراسو دبل', calories: 15, price: 10, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Turkish Coffee', name_ar: 'قهوة تركي', calories: 21, price: 9, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Turkish Coffee with Milk', name_ar: 'قهوة تركي بالحليب', calories: 70, price: 12, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Cortado', name_ar: 'كورتادو', calories: 52, price: 12, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'French Coffee', name_ar: 'قهوة فرنسي', calories: 264, price: 13, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Macchiato', name_ar: 'المكياتو', calories: 159, price: 12, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Americano', name_ar: 'قهوة أمريكي', calories: 7, price: 7, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Flat White', name_ar: 'فلات وايت', calories: 120, price: 14, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Mocha', name_ar: 'موكا', calories: 289, price: 16, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'White Mocha', name_ar: 'وايت موكا', calories: 298, price: 17, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'V60', name_ar: 'في 60', calories: 5, price: 15, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Arabic Coffee Pot', name_ar: 'دلة قهوة عربي', calories: 25, price: 15, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Arabic Coffee Cup', name_ar: 'كاس قهوة عربي', calories: 15, price: 9, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Red Tea', name_ar: 'شاي أحمر', calories: 5, price: 5, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Green Tea', name_ar: 'شاي أخضر', calories: 3, price: 5, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Tea Pot', name_ar: 'براد شاي', calories: 10, price: 10, is_hot: 1, is_cold: 0 },
+      { cat_slug: 'hot', name_en: 'Herbal Tea Blend', name_ar: 'كوكتيل أعشاب', calories: 80, price: 15, is_hot: 1, is_cold: 0 },
+
+      // Add-ons
+      { cat_slug: 'addons', name_en: 'Add-ons (Vanilla, Hazelnut, Caramel, Whipped Cream, Chocolate Sauce)', name_ar: 'الإضافات (نكهة فانيليا - نكهة بندق - نكهة كراميل - كريمة خفق - شوكلت صوص)', calories: 0, price: 2, is_hot: 0, is_cold: 0 },
+
+      // Cold Drinks
+      { cat_slug: 'cold', name_en: 'Ice Americano', name_ar: 'ايس امريكانو', calories: 13, price: 8, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: 'Ice Spanish Latte', name_ar: 'ايس سبانش لاتيه', calories: 347, price: 16, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: 'Ice Caramel Macchiato', name_ar: 'ايس كراميل مكياتو', calories: 322, price: 16, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: 'Ice White Mocha', name_ar: 'ايس وايت موكا', calories: 323, price: 16, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: 'Ice V60', name_ar: 'ايس V60', calories: 60, price: 15, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: 'Vanilla Milkshake', name_ar: 'ميلك تشيك فانيليا', calories: 452, price: 18, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: 'Oreo Frappuccino', name_ar: 'فربتشينو اوريو', calories: 410, price: 19, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: 'Chocolate Frappuccino', name_ar: 'فربتشينو شيكوالته', calories: 380, price: 19, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: 'Caramel Frappuccino', name_ar: 'فربتشينو كراميل', calories: 420, price: 19, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: '7UP Mojito', name_ar: 'موهيتو سفن اب', calories: 170, price: 13, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'cold', name_en: 'Code Red Mojito', name_ar: 'موهيتو كود رد', calories: 180, price: 17, is_hot: 0, is_cold: 1 },
+
+      // Fresh Juices
+      { cat_slug: 'juices', name_en: 'Oreo Mix', name_ar: 'اوريو ميكس', calories: 478, price: 19, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'juices', name_en: 'Baby Love', name_ar: 'باي لاف', calories: 307, price: 16, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'juices', name_en: 'Avocado with Honey', name_ar: 'افوكادو بالعسل', calories: 518, price: 15, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'juices', name_en: 'Banana with Milk', name_ar: 'موز حليب', calories: 460, price: 13, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'juices', name_en: 'Lemon Mint', name_ar: 'ليمون نعناع', calories: 255, price: 11, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'juices', name_en: 'Strawberry Juice', name_ar: 'فراولة', calories: 244, price: 13, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'juices', name_en: 'Guava Juice', name_ar: 'جوافة', calories: 296, price: 13, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'juices', name_en: 'Mango Juice', name_ar: 'مانجو', calories: 280, price: 13, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'juices', name_en: 'Watermelon Juice', name_ar: 'بطيخ', calories: 220, price: 13, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'juices', name_en: 'Pineapple Juice', name_ar: 'أناناس', calories: 260, price: 13, is_hot: 0, is_cold: 1 },
+
+      // Smoothies
+      { cat_slug: 'smoothies', name_en: 'Passion Fruit Smoothie', name_ar: 'باشن فروت اسموذى', calories: 175, price: 19, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'smoothies', name_en: 'Red Berry Smoothie', name_ar: 'توت احمر اسموذى', calories: 160, price: 19, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'smoothies', name_en: 'Blueberry Smoothie', name_ar: 'توت ازرق اسموذى', calories: 142, price: 19, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'smoothies', name_en: 'Strawberry Smoothie', name_ar: 'فراولة اسموذى', calories: 156, price: 19, is_hot: 0, is_cold: 1 },
+      { cat_slug: 'smoothies', name_en: 'Mixed Berry Smoothie', name_ar: 'ميكس بيري اسموذى', calories: 210, price: 21, is_hot: 0, is_cold: 1 },
+
+      // Desserts & Cakes
+      { cat_slug: 'desserts', name_en: 'Red Velvet Cake', name_ar: 'ريد فلفيت كيك', calories: 450, price: 21, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Pistachio Cake', name_ar: 'كيك الفستق', calories: 970, price: 25, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Oreo Cake', name_ar: 'اوريو كيك', calories: 650, price: 21, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Chocolate Hazelnut Cake', name_ar: 'كيكة شيكولاتة البندق', calories: 510, price: 21, is_hot: 0, is_cold: 0 },
+      { cat_slug: 'desserts', name_en: 'Lotus Cake', name_ar: 'كيك اللوتس', calories: 460, price: 21, is_hot: 0, is_cold: 0 }
+    ];
 
     for (const c of finalCategories) {
       await run(`
         INSERT OR IGNORE INTO menu_categories (name_en, name_ar, slug, icon, display_order)
         VALUES (?, ?, ?, ?, ?)
       `, [c.name_en, c.name_ar, c.slug, c.icon, c.order]);
-      await run(`
-        UPDATE menu_categories SET name_en = ?, name_ar = ?, icon = ?, display_order = ? WHERE slug = ?
-      `, [c.name_en, c.name_ar, c.icon, c.order, c.slug]);
     }
 
     const categories = await query('SELECT id, slug FROM menu_categories');
     const catMap = {};
     categories.forEach(c => catMap[c.slug] = c.id);
-
-    await run('DELETE FROM menu_items');
 
     for (const item of finalMenuItems) {
       const catId = catMap[item.cat_slug] || catMap['hot'];
@@ -849,7 +840,7 @@ async function syncFinalizedMenu() {
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)
       `, [catId, item.name_en, item.name_ar, slug, item.price, item.calories, item.is_hot, item.is_cold, isFeatured]);
     }
-    console.log('[Database] Finalized menu synced cleanly: 52 items across 5 categories!');
+    console.log('[Database] Finalized menu seeded initial items cleanly!');
   } catch (err) {
     console.error('[Database] Failed to sync finalized menu:', err);
   }
