@@ -72,8 +72,7 @@ router.post('/upload', authenticate, requirePermission('manage_media'), upload.a
       return res.status(400).json({ success: false, error: 'No files uploaded' });
     }
 
-    const uploadedFiles = [];
-
+    for (const file of req.files) {
       // Auto-compress uploaded images to sharp ~20-30KB thumbnails
       if (file.mimetype && file.mimetype.startsWith('image/')) {
         try {
