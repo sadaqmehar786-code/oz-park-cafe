@@ -35,6 +35,59 @@ document.addEventListener('DOMContentLoaded', () => {
     return state.user.permissions.includes(permission);
   }
 
+  // Automatic High-Speed Client Image Compression Helper (Downscales 4K/8K photos to max 1200px & ~150KB)
+  async function compressImageFile(file, maxWidth = 1200, maxHeight = 1200, quality = 0.82) {
+    if (!file || !file.type || !file.type.startsWith('image/') || file.type.includes('svg')) {
+      return file;
+    }
+
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth || height > maxHeight) {
+            if (width > height) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            } else {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const outputType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+          canvas.toBlob((blob) => {
+            if (!blob) {
+              resolve(file);
+              return;
+            }
+            const compressedFile = new File([blob], file.name, {
+              type: outputType,
+              lastModified: Date.now()
+            });
+            console.log(`[Auto-Compress] Reduced '${file.name}' from ${(file.size / 1024).toFixed(1)}KB -> ${(compressedFile.size / 1024).toFixed(1)}KB (${width}x${height}px)`);
+            resolve(compressedFile);
+          }, outputType, quality);
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  }
+
   // Helper API Fetcher
   async function api(endpoint, options = {}) {
     options.headers = options.headers || {};
@@ -1199,10 +1252,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         btnChange.disabled = true;
-        statusText.textContent = isAr ? 'جاري رفع الصورة الجديدة...' : 'Uploading new image...';
+        statusText.textContent = isAr ? 'جاري ضغط ورفع الصورة...' : 'Compressing & uploading...';
 
+        const compressed = await compressImageFile(file);
         const formData = new FormData();
-        formData.append('files', file);
+        formData.append('files', compressed);
 
         const uploadRes = await api('/media/upload', { method: 'POST', body: formData });
         if (uploadRes.success && uploadRes.data.length > 0) {
@@ -1435,10 +1489,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('offer-image-file').addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      const formData = new FormData();
-      formData.append('files', file);
       try {
-        document.getElementById('offer-img-status').textContent = isAr ? 'جاري الرفع...' : 'Uploading...';
+        document.getElementById('offer-img-status').textContent = isAr ? 'جاري الضغط والرفع...' : 'Compressing...';
+        const compressed = await compressImageFile(file);
+        const formData = new FormData();
+        formData.append('files', compressed);
         const res = await api('/media/upload', { method: 'POST', body: formData });
         if (res.success && res.data.length > 0) {
           const path = res.data[0].file_path;
@@ -1618,10 +1673,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('post-image-file').addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      const formData = new FormData();
-      formData.append('files', file);
       try {
-        document.getElementById('post-img-status').textContent = isAr ? 'جاري الرفع...' : 'Uploading...';
+        document.getElementById('post-img-status').textContent = isAr ? 'جاري الضغط والرفع...' : 'Compressing...';
+        const compressed = await compressImageFile(file);
+        const formData = new FormData();
+        formData.append('files', compressed);
         const res = await api('/media/upload', { method: 'POST', body: formData });
         if (res.success && res.data.length > 0) {
           const path = res.data[0].file_path;
@@ -1826,10 +1882,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const files = e.target.files;
         if (!files || files.length === 0) return;
 
-        const formData = new FormData();
-        for (let i = 0; i < files.length; i++) formData.append('files', files[i]);
-
         try {
+          showToast(isAr ? 'جاري ضغط ورفع الصور...' : 'Compressing and uploading images...', 'info');
+          const formData = new FormData();
+          for (let i = 0; i < files.length; i++) {
+            const compressed = await compressImageFile(files[i]);
+            formData.append('files', compressed);
+          }
+
           await api('/media/upload', { method: 'POST', body: formData });
           showToast(isAr ? 'تم رفع الصور بنجاح' : 'Images uploaded successfully');
           renderMedia(container);
@@ -1962,10 +2022,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('gal-image-file').addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      const formData = new FormData();
-      formData.append('files', file);
       try {
-        document.getElementById('gal-img-status').textContent = isAr ? 'جاري الرفع...' : 'Uploading...';
+        document.getElementById('gal-img-status').textContent = isAr ? 'جاري الضغط والرفع...' : 'Compressing...';
+        const compressed = await compressImageFile(file);
+        const formData = new FormData();
+        formData.append('files', compressed);
         const res = await api('/media/upload', { method: 'POST', body: formData });
         if (res.success && res.data.length > 0) {
           const path = res.data[0].file_path;
