@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { query, run } = require('./db');
+const { query, run } = require('../db');
 
 async function convertBase64ToFiles() {
   console.log('Starting Base64 image extraction and optimization...');
