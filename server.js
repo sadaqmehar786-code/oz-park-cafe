@@ -9,8 +9,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Initialize Database
-initDb().then(() => {
+initDb().then(async () => {
   console.log('[Server] Database initialized successfully');
+  try {
+    const { updateDessertsMenu } = require('./db');
+    await updateDessertsMenu();
+  } catch (e) {
+    console.error('[Server] Failed to auto-update desserts on boot:', e);
+  }
 }).catch(err => {
   console.error('[Server] Database initialization failed:', err);
 });
