@@ -31,13 +31,21 @@ async function convertBase64ToFiles() {
 
       fs.writeFileSync(filePath, buffer);
 
-      const publicUrl = `/uploads/${filename}`;
+      const publicUrl = `/api/v1/public/uploads/${filename}`;
       await run('UPDATE menu_items SET image_url = ? WHERE id = ?', [publicUrl, item.id]);
       console.log(`Optimized image for '${item.name_en}' -> ${publicUrl} (${Math.round(buffer.length/1024)} KB)`);
     } catch (err) {
       console.error(`Failed to convert image for item ${item.id}:`, err);
     }
   }
+
+  // Also convert any legacy /uploads/ URLs to /api/v1/public/uploads/ for Amplify proxy compatibility
+  await run(`
+    UPDATE menu_items 
+    SET image_url = '/api/v1/public/uploads/' || SUBSTR(image_url, 10)
+    WHERE image_url LIKE '/uploads/%';
+  `);
+  console.log('Converted legacy /uploads/ paths to /api/v1/public/uploads/');
 
   console.log('Base64 optimization complete!');
 }
