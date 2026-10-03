@@ -1608,6 +1608,34 @@ html[lang="ar"] .menu-list-meta-stack {
   line-height: 1.2;
 }
 
+/* Unavailable Item State */
+.menu-list-item.is-unavailable {
+  opacity: 0.72;
+}
+
+.menu-list-tag-unavailable {
+  background-color: #FDE8E8 !important;
+  color: #9B1C1C !important;
+  border-color: #F8B4B4 !important;
+  font-weight: 700 !important;
+}
+
+.btn-unavailable-state {
+  width: 100%;
+  height: 42px;
+  background: #F3F4F6;
+  color: #9CA3AF;
+  border: 1px dashed #D1D5DB;
+  border-radius: var(--border-radius-sm);
+  font-weight: 700;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* Category Filter Transition Anim */
 .menu-page-grid .menu-list-item {
   animation: scaleIn 0.4s ease forwards;

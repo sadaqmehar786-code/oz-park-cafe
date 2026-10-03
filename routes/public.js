@@ -107,6 +107,8 @@ router.get('/init', async (req, res) => {
 // GET /api/v1/public/restaurant-menu - Public restaurant items and categories
 router.get('/restaurant-menu', async (req, res) => {
   try {
+    const cafe = await get('SELECT phone, whatsapp, opening_hours_ar, opening_hours_en FROM cafe_info WHERE id = 1');
+
     const categories = await query(`
       SELECT c.*, COUNT(m.id) as item_count
       FROM restaurant_categories c
@@ -123,9 +125,26 @@ router.get('/restaurant-menu', async (req, res) => {
       ORDER BY c.display_order ASC, m.display_order ASC, m.id ASC
     `);
 
+    // Clean invalid placeholder image URLs
+    for (const item of items) {
+      if (item.image_url && 
+          !item.image_url.startsWith('data:image/') && 
+          !item.image_url.startsWith('/api/') && 
+          !item.image_url.startsWith('/uploads/') && 
+          !item.image_url.startsWith('uploads/') && 
+          !item.image_url.startsWith('http')) {
+        item.image_url = null;
+      }
+    }
+
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
     res.json({
       success: true,
       data: {
+        cafe,
         categories,
         items
       }

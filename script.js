@@ -550,7 +550,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         menuItems.forEach(item => {
           const itemEl = document.createElement('div');
-          itemEl.className = 'menu-list-item reveal active';
+          const isUnavailable = item.availability_status === 'unavailable';
+          itemEl.className = `menu-list-item reveal active ${isUnavailable ? 'is-unavailable' : ''}`;
           itemEl.setAttribute('data-category', item.category_slug || 'hot');
 
           const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
@@ -564,6 +565,33 @@ document.addEventListener('DOMContentLoaded', () => {
           ` : `
             <div class="menu-list-thumb-wrapper menu-list-thumb-placeholder">
               <span class="thumb-icon">☕</span>
+            </div>
+          `;
+
+          const orderRowHtml = isUnavailable ? `
+            <div class="menu-card-order-row">
+              <button class="btn btn-unavailable-state" disabled>
+                <span class="lang-ar">غير متوفر حالياً</span>
+                <span class="lang-en">Currently Unavailable</span>
+              </button>
+            </div>
+          ` : `
+            <div class="menu-card-order-row">
+              <div class="quantity-selector">
+                <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+                <span class="qty-val">1</span>
+                <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+              </div>
+              <button class="btn btn-gold btn-add-to-cart" 
+                      data-id="${item.slug || item.id}" 
+                      data-name-ar="${item.name_ar}" 
+                      data-name-en="${item.name_en}" 
+                      data-price="${item.price}" 
+                      data-calories="${item.calories || 0}"
+                      onclick="handleAddToCart(this)">
+                <span class="lang-ar">أضف للطلب</span>
+                <span class="lang-en">Add to Order</span>
+              </button>
             </div>
           `;
 
@@ -583,10 +611,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
 
                 <div class="menu-list-meta-stack">
-                  <span class="menu-list-tag">
-                    <span class="lang-ar">${item.category_name_ar || ''}</span>
-                    <span class="lang-en">${item.category_name_en || ''}</span>
-                  </span>
+                  ${isUnavailable ? `
+                    <span class="menu-list-tag menu-list-tag-unavailable">
+                      <span class="lang-ar">غير متوفر</span>
+                      <span class="lang-en">Unavailable</span>
+                    </span>
+                  ` : `
+                    <span class="menu-list-tag">
+                      <span class="lang-ar">${item.category_name_ar || ''}</span>
+                      <span class="lang-en">${item.category_name_en || ''}</span>
+                    </span>
+                  `}
                   ${item.calories ? `
                     <span class="menu-list-calories">
                       <span class="lang-ar">${caloriesTextAr}</span>
@@ -596,23 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </div>
               
-              <div class="menu-card-order-row">
-                <div class="quantity-selector">
-                  <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
-                  <span class="qty-val">1</span>
-                  <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
-                </div>
-                <button class="btn btn-gold btn-add-to-cart" 
-                        data-id="${item.slug || item.id}" 
-                        data-name-ar="${item.name_ar}" 
-                        data-name-en="${item.name_en}" 
-                        data-price="${item.price}" 
-                        data-calories="${item.calories || 0}"
-                        onclick="handleAddToCart(this)">
-                  <span class="lang-ar">أضف للطلب</span>
-                  <span class="lang-en">Add to Order</span>
-                </button>
-              </div>
+              ${orderRowHtml}
             </div>
           `;
 
@@ -647,8 +666,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  syncBackendData();
-
   // ==========================================================================
   // RESTAURANT MENU TABS FILTERING SYSTEM & LIVE BACKEND SYNC
   // ==========================================================================
@@ -676,15 +693,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function syncRestaurantBackendData() {
     try {
-      const res = await fetch('/api/v1/public/restaurant-menu');
+      const res = await fetch('/api/v1/public/restaurant-menu?t=' + Date.now());
       if (!res.ok) return;
       const json = await res.json();
       if (!json.success || !json.data) return;
 
-      const { categories, items } = json.data;
-      if (!items || items.length === 0) return;
+      const { cafe, categories, items } = json.data;
 
-      // 1. Dynamic Restaurant Categories Filter Tabs
+      // 1. Update Contact & Opening Hours
+      if (cafe) {
+        document.querySelectorAll('.cafe-phone-val').forEach(el => el.textContent = cafe.phone);
+        document.querySelectorAll('.cafe-hours-ar-val').forEach(el => el.textContent = cafe.opening_hours_ar);
+        document.querySelectorAll('.cafe-hours-en-val').forEach(el => el.textContent = cafe.opening_hours_en);
+        if (cafe.whatsapp) {
+          window.cafeWhatsApp = cafe.whatsapp.replace(/[^0-9]/g, '');
+        }
+      }
+
+      // 2. Dynamic Restaurant Categories Filter Tabs
       const tabsWrapper = document.querySelector('.restaurant-menu-tabs');
       if (tabsWrapper && categories && categories.length > 0) {
         tabsWrapper.innerHTML = `
@@ -703,13 +729,14 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
 
-      // 2. Dynamic Restaurant Items Grid
+      // 3. Dynamic Restaurant Items Grid (Identical Layout to Cafe Menu)
       const container = document.querySelector('.restaurant-menu-grid');
       if (container && items && items.length > 0) {
         container.innerHTML = '';
         items.forEach(item => {
           const itemEl = document.createElement('div');
-          itemEl.className = 'menu-list-item reveal active';
+          const isUnavailable = item.availability_status === 'unavailable';
+          itemEl.className = `menu-list-item reveal active ${isUnavailable ? 'is-unavailable' : ''}`;
           itemEl.setAttribute('data-category', item.category_slug || '');
 
           const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
@@ -727,6 +754,33 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `;
 
+          const orderRowHtml = isUnavailable ? `
+            <div class="menu-card-order-row">
+              <button class="btn btn-unavailable-state" disabled>
+                <span class="lang-ar">غير متوفر حالياً</span>
+                <span class="lang-en">Currently Unavailable</span>
+              </button>
+            </div>
+          ` : `
+            <div class="menu-card-order-row">
+              <div class="quantity-selector">
+                <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+                <span class="qty-val">1</span>
+                <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+              </div>
+              <button class="btn btn-gold btn-add-to-cart" 
+                      data-id="${item.slug || item.id}" 
+                      data-name-ar="${item.name_ar}" 
+                      data-name-en="${item.name_en}" 
+                      data-price="${item.price}" 
+                      data-calories="${item.calories || 0}"
+                      onclick="handleAddToCart(this)">
+                <span class="lang-ar">أضف للطلب</span>
+                <span class="lang-en">Add to Order</span>
+              </button>
+            </div>
+          `;
+
           itemEl.innerHTML = `
             ${thumbHtml}
             <div class="menu-list-details">
@@ -736,41 +790,34 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="lang-ar">${item.name_ar}</span>
                     <span class="lang-en">${item.name_en}</span>
                   </h3>
-                  <div class="menu-list-badges">
-                    <span class="item-badge item-badge-category">
+                  <div class="menu-card-price">
+                    <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
+                    <span class="lang-en">${item.price} SAR</span>
+                  </div>
+                </div>
+
+                <div class="menu-list-meta-stack">
+                  ${isUnavailable ? `
+                    <span class="menu-list-tag menu-list-tag-unavailable">
+                      <span class="lang-ar">غير متوفر</span>
+                      <span class="lang-en">Unavailable</span>
+                    </span>
+                  ` : `
+                    <span class="menu-list-tag">
                       <span class="lang-ar">${item.category_name_ar || ''}</span>
                       <span class="lang-en">${item.category_name_en || ''}</span>
                     </span>
-                    ${item.calories ? `
-                      <span class="item-badge item-badge-cal">
-                        <span class="lang-ar">${caloriesTextAr}</span>
-                        <span class="lang-en">${caloriesTextEn}</span>
-                      </span>
-                    ` : ''}
-                  </div>
-                </div>
-                <div class="menu-list-price-tag">
-                  <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
-                  <span class="lang-en">${item.price} SAR</span>
+                  `}
+                  ${item.calories ? `
+                    <span class="menu-list-calories">
+                      <span class="lang-ar">${caloriesTextAr}</span>
+                      <span class="lang-en">${caloriesTextEn}</span>
+                    </span>
+                  ` : ''}
                 </div>
               </div>
-              <div class="menu-list-order-row">
-                <div class="quantity-selector">
-                  <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
-                  <span class="qty-val">1</span>
-                  <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
-                </div>
-                <button class="btn btn-gold btn-add-to-cart" 
-                        data-id="${item.slug || item.id}" 
-                        data-name-ar="${item.name_ar}" 
-                        data-name-en="${item.name_en}" 
-                        data-price="${item.price}" 
-                        data-calories="${item.calories || 0}"
-                        onclick="handleAddToCart(this)">
-                  <span class="lang-ar">أضف للطلب</span>
-                  <span class="lang-en">Add to Order</span>
-                </button>
-              </div>
+              
+              ${orderRowHtml}
             </div>
           `;
 
@@ -779,10 +826,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       setupRestaurantTabFiltering();
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
     } catch (e) {
       console.error('[Restaurant Sync] Failed:', e);
     }
   }
 
-  setupRestaurantTabFiltering();
+  // Branch execution: Restaurant page syncs immediately; other pages sync cafe data
+  if (isRestaurantPage) {
+    syncRestaurantBackendData();
+  } else {
+    syncBackendData();
+  }
 });
