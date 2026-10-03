@@ -66,7 +66,13 @@ router.get('/', authenticate, requirePermission('manage_media'), async (req, res
 });
 
 // POST /api/v1/media/upload
-router.post('/upload', authenticate, requirePermission('manage_media'), upload.array('files', 10), async (req, res) => {
+router.post('/upload', authenticate, (req, res, next) => {
+  const perms = (req.user && req.user.permissions) || [];
+  if (perms.includes('*') || perms.includes('manage_media') || perms.includes('manage_menu')) {
+    return next();
+  }
+  return res.status(403).json({ success: false, error: "Forbidden: Permission required" });
+}, upload.array('files', 10), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, error: 'No files uploaded' });

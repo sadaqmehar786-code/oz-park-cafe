@@ -23,6 +23,9 @@ router.get('/categories', async (req, res) => {
 
 // POST /api/v1/restaurant/categories
 router.post('/categories', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Category management is restricted to Administrators' });
+  }
   try {
     const { name_en, name_ar, icon, display_order, status } = req.body;
     if (!name_en || !name_ar) {
@@ -57,6 +60,9 @@ router.post('/categories', authenticate, requirePermission('manage_menu'), async
 
 // PUT /api/v1/restaurant/categories/:id
 router.put('/categories/:id', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Category management is restricted to Administrators' });
+  }
   try {
     const categoryId = parseInt(req.params.id);
     const category = await get('SELECT * FROM restaurant_categories WHERE id = ?', [categoryId]);
@@ -98,6 +104,9 @@ router.put('/categories/:id', authenticate, requirePermission('manage_menu'), as
 
 // DELETE /api/v1/restaurant/categories/:id
 router.delete('/categories/:id', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Category management is restricted to Administrators' });
+  }
   try {
     const categoryId = parseInt(req.params.id);
     const category = await get('SELECT * FROM restaurant_categories WHERE id = ?', [categoryId]);
@@ -182,6 +191,9 @@ router.get('/items/:id', async (req, res) => {
 
 // POST /api/v1/restaurant/items
 router.post('/items', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Creating new items is restricted to Administrators. You can edit existing items.' });
+  }
   try {
     const {
       category_id, name_en, name_ar, description_en, description_ar,
@@ -248,7 +260,11 @@ router.put('/items/:id', authenticate, requirePermission('manage_menu'), async (
       return '';
     }
 
-    const finalImageUrl = image_url !== undefined ? sanitizeImg(image_url) : existing.image_url;
+    const isMenuEditor = req.user.role === 'menu_editor';
+    const targetCategoryId = isMenuEditor ? existing.category_id : (category_id || existing.category_id);
+    const targetPrice = isMenuEditor ? existing.price : (price ? parseFloat(price) : existing.price);
+    const targetDiscount = isMenuEditor ? existing.discount_price : (discount_price !== undefined ? (discount_price ? parseFloat(discount_price) : null) : existing.discount_price);
+    const targetCalories = isMenuEditor ? existing.calories : (calories !== undefined ? (calories ? parseInt(calories) : null) : existing.calories);
 
     await run(`
       UPDATE restaurant_items SET
@@ -266,10 +282,10 @@ router.put('/items/:id', authenticate, requirePermission('manage_menu'), async (
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `, [
-      category_id, name_en ? name_en.trim() : null, name_ar ? name_ar.trim() : null,
+      targetCategoryId, name_en ? name_en.trim() : null, name_ar ? name_ar.trim() : null,
       description_en !== undefined ? description_en : null, description_ar !== undefined ? description_ar : null,
-      price ? parseFloat(price) : null, discount_price ? parseFloat(discount_price) : null,
-      finalImageUrl, calories !== undefined ? (calories ? parseInt(calories) : null) : existing.calories,
+      targetPrice, targetDiscount,
+      finalImageUrl, targetCalories,
       availability_status, display_order, itemId
     ]);
 
@@ -294,6 +310,9 @@ router.patch('/items/:id/availability', authenticate, requirePermission('manage_
 
 // DELETE /api/v1/restaurant/items/:id
 router.delete('/items/:id', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Deleting restaurant items is restricted to Administrators' });
+  }
   try {
     const itemId = parseInt(req.params.id);
     const item = await get('SELECT * FROM restaurant_items WHERE id = ?', [itemId]);

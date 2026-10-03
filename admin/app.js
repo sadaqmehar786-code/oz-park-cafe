@@ -563,6 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
       state.categories = catData.data;
       state.menuItems = itemData.data;
       const isAr = state.lang === 'ar';
+      const isEditor = state.user && state.user.role === 'menu_editor';
 
       container.innerHTML = `
         <div class="page-header">
@@ -571,6 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p>${isAr ? 'إدارة الأصناف، تصفية بالتصنيفات، وتعديل وتصنيف المنتجات' : 'Filter by category, edit item details, upload photos, and manage categories'}</p>
           </div>
           <div class="header-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            ${!isEditor ? `
             <button class="btn btn-navy" id="manage-categories-btn">
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
               <span>${isAr ? 'إدارة التصنيفات' : 'Manage Categories'}</span>
@@ -579,6 +581,11 @@ document.addEventListener('DOMContentLoaded', () => {
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
               <span>${isAr ? '+ إضافة صنف جديد' : '+ Add New Item'}</span>
             </button>
+            ` : `
+            <div style="font-size: 0.85rem; color: var(--color-charcoal-light); display: flex; align-items: center; gap: 0.5rem; background: var(--color-cream); padding: 0.4rem 0.85rem; border-radius: 8px; border: 1px solid var(--color-cream-dark);">
+              <span>🛡️ ${isAr ? 'صلاحية: تعديل أسماء الأصناف، الأوصاف، وصور المنتجات' : 'Scope: Edit item names, descriptions & photos'}</span>
+            </div>
+            `}
           </div>
         </div>
 
@@ -648,7 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       <td>
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
                           <span class="badge badge-info" style="font-size: 0.85rem;">${isAr ? (item.category_name_ar || 'غير مصنف') : (item.category_name_en || 'Uncategorized')}</span>
-                          ${item.category_id ? `
+                          ${item.category_id && !isEditor ? `
                             <div style="display: flex; gap: 0.25rem;">
                               <button class="btn btn-navy btn-xs direct-edit-cat-btn" data-id="${item.category_id}" title="${isAr ? 'تعديل هذا التصنيف' : 'Edit this category'}">✏️</button>
                               <button class="btn btn-danger btn-xs direct-delete-cat-btn" data-id="${item.category_id}" title="${isAr ? 'حذف هذا التصنيف' : 'Delete this category'}">🗑️</button>
@@ -664,8 +671,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </button>
                       </td>
                       <td>
-                        <button class="btn btn-navy btn-sm edit-item-btn" data-id="${item.id}">${isAr ? 'تعديل' : 'Edit'}</button>
-                        <button class="btn btn-danger btn-sm delete-item-btn" data-id="${item.id}">${isAr ? 'حذف' : 'Delete'}</button>
+                        <button class="btn ${isEditor ? 'btn-gold' : 'btn-navy'} btn-sm edit-item-btn" data-id="${item.id}">${isAr ? (isEditor ? 'تعديل الصنف والصورة' : 'تعديل') : (isEditor ? 'Edit Item & Photo' : 'Edit')}</button>
+                        ${!isEditor ? `<button class="btn btn-danger btn-sm delete-item-btn" data-id="${item.id}">${isAr ? 'حذف' : 'Delete'}</button>` : ''}
                       </td>
                     </tr>
                   `;
@@ -708,8 +715,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       document.getElementById('search-menu-input').addEventListener('input', filterItems);
 
-      document.getElementById('add-menu-item-btn').addEventListener('click', () => openMenuItemModal());
-      document.getElementById('manage-categories-btn').addEventListener('click', () => openManageCategoriesModal());
+      const addMenuBtn = document.getElementById('add-menu-item-btn');
+      if (addMenuBtn) addMenuBtn.addEventListener('click', () => openMenuItemModal());
+      const manageMenuCatBtn = document.getElementById('manage-categories-btn');
+      if (manageMenuCatBtn) manageMenuCatBtn.addEventListener('click', () => openManageCategoriesModal());
 
       // Direct Category Edit/Delete from row buttons
       container.querySelectorAll('.direct-edit-cat-btn').forEach(btn => {
@@ -1067,6 +1076,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   function openMenuItemModal(item = null) {
     const isAr = state.lang === 'ar';
+    const isEditor = state.user && state.user.role === 'menu_editor';
     let currentImg = (item && item.image_url && (item.image_url.startsWith('data:image/') || item.image_url.startsWith('/api/') || item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'))) ? item.image_url : '';
 
     const bodyHtml = `
@@ -1081,17 +1091,18 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="form-group">
           <label>${isAr ? 'التصنيف (Category) *' : 'Category *'}</label>
-          <select id="item-category-id" class="form-control" required>
+          <select id="item-category-id" class="form-control" ${isEditor ? 'disabled style="background:var(--color-cream); cursor:not-allowed;"' : ''} required>
             ${state.categories.map(c => `<option value="${c.id}" ${item && item.category_id === c.id ? 'selected' : ''}>${isAr ? c.name_ar : c.name_en}</option>`).join('')}
           </select>
         </div>
         <div class="form-group">
           <label>${isAr ? 'السعر (بالريال) *' : 'Price (in SAR) *'}</label>
-          <input type="number" step="0.5" id="item-price" class="form-control" required value="${item ? item.price : '15'}">
+          <input type="number" step="0.5" id="item-price" class="form-control" required value="${item ? item.price : '15'}" ${isEditor ? 'readonly style="background:var(--color-cream); cursor:not-allowed;"' : ''}>
+          ${isEditor ? `<small style="display:block; color:var(--color-charcoal-light); margin-top:4px;">🔒 ${isAr ? 'تعديل السعر مخصص للإدارة العامة فقط' : 'Price modification locked to Administration'}</small>` : ''}
         </div>
         <div class="form-group">
           <label>${isAr ? 'السعرات الحرارية' : 'Calories (kcal)'}</label>
-          <input type="number" id="item-calories" class="form-control" value="${item && item.calories ? item.calories : ''}">
+          <input type="number" id="item-calories" class="form-control" value="${item && item.calories ? item.calories : ''}" ${isEditor ? 'readonly style="background:var(--color-cream); cursor:not-allowed;"' : ''}>
         </div>
 
         <!-- PRODUCT IMAGE MANAGEMENT CONTROL -->
@@ -1268,9 +1279,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const payload = {
         name_ar: document.getElementById('item-name-ar').value.trim(),
         name_en: document.getElementById('item-name-en').value.trim(),
-        category_id: parseInt(document.getElementById('item-category-id').value),
-        price: parseFloat(document.getElementById('item-price').value),
-        calories: document.getElementById('item-calories').value,
+        category_id: isEditor && item ? item.category_id : parseInt(document.getElementById('item-category-id').value),
+        price: isEditor && item ? item.price : parseFloat(document.getElementById('item-price').value),
+        calories: isEditor && item ? item.calories : document.getElementById('item-calories').value,
         image_url: document.getElementById('item-image-url').value,
         description_ar: document.getElementById('item-desc-ar').value,
         description_en: document.getElementById('item-desc-en').value
@@ -1313,6 +1324,7 @@ document.addEventListener('DOMContentLoaded', () => {
       state.restaurantCategories = catData.data;
       state.restaurantItems = itemData.data;
       const isAr = state.lang === 'ar';
+      const isEditor = state.user && state.user.role === 'menu_editor';
 
       container.innerHTML = `
         <div class="page-header">
@@ -1321,6 +1333,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p>${isAr ? 'إدارة أصناف وجبات ومقبلات المطعم، تعديل الأسعار والسعرات، وتصنيف ورفع الصور' : 'Manage restaurant items, categories, prices, calories, and food photos'}</p>
           </div>
           <div class="header-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            ${!isEditor ? `
             <button class="btn btn-navy" id="manage-rest-categories-btn">
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
               <span>${isAr ? 'إدارة تصنيفات المطعم' : 'Manage Categories'}</span>
@@ -1329,6 +1342,11 @@ document.addEventListener('DOMContentLoaded', () => {
               <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
               <span>${isAr ? '+ إضافة صنف جديد' : '+ Add New Item'}</span>
             </button>
+            ` : `
+            <div style="font-size: 0.85rem; color: var(--color-charcoal-light); display: flex; align-items: center; gap: 0.5rem; background: var(--color-cream); padding: 0.4rem 0.85rem; border-radius: 8px; border: 1px solid var(--color-cream-dark);">
+              <span>🛡️ ${isAr ? 'صلاحية: تعديل أسماء الوجبات، الأوصاف، وصور الأطباق' : 'Scope: Edit dish names, descriptions & photos'}</span>
+            </div>
+            `}
           </div>
         </div>
 
@@ -1397,7 +1415,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       <td>
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
                           <span class="badge badge-info" style="font-size: 0.85rem;">${isAr ? (item.category_name_ar || 'غير مصنف') : (item.category_name_en || 'Uncategorized')}</span>
-                          ${item.category_id ? `
+                          ${item.category_id && !isEditor ? `
                             <div style="display: flex; gap: 0.25rem;">
                               <button class="btn btn-navy btn-xs direct-edit-rest-cat-btn" data-id="${item.category_id}" title="${isAr ? 'تعديل هذا التصنيف' : 'Edit this category'}">✏️</button>
                               <button class="btn btn-danger btn-xs direct-delete-rest-cat-btn" data-id="${item.category_id}" title="${isAr ? 'حذف هذا التصنيف' : 'Delete this category'}">🗑️</button>
@@ -1413,8 +1431,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </button>
                       </td>
                       <td>
-                        <button class="btn btn-navy btn-sm edit-rest-item-btn" data-id="${item.id}">${isAr ? 'تعديل' : 'Edit'}</button>
-                        <button class="btn btn-danger btn-sm delete-rest-item-btn" data-id="${item.id}">${isAr ? 'حذف' : 'Delete'}</button>
+                        <button class="btn ${isEditor ? 'btn-gold' : 'btn-navy'} btn-sm edit-rest-item-btn" data-id="${item.id}">${isAr ? (isEditor ? 'تعديل الصنف والصورة' : 'تعديل') : (isEditor ? 'Edit Item & Photo' : 'Edit')}</button>
+                        ${!isEditor ? `<button class="btn btn-danger btn-sm delete-rest-item-btn" data-id="${item.id}">${isAr ? 'حذف' : 'Delete'}</button>` : ''}
                       </td>
                     </tr>
                   `;
@@ -1455,8 +1473,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       document.getElementById('search-rest-input').addEventListener('input', filterRestItems);
-      document.getElementById('add-rest-item-btn').addEventListener('click', () => openRestaurantItemModal());
-      document.getElementById('manage-rest-categories-btn').addEventListener('click', () => openManageRestaurantCategoriesModal());
+      const addRestBtn = document.getElementById('add-rest-item-btn');
+      if (addRestBtn) addRestBtn.addEventListener('click', () => openRestaurantItemModal());
+      const manageRestCatBtn = document.getElementById('manage-rest-categories-btn');
+      if (manageRestCatBtn) manageRestCatBtn.addEventListener('click', () => openManageRestaurantCategoriesModal());
 
       // Direct Category Edit/Delete from row buttons
       container.querySelectorAll('.direct-edit-rest-cat-btn').forEach(btn => {
@@ -1699,6 +1719,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // RESTAURANT ITEM MODAL (WITH IMAGE UPLOAD / COMPRESSION)
   function openRestaurantItemModal(item = null) {
     const isAr = state.lang === 'ar';
+    const isEditor = state.user && state.user.role === 'menu_editor';
     let currentImg = (item && item.image_url && (item.image_url.startsWith('data:image/') || item.image_url.startsWith('/api/') || item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'))) ? item.image_url : '';
 
     const bodyHtml = `
@@ -1713,17 +1734,18 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="form-group">
           <label>${isAr ? 'التصنيف (Category) *' : 'Category *'}</label>
-          <select id="rest-item-category-id" class="form-control" required>
+          <select id="rest-item-category-id" class="form-control" ${isEditor ? 'disabled style="background:var(--color-cream); cursor:not-allowed;"' : ''} required>
             ${state.restaurantCategories.map(c => `<option value="${c.id}" ${item && item.category_id === c.id ? 'selected' : ''}>${isAr ? c.name_ar : c.name_en}</option>`).join('')}
           </select>
         </div>
         <div class="form-group">
           <label>${isAr ? 'السعر (بالريال) *' : 'Price (in SAR) *'}</label>
-          <input type="number" step="0.5" id="rest-item-price" class="form-control" required value="${item ? item.price : '20'}">
+          <input type="number" step="0.5" id="rest-item-price" class="form-control" required value="${item ? item.price : '20'}" ${isEditor ? 'readonly style="background:var(--color-cream); cursor:not-allowed;"' : ''}>
+          ${isEditor ? `<small style="display:block; color:var(--color-charcoal-light); margin-top:4px;">🔒 ${isAr ? 'تعديل السعر مخصص للإدارة العامة فقط' : 'Price modification locked to Administration'}</small>` : ''}
         </div>
         <div class="form-group">
           <label>${isAr ? 'السعرات الحرارية' : 'Calories (kcal)'}</label>
-          <input type="number" id="rest-item-calories" class="form-control" value="${item && item.calories ? item.calories : ''}">
+          <input type="number" id="rest-item-calories" class="form-control" value="${item && item.calories ? item.calories : ''}" ${isEditor ? 'readonly style="background:var(--color-cream); cursor:not-allowed;"' : ''}>
         </div>
 
         <!-- PRODUCT IMAGE MANAGEMENT CONTROL -->
@@ -1836,10 +1858,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const btnSave = document.getElementById('save-rest-item-btn');
       const name_ar = document.getElementById('rest-item-name-ar').value.trim();
       const name_en = document.getElementById('rest-item-name-en').value.trim();
-      const category_id = parseInt(document.getElementById('rest-item-category-id').value);
-      const price = parseFloat(document.getElementById('rest-item-price').value);
+      const category_id = isEditor && item ? item.category_id : parseInt(document.getElementById('rest-item-category-id').value);
+      const price = isEditor && item ? item.price : parseFloat(document.getElementById('rest-item-price').value);
       const caloriesVal = document.getElementById('rest-item-calories').value.trim();
-      const calories = caloriesVal ? parseInt(caloriesVal) : null;
+      const calories = isEditor && item ? item.calories : (caloriesVal ? parseInt(caloriesVal) : null);
       const description_ar = document.getElementById('rest-item-desc-ar').value.trim();
       const description_en = document.getElementById('rest-item-desc-en').value.trim();
       const image_url = document.getElementById('rest-item-image-url').value.trim();

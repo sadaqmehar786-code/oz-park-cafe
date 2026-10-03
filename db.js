@@ -407,6 +407,38 @@ async function initDb() {
   try {
     await run("UPDATE menu_items SET image_url = '' WHERE image_url LIKE '%assets/images%' OR image_url IS NULL");
   } catch (e) {}
+
+  // Ensure F&B Menu Manager role and user exist
+  try {
+    let role = await get('SELECT id FROM roles WHERE slug = "menu_editor"');
+    if (!role) {
+      const res = await run(
+        'INSERT INTO roles (name, slug, description, permissions) VALUES (?, ?, ?, ?)',
+        ['F&B Menu Manager', 'menu_editor', 'Can manage food and beverage item names, descriptions, and photos for cafe and restaurant.', JSON.stringify(['manage_menu'])]
+      );
+      role = { id: res.id };
+    } else {
+      await run('UPDATE roles SET permissions = ? WHERE id = ?', [JSON.stringify(['manage_menu']), role.id]);
+    }
+
+    const email = 'sayedamed949@gmail.com';
+    const pass = 'OZF&Bbackend.122345';
+    const hash = bcrypt.hashSync(pass, 10);
+    const user = await get('SELECT id FROM users WHERE email = ?', [email]);
+    if (!user) {
+      await run(
+        'INSERT INTO users (full_name, email, password_hash, role_id, status, preferred_lang) VALUES (?, ?, ?, ?, ?, ?)',
+        ['Sayed Ahmed', email, hash, role.id, 'active', 'ar']
+      );
+    } else {
+      await run(
+        'UPDATE users SET password_hash = ?, role_id = ?, status = "active", full_name = "Sayed Ahmed" WHERE id = ?',
+        [hash, role.id, user.id]
+      );
+    }
+  } catch (err) {
+    console.error('Error ensuring F&B user on boot:', err);
+  }
 }
 
 async function seedData() {

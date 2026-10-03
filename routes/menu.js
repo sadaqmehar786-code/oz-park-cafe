@@ -58,6 +58,9 @@ router.get('/categories', async (req, res) => {
 
 // POST /api/v1/menu/categories
 router.post('/categories', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Category management is restricted to Administrators' });
+  }
   try {
     const { name_en, name_ar, icon, description_en, description_ar, display_order, status } = req.body;
     if (!name_en || !name_ar) {
@@ -93,6 +96,9 @@ router.post('/categories', authenticate, requirePermission('manage_menu'), async
 
 // PUT /api/v1/menu/categories/:id (Rename / Edit Category)
 router.put('/categories/:id', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Category management is restricted to Administrators' });
+  }
   try {
     const categoryId = parseInt(req.params.id);
     const category = await get('SELECT * FROM menu_categories WHERE id = ?', [categoryId]);
@@ -147,6 +153,9 @@ router.put('/categories/:id', authenticate, requirePermission('manage_menu'), as
 
 // DELETE /api/v1/menu/categories/:id (With product handling options)
 router.delete('/categories/:id', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Category management is restricted to Administrators' });
+  }
   try {
     const rawParam = req.params.id;
     const parsedId = parseInt(rawParam);
@@ -297,6 +306,9 @@ router.get('/items/:id', async (req, res) => {
 
 // POST /api/v1/menu/items
 router.post('/items', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Creating new menu items is restricted to Administrators. You can edit existing items.' });
+  }
   try {
     const {
       category_id, name_en, name_ar, description_en, description_ar,
@@ -385,8 +397,14 @@ router.put('/items/:id', authenticate, requirePermission('manage_menu'), async (
     const newImageUrl = targetImgUrl;
     const imageChanged = oldImageUrl !== newImageUrl;
 
+    const isMenuEditor = req.user.role === 'menu_editor';
+    const finalCategoryId = isMenuEditor ? item.category_id : (category_id || item.category_id);
+    const finalPrice = isMenuEditor ? item.price : (price !== undefined ? parseFloat(price) : item.price);
+    const finalDiscountPrice = isMenuEditor ? item.discount_price : (discount_price !== undefined ? (discount_price ? parseFloat(discount_price) : null) : item.discount_price);
+    const finalCalories = isMenuEditor ? item.calories : (calories !== undefined ? (calories ? parseInt(calories) : null) : item.calories);
+
     // Track price change in audit log
-    if (price && parseFloat(price) !== item.price) {
+    if (!isMenuEditor && price && parseFloat(price) !== item.price) {
       await logAudit(req, 'MENU_PRICE_CHANGE', `Price changed for '${item.name_en}' from ${item.price} SAR to ${price} SAR`);
     }
 
@@ -399,18 +417,18 @@ router.put('/items/:id', authenticate, requirePermission('manage_menu'), async (
         seo_title = ?, meta_desc = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `, [
-      category_id || item.category_id,
+      finalCategoryId,
       name_en || item.name_en,
       name_ar || item.name_ar,
       description_en !== undefined ? description_en : item.description_en,
       description_ar !== undefined ? description_ar : item.description_ar,
-      price !== undefined ? parseFloat(price) : item.price,
-      discount_price !== undefined ? (discount_price ? parseFloat(discount_price) : null) : item.discount_price,
+      finalPrice,
+      finalDiscountPrice,
       newImageUrl,
       ingredients_en !== undefined ? ingredients_en : item.ingredients_en,
       ingredients_ar !== undefined ? ingredients_ar : item.ingredients_ar,
       allergens !== undefined ? allergens : item.allergens,
-      calories !== undefined ? (calories ? parseInt(calories) : null) : item.calories,
+      finalCalories,
       is_hot !== undefined ? (is_hot ? 1 : 0) : item.is_hot,
       is_cold !== undefined ? (is_cold ? 1 : 0) : item.is_cold,
       is_featured !== undefined ? (is_featured ? 1 : 0) : item.is_featured,
@@ -504,6 +522,9 @@ router.patch('/items/:id/availability', authenticate, requirePermission('manage_
 
 // DELETE /api/v1/menu/items/:id (Soft Delete)
 router.delete('/items/:id', authenticate, requirePermission('manage_menu'), async (req, res) => {
+  if (req.user.role === 'menu_editor') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Deleting menu items is restricted to Administrators' });
+  }
   try {
     const item = await get('SELECT name_en, id FROM menu_items WHERE (id = ? OR slug = ?) AND deleted_at IS NULL', [req.params.id, req.params.id]);
     if (!item) {
