@@ -1514,6 +1514,20 @@ html[lang="ar"] .footer-links a:hover {
   filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
 }
 
+.menu-list-thumb-flat {
+  background: #F4EFE6;
+  border: 1px solid rgba(197, 160, 89, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-list-thumb-flat .thumb-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.06));
+}
+
 .menu-list-details {
   display: flex;
   flex-direction: column;

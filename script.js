@@ -431,6 +431,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
+      // If we are on the restaurant menu page, DO NOT touch category tabs or menu grid!
+      const isRestaurant = window.location.pathname.includes('restaurant-menu');
+      if (isRestaurant) {
+        return;
+      }
+
       // 2. Render Dynamic Categories Filter Tabs on menu.html
       const menuTabsWrapper = document.querySelector('.menu-tabs');
       if (menuTabsWrapper && categories && Array.isArray(categories) && categories.length > 0) {
