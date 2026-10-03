@@ -148,6 +148,19 @@ app.get('/restaurant-menu', (req, res) => {
   res.sendFile(path.join(__dirname, 'restaurant-menu.html'));
 });
 
+// Clean URL Redirects: /order and /hotel -> order.html
+app.get('/order.html', (req, res) => {
+  res.redirect(301, '/order');
+});
+
+app.get('/hotel.html', (req, res) => {
+  res.redirect(301, '/hotel');
+});
+
+app.get(['/order', '/hotel'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'order.html'));
+});
+
 // Serve Public Website Static Assets
 app.use(express.static(__dirname));
 
