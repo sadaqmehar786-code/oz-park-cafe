@@ -5,14 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const langSwitchButtons = document.querySelectorAll('.lang-switch');
   
   let currentLang = localStorage.getItem('preferred-lang') || 'ar';
-  const isMenuPage = window.location.pathname.includes('menu.html');
+  const isRestaurantPage = window.location.pathname.includes('restaurant-menu');
+  const isMenuPage = !isRestaurantPage && (window.location.pathname.includes('menu.html') || window.location.pathname.endsWith('/menu'));
   
   const applyLanguage = (lang) => {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     localStorage.setItem('preferred-lang', lang);
     
-    if (isMenuPage) {
+    if (isRestaurantPage) {
+      document.title = lang === 'ar' 
+        ? 'قائمة طعام المطعم - أوز بارك | OZ Park Restaurant Menu' 
+        : 'OZ Park Restaurant - Complete Dining Menu';
+    } else if (isMenuPage) {
       document.title = lang === 'ar' 
         ? 'قائمة المأكولات والمشروبات - أوز بارك كافيه' 
         : 'OZ Park Cafe - Premium Coffee & Beverage Menu';
@@ -353,9 +358,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let message = "";
     let total = 0;
+    const isRestaurant = window.location.pathname.includes('restaurant-menu');
     
     if (lang === 'ar') {
-      message += `*طلب جديد - أوز بارك كافيه Coffee Lounge*\n`;
+      const orderTitle = isRestaurant ? 'طلب مطعم جديد - أوز بارك (OZ Park Restaurant)' : 'طلب جديد - أوز بارك كافيه Coffee Lounge';
+      message += `*${orderTitle}*\n`;
       message += `------------------------------------\n`;
       message += `*رقم الطاولة / الغرفة:* ${roomNum}\n\n`;
       message += `*الطلبات:*\n`;
@@ -367,7 +374,8 @@ document.addEventListener('DOMContentLoaded', () => {
       message += `\n*المجموع الإجمالي:* ${total} ر.س\n`;
       message += `------------------------------------`;
     } else {
-      message += `*New Order - OZ Park Cafe Coffee Lounge*\n`;
+      const orderTitle = isRestaurant ? 'New Restaurant Order - OZ Park Restaurant' : 'New Order - OZ Park Cafe Coffee Lounge';
+      message += `*${orderTitle}*\n`;
       message += `------------------------------------\n`;
       message += `*Room / Table Number:* ${roomNum}\n\n`;
       message += `*Items:*\n`;
@@ -529,7 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 4. Dynamic Full Menu Grid Renderer for menu.html (.menu-page-grid)
-      const menuGridContainer = document.querySelector('.menu-page-grid');
+      const menuGridContainer = document.querySelector('.menu-page-grid:not(.restaurant-menu-grid)');
       if (menuGridContainer && menuItems && Array.isArray(menuItems) && menuItems.length > 0) {
         menuGridContainer.innerHTML = '';
 
@@ -633,4 +641,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   syncBackendData();
+
+  // ==========================================================================
+  // RESTAURANT MENU TABS FILTERING SYSTEM
+  // ==========================================================================
+  const restTabs = document.querySelectorAll('.restaurant-menu-tabs .menu-tab');
+  const restItems = document.querySelectorAll('.restaurant-menu-grid .menu-list-item');
+  if (restTabs.length > 0 && restItems.length > 0) {
+    restTabs.forEach(tab => {
+      tab.onclick = () => {
+        restTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filterValue = tab.getAttribute('data-filter');
+        restItems.forEach(item => {
+          const cat = item.getAttribute('data-category');
+          if (filterValue === 'all' || cat === filterValue) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      };
+    });
+  }
 });

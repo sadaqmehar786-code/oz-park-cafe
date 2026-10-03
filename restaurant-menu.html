@@ -1,0 +1,2543 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="قائمة طعام مطعم أوز بارك بالقنفذة - مقبلات، مشويات طازجة، مناقيش، أطباق إيطالية، وبرجر فاخر / OZ Park Restaurant Dining Menu in Al Qunfudhah.">
+  <title>قائمة طعام المطعم - أوز بارك | OZ Park Restaurant Menu</title>
+  <link rel="stylesheet" href="style.css?v=3.0.0">
+  <style>
+    .reveal, .reveal.active {
+      opacity: 1 !important;
+      transform: none !important;
+      visibility: visible !important;
+    }
+    .restaurant-menu-grid .menu-list-item {
+      animation: scaleIn 0.4s ease forwards;
+    }
+    /* Ensure details take full card width when there is no image */
+    .restaurant-menu-grid .menu-list-details {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       STICKY HEADER / NAVIGATION (Bilingual and Responsive)
+       ========================================================================== -->
+  <header class="header-wrapper">
+    <div class="container header-container">
+      <a href="/" class="nav-logo">
+        <div class="logo-fallback">
+          <span class="logo-fallback-en lang-en">OZ PARK CAFE</span>
+          <span class="logo-fallback-ar lang-ar">اوز بارك</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu">
+        <ul>
+          <li>
+            <a href="/#home" class="nav-link">
+              <span class="lang-ar">الرئيسية</span>
+              <span class="lang-en">Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="/menu" class="nav-link">
+              <span class="lang-ar">قائمة الكافيه</span>
+              <span class="lang-en">Cafe Menu</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link active">
+              <span class="lang-ar">قائمة المطعم</span>
+              <span class="lang-en">Restaurant Menu</span>
+            </a>
+          </li>
+          <li>
+            <a href="/#about" class="nav-link">
+              <span class="lang-ar">من نحن</span>
+              <span class="lang-en">About Us</span>
+            </a>
+          </li>
+          <li>
+            <a href="/#contact" class="nav-link">
+              <span class="lang-ar">تواصل معنا</span>
+              <span class="lang-en">Contact</span>
+            </a>
+          </li>
+        </ul>
+        
+        <div class="mobile-actions">
+          <button class="lang-switch" aria-label="Toggle Language">
+            <span class="lang-ar">English</span>
+            <span class="lang-en">العربية</span>
+          </button>
+          <a href="/#contact" class="btn btn-gold header-btn">
+            <span class="lang-ar">تفضل بزيارتنا</span>
+            <span class="lang-en">Visit Us</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="lang-switch" aria-label="Toggle Language">
+          <span class="lang-ar">English</span>
+          <span class="lang-en">العربية</span>
+        </button>
+        <a href="/#contact" class="btn btn-gold header-btn">
+          <span class="lang-ar">تفضل بزيارتنا</span>
+          <span class="lang-en">Visit Us</span>
+        </a>
+      </div>
+
+      <button class="hamburger" aria-label="Toggle Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       RESTAURANT MENU PAGE HERO
+       ========================================================================== -->
+  <section class="menu-header-sec">
+    <div class="container">
+      <h1 class="lang-ar">قائمة طعام المطعم</h1>
+      <h1 class="lang-en">Restaurant Dining Menu</h1>
+      <p class="lang-ar">أشهى المأكولات الشرقية والغربية، المشويات الطازجة على الفحم، والباستا والبيتزا الإيطالية</p>
+      <p class="lang-en">Exquisite oriental & international cuisine, fresh charcoal grills, authentic Italian pasta & pizzas</p>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CATEGORY FILTER TABS
+       ========================================================================== -->
+  <div class="container menu-tabs-wrapper">
+    <div class="menu-tabs restaurant-menu-tabs">
+
+      <button class="menu-tab active" data-filter="all">
+        <span class="menu-tab-icon">🍽️</span>
+        <span class="lang-ar">الكل</span>
+        <span class="lang-en">All Categories</span>
+      </button>
+
+      <button class="menu-tab " data-filter="salad-appetizers">
+        <span class="menu-tab-icon">🥗</span>
+        <span class="lang-ar">المقبلات والسلطات</span>
+        <span class="lang-en">Salads & Cold Appetizers</span>
+      </button>
+
+      <button class="menu-tab " data-filter="hot-appetizers">
+        <span class="menu-tab-icon">🥟</span>
+        <span class="lang-ar">المقبلات الساخنة</span>
+        <span class="lang-en">Hot Appetizers</span>
+      </button>
+
+      <button class="menu-tab " data-filter="soups">
+        <span class="menu-tab-icon">🥣</span>
+        <span class="lang-ar">الشوربة</span>
+        <span class="lang-en">Soups</span>
+      </button>
+
+      <button class="menu-tab " data-filter="grills">
+        <span class="menu-tab-icon">🍢</span>
+        <span class="lang-ar">المشويات</span>
+        <span class="lang-en">Charcoal Grills</span>
+      </button>
+
+      <button class="menu-tab " data-filter="manakish">
+        <span class="menu-tab-icon">🫓</span>
+        <span class="lang-ar">المناقيش</span>
+        <span class="lang-en">Fresh Manakish</span>
+      </button>
+
+      <button class="menu-tab " data-filter="italian">
+        <span class="menu-tab-icon">🍝</span>
+        <span class="lang-ar">القسم الإيطالي</span>
+        <span class="lang-en">Italian Corner</span>
+      </button>
+
+      <button class="menu-tab " data-filter="burgers">
+        <span class="menu-tab-icon">🍔</span>
+        <span class="lang-ar">البرجر والساندوتش</span>
+        <span class="lang-en">Burgers & Sandwiches</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       RESTAURANT MENU GRID
+       ========================================================================== -->
+  <main class="container">
+    <div class="menu-page-grid restaurant-menu-grid">
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">سلطة خضراء</span>
+                <span class="lang-en">Green Salad</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٠ ر.س</span>
+                <span class="lang-en">10 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٧٥ سعرة</span>
+                <span class="lang-en">75 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-1" 
+                    data-name-ar="سلطة خضراء" 
+                    data-name-en="Green Salad" 
+                    data-price="10" 
+                    data-calories="75"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">فتوش</span>
+                <span class="lang-en">Fattoush</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">١٦٠ سعرة</span>
+                <span class="lang-en">160 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-2" 
+                    data-name-ar="فتوش" 
+                    data-name-en="Fattoush" 
+                    data-price="15" 
+                    data-calories="160"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">تبولة</span>
+                <span class="lang-en">Tabbouleh</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">١٣٠ سعرة</span>
+                <span class="lang-en">130 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-3" 
+                    data-name-ar="تبولة" 
+                    data-name-en="Tabbouleh" 
+                    data-price="15" 
+                    data-calories="130"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">محمرة</span>
+                <span class="lang-en">Muhammara</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٢٥٠ سعرة</span>
+                <span class="lang-en">250 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-4" 
+                    data-name-ar="محمرة" 
+                    data-name-en="Muhammara" 
+                    data-price="15" 
+                    data-calories="250"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">متبل</span>
+                <span class="lang-en">Mutabbal</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٢ ر.س</span>
+                <span class="lang-en">12 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">١٤٠ سعرة</span>
+                <span class="lang-en">140 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-5" 
+                    data-name-ar="متبل" 
+                    data-name-en="Mutabbal" 
+                    data-price="12" 
+                    data-calories="140"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">حمص</span>
+                <span class="lang-en">Hummus</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٠ ر.س</span>
+                <span class="lang-en">10 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">١٦٢ سعرة</span>
+                <span class="lang-en">162 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-6" 
+                    data-name-ar="حمص" 
+                    data-name-en="Hummus" 
+                    data-price="10" 
+                    data-calories="162"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">سلطة يونانية</span>
+                <span class="lang-en">Greek Salad</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٨ ر.س</span>
+                <span class="lang-en">18 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٢١٠ سعرة</span>
+                <span class="lang-en">210 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-7" 
+                    data-name-ar="سلطة يونانية" 
+                    data-name-en="Greek Salad" 
+                    data-price="18" 
+                    data-calories="210"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">سلطة سيزر دجاج</span>
+                <span class="lang-en">Caesar Chicken Salad</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٠ ر.س</span>
+                <span class="lang-en">20 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٢٤٠ سعرة</span>
+                <span class="lang-en">240 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-8" 
+                    data-name-ar="سلطة سيزر دجاج" 
+                    data-name-en="Caesar Chicken Salad" 
+                    data-price="20" 
+                    data-calories="240"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">سلطة الملفوف</span>
+                <span class="lang-en">Coleslaw Salad</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٣١٧ سعرة</span>
+                <span class="lang-en">317 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-9" 
+                    data-name-ar="سلطة الملفوف" 
+                    data-name-en="Coleslaw Salad" 
+                    data-price="15" 
+                    data-calories="317"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="salad-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">بطاطس حارة</span>
+                <span class="lang-en">Spicy Potato</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٠ ر.س</span>
+                <span class="lang-en">10 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مقبلات وسلطات</span>
+                <span class="lang-en">Salad & Appetizer</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٧٠ سعرة</span>
+                <span class="lang-en">470 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-10" 
+                    data-name-ar="بطاطس حارة" 
+                    data-name-en="Spicy Potato" 
+                    data-price="10" 
+                    data-calories="470"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="hot-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">كبة لحم مقلية (٤ حبة)</span>
+                <span class="lang-en">Fried Beef Kibbeh (4 pcs)</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٢ ر.س</span>
+                <span class="lang-en">12 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المقبلات الساخنة</span>
+                <span class="lang-en">Hot Appetizers</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٦١٠ سعرة</span>
+                <span class="lang-en">610 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-11" 
+                    data-name-ar="كبة لحم مقلية (٤ حبة)" 
+                    data-name-en="Fried Beef Kibbeh (4 pcs)" 
+                    data-price="12" 
+                    data-calories="610"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="hot-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">سمبوسة مشكلة (جبن - لحم - خضار ٦ حبة)</span>
+                <span class="lang-en">Mixed Sambousek (Cheese - Meat - Veggie 6 pcs)</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المقبلات الساخنة</span>
+                <span class="lang-en">Hot Appetizers</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٥٢٠ سعرة</span>
+                <span class="lang-en">520 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-12" 
+                    data-name-ar="سمبوسة مشكلة (جبن - لحم - خضار ٦ حبة)" 
+                    data-name-en="Mixed Sambousek (Cheese - Meat - Veggie 6 pcs)" 
+                    data-price="15" 
+                    data-calories="520"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="hot-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">كبة باللبن مع أرز بالشعيرية</span>
+                <span class="lang-en">Kibbeh with Yogurt & Vermicelli Rice</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٥ ر.س</span>
+                <span class="lang-en">25 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المقبلات الساخنة</span>
+                <span class="lang-en">Hot Appetizers</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٥٥٠ سعرة</span>
+                <span class="lang-en">550 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-13" 
+                    data-name-ar="كبة باللبن مع أرز بالشعيرية" 
+                    data-name-en="Kibbeh with Yogurt & Vermicelli Rice" 
+                    data-price="25" 
+                    data-calories="550"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="hot-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">شيش برك</span>
+                <span class="lang-en">Shish Barak</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٥ ر.س</span>
+                <span class="lang-en">25 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المقبلات الساخنة</span>
+                <span class="lang-en">Hot Appetizers</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٨٥ سعرة</span>
+                <span class="lang-en">485 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-14" 
+                    data-name-ar="شيش برك" 
+                    data-name-en="Shish Barak" 
+                    data-price="25" 
+                    data-calories="485"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="hot-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">فتة حمص</span>
+                <span class="lang-en">Fattah Hummus</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المقبلات الساخنة</span>
+                <span class="lang-en">Hot Appetizers</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٧٨٠ سعرة</span>
+                <span class="lang-en">780 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-15" 
+                    data-name-ar="فتة حمص" 
+                    data-name-en="Fattah Hummus" 
+                    data-price="15" 
+                    data-calories="780"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="hot-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">أرز أبيض</span>
+                <span class="lang-en">White Rice</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٠ ر.س</span>
+                <span class="lang-en">10 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المقبلات الساخنة</span>
+                <span class="lang-en">Hot Appetizers</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٩٠ سعرة</span>
+                <span class="lang-en">490 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-16" 
+                    data-name-ar="أرز أبيض" 
+                    data-name-en="White Rice" 
+                    data-price="10" 
+                    data-calories="490"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="hot-appetizers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">سبرنج رول (٦ حبة)</span>
+                <span class="lang-en">Spring Rolls (6 pcs)</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٨ ر.س</span>
+                <span class="lang-en">18 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المقبلات الساخنة</span>
+                <span class="lang-en">Hot Appetizers</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٧٢٠ سعرة</span>
+                <span class="lang-en">720 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-17" 
+                    data-name-ar="سبرنج رول (٦ حبة)" 
+                    data-name-en="Spring Rolls (6 pcs)" 
+                    data-price="18" 
+                    data-calories="720"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="soups">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">شوربة دجاج بالكريمة</span>
+                <span class="lang-en">Chicken Cream Soup</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">الشوربة</span>
+                <span class="lang-en">Soup</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٣٠٠ سعرة</span>
+                <span class="lang-en">300 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-18" 
+                    data-name-ar="شوربة دجاج بالكريمة" 
+                    data-name-en="Chicken Cream Soup" 
+                    data-price="15" 
+                    data-calories="300"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="soups">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">شوربة مشروم بالكريمة</span>
+                <span class="lang-en">Mushroom Cream Soup</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٣ ر.س</span>
+                <span class="lang-en">13 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">الشوربة</span>
+                <span class="lang-en">Soup</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٢٥٠ سعرة</span>
+                <span class="lang-en">250 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-19" 
+                    data-name-ar="شوربة مشروم بالكريمة" 
+                    data-name-en="Mushroom Cream Soup" 
+                    data-price="13" 
+                    data-calories="250"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="soups">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">شوربة عدس</span>
+                <span class="lang-en">Lentil Soup</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٠ ر.س</span>
+                <span class="lang-en">10 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">الشوربة</span>
+                <span class="lang-en">Soup</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٢٢٠ سعرة</span>
+                <span class="lang-en">220 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-20" 
+                    data-name-ar="شوربة عدس" 
+                    data-name-en="Lentil Soup" 
+                    data-price="10" 
+                    data-calories="220"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="soups">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">شوربة سي فود</span>
+                <span class="lang-en">Seafood Soup</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٠ ر.س</span>
+                <span class="lang-en">20 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">الشوربة</span>
+                <span class="lang-en">Soup</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٣٥٠ سعرة</span>
+                <span class="lang-en">350 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-21" 
+                    data-name-ar="شوربة سي فود" 
+                    data-name-en="Seafood Soup" 
+                    data-price="20" 
+                    data-calories="350"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="grills">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">كباب لحم</span>
+                <span class="lang-en">Meat Kebab</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٣٥ ر.س</span>
+                <span class="lang-en">35 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مشويات</span>
+                <span class="lang-en">Grills</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٧٣٠ سعرة</span>
+                <span class="lang-en">730 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-22" 
+                    data-name-ar="كباب لحم" 
+                    data-name-en="Meat Kebab" 
+                    data-price="35" 
+                    data-calories="730"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="grills">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">كباب دجاج</span>
+                <span class="lang-en">Chicken Kebab</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٣١ ر.س</span>
+                <span class="lang-en">31 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مشويات</span>
+                <span class="lang-en">Grills</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٨٠ سعرة</span>
+                <span class="lang-en">480 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-23" 
+                    data-name-ar="كباب دجاج" 
+                    data-name-en="Chicken Kebab" 
+                    data-price="31" 
+                    data-calories="480"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="grills">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">أوصال لحم مشوية</span>
+                <span class="lang-en">Grilled Beef Cubes</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٣٧ ر.س</span>
+                <span class="lang-en">37 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مشويات</span>
+                <span class="lang-en">Grills</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٨٦٣ سعرة</span>
+                <span class="lang-en">863 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-24" 
+                    data-name-ar="أوصال لحم مشوية" 
+                    data-name-en="Grilled Beef Cubes" 
+                    data-price="37" 
+                    data-calories="863"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="grills">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">شيش طاووق دجاج</span>
+                <span class="lang-en">Chicken Shish Tawook</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٣٥ ر.س</span>
+                <span class="lang-en">35 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مشويات</span>
+                <span class="lang-en">Grills</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٦٤ سعرة</span>
+                <span class="lang-en">464 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-25" 
+                    data-name-ar="شيش طاووق دجاج" 
+                    data-name-en="Chicken Shish Tawook" 
+                    data-price="35" 
+                    data-calories="464"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="grills">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">مشاوي مشكلة</span>
+                <span class="lang-en">Mixed Grill</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٣٧ ر.س</span>
+                <span class="lang-en">37 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مشويات</span>
+                <span class="lang-en">Grills</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٧٨٠ سعرة</span>
+                <span class="lang-en">780 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-26" 
+                    data-name-ar="مشاوي مشكلة" 
+                    data-name-en="Mixed Grill" 
+                    data-price="37" 
+                    data-calories="780"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="grills">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">كباب خشخاش</span>
+                <span class="lang-en">Kebab Khashkhash</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٣٧ ر.س</span>
+                <span class="lang-en">37 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مشويات</span>
+                <span class="lang-en">Grills</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٨١٠ سعرة</span>
+                <span class="lang-en">810 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-27" 
+                    data-name-ar="كباب خشخاش" 
+                    data-name-en="Kebab Khashkhash" 
+                    data-price="37" 
+                    data-calories="810"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="grills">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">عرايس مشوية</span>
+                <span class="lang-en">Grilled Arayes</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٨ ر.س</span>
+                <span class="lang-en">28 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مشويات</span>
+                <span class="lang-en">Grills</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤١٧ سعرة</span>
+                <span class="lang-en">417 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-28" 
+                    data-name-ar="عرايس مشوية" 
+                    data-name-en="Grilled Arayes" 
+                    data-price="28" 
+                    data-calories="417"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="grills">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">ريش غنم مشوية</span>
+                <span class="lang-en">Grilled Lamb Chops</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٧٥ ر.س</span>
+                <span class="lang-en">75 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">مشويات</span>
+                <span class="lang-en">Grills</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">١١٠٧ سعرة</span>
+                <span class="lang-en">1107 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-29" 
+                    data-name-ar="ريش غنم مشوية" 
+                    data-name-en="Grilled Lamb Chops" 
+                    data-price="75" 
+                    data-calories="1107"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="manakish">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">مناقيش زعتر</span>
+                <span class="lang-en">Zaatar Manakish</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٢ ر.س</span>
+                <span class="lang-en">12 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المناقيش</span>
+                <span class="lang-en">Manakish</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٢١٧ سعرة</span>
+                <span class="lang-en">217 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-30" 
+                    data-name-ar="مناقيش زعتر" 
+                    data-name-en="Zaatar Manakish" 
+                    data-price="12" 
+                    data-calories="217"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="manakish">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">مناقيش جبنة</span>
+                <span class="lang-en">Cheese Manakish</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المناقيش</span>
+                <span class="lang-en">Manakish</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٦٢ سعرة</span>
+                <span class="lang-en">462 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-31" 
+                    data-name-ar="مناقيش جبنة" 
+                    data-name-en="Cheese Manakish" 
+                    data-price="15" 
+                    data-calories="462"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="manakish">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">مناقيش لبنة سادة</span>
+                <span class="lang-en">Plain Labneh Manakish</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المناقيش</span>
+                <span class="lang-en">Manakish</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٢٩٧ سعرة</span>
+                <span class="lang-en">297 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-32" 
+                    data-name-ar="مناقيش لبنة سادة" 
+                    data-name-en="Plain Labneh Manakish" 
+                    data-price="15" 
+                    data-calories="297"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="manakish">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">مناقيش لبنة بالزعتر</span>
+                <span class="lang-en">Labneh & Zaatar Manakish</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٧ ر.س</span>
+                <span class="lang-en">17 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المناقيش</span>
+                <span class="lang-en">Manakish</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٧٧ سعرة</span>
+                <span class="lang-en">477 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-33" 
+                    data-name-ar="مناقيش لبنة بالزعتر" 
+                    data-name-en="Labneh & Zaatar Manakish" 
+                    data-price="17" 
+                    data-calories="477"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="manakish">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">مناقيش سبانخ</span>
+                <span class="lang-en">Spinach Manakish</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المناقيش</span>
+                <span class="lang-en">Manakish</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٣٢٠ سعرة</span>
+                <span class="lang-en">320 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-34" 
+                    data-name-ar="مناقيش سبانخ" 
+                    data-name-en="Spinach Manakish" 
+                    data-price="15" 
+                    data-calories="320"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="manakish">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">مناقيش لحم بالجبن</span>
+                <span class="lang-en">Beef with Cheese Manakish</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٠ ر.س</span>
+                <span class="lang-en">20 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">المناقيش</span>
+                <span class="lang-en">Manakish</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٢٢ سعرة</span>
+                <span class="lang-en">422 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-35" 
+                    data-name-ar="مناقيش لحم بالجبن" 
+                    data-name-en="Beef with Cheese Manakish" 
+                    data-price="20" 
+                    data-calories="422"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="italian">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">باستا فوتوتشيني بالدجاج</span>
+                <span class="lang-en">Chicken Fettuccine Pasta</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٧ ر.س</span>
+                <span class="lang-en">27 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">القسم الإيطالي</span>
+                <span class="lang-en">Italian Corner</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٥٨٢ سعرة</span>
+                <span class="lang-en">582 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-36" 
+                    data-name-ar="باستا فوتوتشيني بالدجاج" 
+                    data-name-en="Chicken Fettuccine Pasta" 
+                    data-price="27" 
+                    data-calories="582"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="italian">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">سباغيتي بولونيز</span>
+                <span class="lang-en">Spaghetti Bolognese</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٣ ر.س</span>
+                <span class="lang-en">23 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">القسم الإيطالي</span>
+                <span class="lang-en">Italian Corner</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٩٠ سعرة</span>
+                <span class="lang-en">490 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-37" 
+                    data-name-ar="سباغيتي بولونيز" 
+                    data-name-en="Spaghetti Bolognese" 
+                    data-price="23" 
+                    data-calories="490"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="italian">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">بينا أرابياتا باستا</span>
+                <span class="lang-en">Penne Arrabiata</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٢ ر.س</span>
+                <span class="lang-en">22 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">القسم الإيطالي</span>
+                <span class="lang-en">Italian Corner</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٣٧ سعرة</span>
+                <span class="lang-en">437 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-38" 
+                    data-name-ar="بينا أرابياتا باستا" 
+                    data-name-en="Penne Arrabiata" 
+                    data-price="22" 
+                    data-calories="437"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="italian">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">لازانيا</span>
+                <span class="lang-en">Lasagna</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٨ ر.س</span>
+                <span class="lang-en">28 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">القسم الإيطالي</span>
+                <span class="lang-en">Italian Corner</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٦١٢ سعرة</span>
+                <span class="lang-en">612 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-39" 
+                    data-name-ar="لازانيا" 
+                    data-name-en="Lasagna" 
+                    data-price="28" 
+                    data-calories="612"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="italian">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">بيتزا مارغريتا</span>
+                <span class="lang-en">Margherita Pizza</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٠ ر.س</span>
+                <span class="lang-en">20 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">القسم الإيطالي</span>
+                <span class="lang-en">Italian Corner</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤١٠ سعرة</span>
+                <span class="lang-en">410 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-40" 
+                    data-name-ar="بيتزا مارغريتا" 
+                    data-name-en="Margherita Pizza" 
+                    data-price="20" 
+                    data-calories="410"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="italian">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">بيتزا دجاج رانش</span>
+                <span class="lang-en">Ranch Chicken Pizza</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٥ ر.س</span>
+                <span class="lang-en">25 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">القسم الإيطالي</span>
+                <span class="lang-en">Italian Corner</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٣٩٥ سعرة</span>
+                <span class="lang-en">395 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-41" 
+                    data-name-ar="بيتزا دجاج رانش" 
+                    data-name-en="Ranch Chicken Pizza" 
+                    data-price="25" 
+                    data-calories="395"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="italian">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">بيتزا بيبيروني</span>
+                <span class="lang-en">Pepperoni Pizza</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٥ ر.س</span>
+                <span class="lang-en">25 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">القسم الإيطالي</span>
+                <span class="lang-en">Italian Corner</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٥٥١ سعرة</span>
+                <span class="lang-en">551 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-42" 
+                    data-name-ar="بيتزا بيبيروني" 
+                    data-name-en="Pepperoni Pizza" 
+                    data-price="25" 
+                    data-calories="551"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="italian">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">بيتزا سي فود</span>
+                <span class="lang-en">Seafood Pizza</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٥ ر.س</span>
+                <span class="lang-en">25 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">القسم الإيطالي</span>
+                <span class="lang-en">Italian Corner</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٣٦ سعرة</span>
+                <span class="lang-en">436 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-43" 
+                    data-name-ar="بيتزا سي فود" 
+                    data-name-en="Seafood Pizza" 
+                    data-price="25" 
+                    data-calories="436"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="burgers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">دبل سماش برجر مع بطاطس</span>
+                <span class="lang-en">Double Smash Burger with Fries</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٧ ر.س</span>
+                <span class="lang-en">27 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">البرجر والساندوتش</span>
+                <span class="lang-en">Burgers & Sandwiches</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">١٢٥٠ سعرة</span>
+                <span class="lang-en">1250 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-44" 
+                    data-name-ar="دبل سماش برجر مع بطاطس" 
+                    data-name-en="Double Smash Burger with Fries" 
+                    data-price="27" 
+                    data-calories="1250"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="burgers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">كلاسيك بيف برجر</span>
+                <span class="lang-en">Classic Beef Burger</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">٢٠ ر.س</span>
+                <span class="lang-en">20 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">البرجر والساندوتش</span>
+                <span class="lang-en">Burgers & Sandwiches</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٥٥٠ سعرة</span>
+                <span class="lang-en">550 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-45" 
+                    data-name-ar="كلاسيك بيف برجر" 
+                    data-name-en="Classic Beef Burger" 
+                    data-price="20" 
+                    data-calories="550"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="burgers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">كرسبي تشيكن برجر</span>
+                <span class="lang-en">Crispy Chicken Burger</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٧ ر.س</span>
+                <span class="lang-en">17 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">البرجر والساندوتش</span>
+                <span class="lang-en">Burgers & Sandwiches</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٨٠ سعرة</span>
+                <span class="lang-en">480 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-46" 
+                    data-name-ar="كرسبي تشيكن برجر" 
+                    data-name-en="Crispy Chicken Burger" 
+                    data-price="17" 
+                    data-calories="480"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="burgers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">ساندوتش كباب لحم</span>
+                <span class="lang-en">Beef Kebab Sandwich</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٧ ر.س</span>
+                <span class="lang-en">17 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">البرجر والساندوتش</span>
+                <span class="lang-en">Burgers & Sandwiches</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٣٨٠ سعرة</span>
+                <span class="lang-en">380 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-47" 
+                    data-name-ar="ساندوتش كباب لحم" 
+                    data-name-en="Beef Kebab Sandwich" 
+                    data-price="17" 
+                    data-calories="380"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="burgers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">ساندوتش كباب دجاج</span>
+                <span class="lang-en">Chicken Kebab Sandwich</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٥ ر.س</span>
+                <span class="lang-en">15 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">البرجر والساندوتش</span>
+                <span class="lang-en">Burgers & Sandwiches</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٢٦٠ سعرة</span>
+                <span class="lang-en">260 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-48" 
+                    data-name-ar="ساندوتش كباب دجاج" 
+                    data-name-en="Chicken Kebab Sandwich" 
+                    data-price="15" 
+                    data-calories="260"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="burgers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">ساندوتش شيش طاووق</span>
+                <span class="lang-en">Shish Tawook Sandwich</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٧ ر.س</span>
+                <span class="lang-en">17 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">البرجر والساندوتش</span>
+                <span class="lang-en">Burgers & Sandwiches</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٢١٠ سعرة</span>
+                <span class="lang-en">210 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-49" 
+                    data-name-ar="ساندوتش شيش طاووق" 
+                    data-name-en="Shish Tawook Sandwich" 
+                    data-price="17" 
+                    data-calories="210"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-list-item reveal active" data-category="burgers">
+        <div class="menu-list-details">
+          <div class="menu-list-top-row">
+            <div class="menu-list-info-stack">
+              <h3>
+                <span class="lang-ar">ساندوتش فاهيتا دجاج</span>
+                <span class="lang-en">Chicken Fajita Sandwich</span>
+              </h3>
+              <div class="menu-card-price">
+                <span class="lang-ar">١٧ ر.س</span>
+                <span class="lang-en">17 SAR</span>
+              </div>
+            </div>
+
+            <div class="menu-list-meta-stack">
+              <span class="menu-list-tag">
+                <span class="lang-ar">البرجر والساندوتش</span>
+                <span class="lang-en">Burgers & Sandwiches</span>
+              </span>
+              <span class="menu-list-calories">
+                <span class="lang-ar">٤٠٠ سعرة</span>
+                <span class="lang-en">400 kcal</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="menu-card-order-row">
+            <div class="quantity-selector">
+              <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+            </div>
+            <button class="btn btn-gold btn-add-to-cart" 
+                    data-id="rest-50" 
+                    data-name-ar="ساندوتش فاهيتا دجاج" 
+                    data-name-en="Chicken Fajita Sandwich" 
+                    data-price="17" 
+                    data-calories="400"
+                    onclick="handleAddToCart(this)">
+              <span class="lang-ar">أضف للطلب</span>
+              <span class="lang-en">Add to Order</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="footer-logo">
+            <div class="logo-fallback" style="--color-navy: var(--color-white)">
+              <span class="logo-fallback-en lang-en">OZ PARK CAFE</span>
+              <span class="logo-fallback-ar lang-ar">اوز بارك</span>
+            </div>
+          </a>
+          <p class="lang-ar">أوز بارك يقدم تجربة طعام استثنائية مع إطلالة بحرية خلابة في القنفذة، بمزيج متناغم من المشويات والأطباق الإيطالية والمقبلات الغنية.</p>
+          <p class="lang-en">OZ Park offers an exceptional dining experience with breathtaking sea views in Al Qunfudhah, serving select charcoal grills, authentic Italian cuisine, and handcrafted appetizers.</p>
+          <div class="footer-stripes"></div>
+        </div>
+
+        <div class="footer-links">
+          <h3 class="lang-ar">روابط سريعة</h3>
+          <h3 class="lang-en">Quick Links</h3>
+          <ul>
+            <li><a href="/#home"><span class="lang-ar">الرئيسية</span><span class="lang-en">Home</span></a></li>
+            <li><a href="/menu"><span class="lang-ar">قائمة الكافيه</span><span class="lang-en">Cafe Menu</span></a></li>
+            <li><a href="#"><span class="lang-ar">قائمة المطعم</span><span class="lang-en">Restaurant Menu</span></a></li>
+            <li><a href="/#about"><span class="lang-ar">من نحن</span><span class="lang-en">About Us</span></a></li>
+            <li><a href="/#contact"><span class="lang-ar">تواصل معنا</span><span class="lang-en">Contact</span></a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h3 class="lang-ar">تابعنا</h3>
+          <h3 class="lang-en">Connect With Us</h3>
+          <div class="footer-socials" style="margin-bottom: 24px;">
+            <a href="#" class="social-btn" aria-label="Instagram">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01"/></svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="Snapchat">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a4 4 0 00-4 4c0 3 4 10 4 10s4-7 4-10a4 4 0 00-4-4z"/></svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="X">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
+            </a>
+          </div>
+          <h3 class="lang-ar" style="margin-bottom: 12px; font-size: 1rem;">الفرع الرئيسي</h3>
+          <h3 class="lang-en" style="margin-bottom: 12px; font-size: 1rem;">The Lounge & Restaurant</h3>
+          <p class="lang-ar" style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">فندق 5 نجوم المطل على البحر، القنفذة، المملكة العربية السعودية</p>
+          <p class="lang-en" style="color: rgba(255,255,255,0.6); font-size: 0.85rem;">5-Star Sea-view Hotel, Al Qunfudhah, Kingdom of Saudi Arabia</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="lang-ar">© ٢٠٢٦ أوز بارك. جميع الحقوق محفوظة.</p>
+        <p class="lang-en">© 2026 OZ Park. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#"><span class="lang-ar">سياسة الخصوصية</span><span class="lang-en">Privacy Policy</span></a>
+          <a href="#"><span class="lang-ar">الشروط والأحكام</span><span class="lang-en">Terms & Conditions</span></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js?v=5.0.0"></script>
+</body>
+</html>
