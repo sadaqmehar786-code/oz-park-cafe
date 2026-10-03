@@ -2,14 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="فندق أوز بارك - بوابة الطلبات وخدمة الغرف / OZ Park Hotel - Dining & In-Room Service Portal">
-  <title>فندق أوز بارك | OZ Park Hotel - Dining & Room Service</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="فندق أوز بارك - خدمة الطلبات / OZ Park Hotel - Dining Selection">
+  <title>فندق أوز بارك | OZ Park Hotel</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Cairo:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Cairo:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -18,10 +18,8 @@
       --color-navy-deep: #08111E;
       --color-gold: #C5A059;
       --color-gold-light: #E0C287;
-      --color-gold-dark: #9E7D3B;
+      --color-gold-hover: #D8B46E;
       --color-white: #FFFFFF;
-      --color-cream: #FAF7F2;
-      --color-cream-dark: #EDE5D8;
       --font-arabic: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-english: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-serif: 'Playfair Display', Georgia, serif;
@@ -31,460 +29,297 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      min-height: 100dvh;
     }
 
     body {
       font-family: var(--font-arabic);
       background-color: var(--color-navy-deep);
       color: var(--color-white);
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
       position: relative;
       overflow-x: hidden;
+      overflow-y: auto;
     }
 
     html[lang="en"] body {
       font-family: var(--font-english);
     }
 
-    /* Background with rich luxury overlay */
+    /* Ambient Background */
     .portal-bg {
       position: fixed;
       inset: 0;
       background: 
-        radial-gradient(circle at 50% 20%, rgba(27, 54, 93, 0.7) 0%, rgba(8, 17, 30, 0.95) 85%),
+        radial-gradient(circle at 50% 35%, rgba(27, 54, 93, 0.65) 0%, rgba(8, 17, 30, 0.94) 85%),
         url('assets/images/hero-lounge.jpg') center/cover no-repeat;
       z-index: 0;
       filter: brightness(0.85);
-      transform: scale(1.02);
-      transition: transform 10s ease;
+      pointer-events: none;
     }
 
-    /* Ambient Gold Glow */
+    /* Subtle Gold Glow */
     .portal-bg::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.12) 0%, transparent 60%);
+      background: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.08) 0%, transparent 60%);
       pointer-events: none;
     }
 
-    /* Header with Language Switch */
+    /* Top Bar - Minimal & Clean */
     .portal-header {
       position: relative;
       z-index: 10;
+      width: 100%;
+      max-width: 1000px;
+      padding: 1rem 1.25rem 0.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
     }
 
-    .hotel-mini-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 0.45rem 1rem;
-      border-radius: 50px;
-      border: 1px solid rgba(197, 160, 89, 0.35);
-      font-size: 0.85rem;
-      color: var(--color-gold-light);
-      letter-spacing: 0.5px;
+    .hotel-location-tag {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.65);
+      letter-spacing: 0.3px;
     }
 
     .lang-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(197, 160, 89, 0.4);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       color: var(--color-white);
-      padding: 0.5rem 1.25rem;
+      padding: 0.35rem 0.85rem;
       border-radius: 50px;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.25s ease;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
-    .lang-btn:hover {
-      background: var(--color-gold);
-      color: var(--color-navy-dark);
+    .lang-btn:hover, .lang-btn:active {
+      background: rgba(197, 160, 89, 0.2);
       border-color: var(--color-gold);
-      transform: translateY(-1px);
+      color: var(--color-gold-light);
     }
 
-    /* Main Container */
-    .portal-container {
+    /* Center Content Container */
+    .portal-main {
       position: relative;
       z-index: 10;
-      flex: 1;
+      width: 100%;
+      max-width: 520px;
+      padding: 1rem 1.25rem 1.5rem;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 1.5rem 1.5rem 3.5rem;
-      max-width: 1000px;
-      margin: 0 auto;
-      width: 100%;
+      margin: auto 0;
     }
 
-    /* Hotel Logo & Branding */
-    .hotel-brand-wrapper {
-      margin-bottom: 2.75rem;
-      animation: fadeInDown 0.9s ease forwards;
-    }
-
-    .hotel-stars {
-      color: var(--color-gold);
-      font-size: 1.15rem;
-      letter-spacing: 4px;
-      margin-bottom: 0.75rem;
-      display: block;
-      text-shadow: 0 2px 10px rgba(197, 160, 89, 0.5);
+    /* Hotel Branding */
+    .brand-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
     }
 
     .hotel-logo-box {
-      margin: 0 auto 1.5rem;
+      margin-bottom: 0.75rem;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .hotel-logo-img {
-      max-width: 290px;
-      width: 85%;
+      max-width: 220px;
+      width: 62vw;
       height: auto;
-      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 20px rgba(197, 160, 89, 0.25));
-      transition: transform 0.4s ease;
+      filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.6));
+      transition: transform 0.3s ease;
     }
 
-    .hotel-logo-img:hover {
-      transform: scale(1.04);
-    }
-
-    .hotel-logo-emblem svg {
-      width: 52px;
-      height: 52px;
-      fill: none;
-      stroke: var(--color-gold);
-      stroke-width: 1.6;
-    }
-
-    .hotel-title {
-      font-family: var(--font-serif);
-      font-size: 2.75rem;
-      font-weight: 800;
-      color: var(--color-white);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-      text-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      line-height: 1.15;
-    }
-
-    .hotel-title-ar {
-      font-family: var(--font-arabic);
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: 0;
-    }
-
-    .hotel-tagline {
-      font-size: 1.1rem;
-      color: var(--color-gold-light);
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.6;
-      font-weight: 400;
+    .hotel-stars {
+      color: var(--color-gold);
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      margin-bottom: 0.4rem;
+      display: block;
       opacity: 0.95;
     }
 
-    /* Cards / Buttons Section */
-    .portal-options-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.75rem;
-      width: 100%;
-      max-width: 860px;
-      margin-top: 1rem;
-      animation: fadeInUp 0.9s ease forwards;
+    .hotel-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--color-white);
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      line-height: 1.2;
     }
 
-    .option-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(197, 160, 89, 0.28);
-      border-radius: 20px;
-      padding: 2.25rem 2rem;
-      text-decoration: none;
-      color: var(--color-white);
+    html[lang="en"] .hotel-title {
+      font-family: var(--font-serif);
+      font-size: 1.55rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* Two Buttons Side by Side (Grid of 2) */
+    .action-buttons-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .portal-btn {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
-      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
-    }
-
-    .option-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .option-card:hover {
-      transform: translateY(-8px);
-      background: rgba(255, 255, 255, 0.09);
-      border-color: var(--color-gold);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 30px rgba(197, 160, 89, 0.25);
-    }
-
-    .option-card:hover::before {
-      opacity: 1;
-    }
-
-    .card-icon-container {
-      width: 80px;
-      height: 80px;
-      border-radius: 18px;
-      background: rgba(197, 160, 89, 0.12);
-      border: 1px solid rgba(197, 160, 89, 0.35);
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 2.6rem;
-      margin-bottom: 1.5rem;
-      transition: transform 0.4s ease, background 0.4s ease;
-    }
-
-    .option-card:hover .card-icon-container {
-      transform: scale(1.1) rotate(4deg);
-      background: rgba(197, 160, 89, 0.22);
-      border-color: var(--color-gold);
-    }
-
-    .card-label {
-      display: inline-block;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--color-gold);
-      font-weight: 700;
-      margin-bottom: 0.35rem;
-    }
-
-    .card-title {
-      font-size: 1.65rem;
-      font-weight: 700;
-      color: var(--color-white);
-      margin-bottom: 0.75rem;
-      line-height: 1.3;
-    }
-
-    .card-desc {
-      font-size: 0.95rem;
-      color: rgba(255, 255, 255, 0.75);
-      line-height: 1.55;
-      margin-bottom: 1.75rem;
-      flex-grow: 1;
-    }
-
-    .card-action-btn {
-      width: 100%;
-      padding: 0.9rem 1.5rem;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      transition: all 0.3s ease;
-      border: none;
+      padding: 1.15rem 0.5rem;
+      border-radius: 16px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
       cursor: pointer;
+      user-select: none;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+      border: 1px solid transparent;
+      outline: none;
     }
 
-    .btn-cafe {
-      background: var(--color-gold);
-      color: var(--color-navy-dark);
-      box-shadow: 0 4px 15px rgba(197, 160, 89, 0.35);
+    .portal-btn:active {
+      transform: scale(0.97);
     }
 
-    .option-card:hover .btn-cafe {
-      background: #dfb96c;
-      box-shadow: 0 6px 20px rgba(197, 160, 89, 0.5);
-    }
-
-    .btn-restaurant {
-      background: linear-gradient(135deg, #1B365D, #244675);
-      color: var(--color-white);
-      border: 1px solid rgba(197, 160, 89, 0.4);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .option-card:hover .btn-restaurant {
-      background: linear-gradient(135deg, #244675, #2F5994);
-      border-color: var(--color-gold);
-      box-shadow: 0 6px 20px rgba(27, 54, 93, 0.6);
-    }
-
-    .card-arrow {
-      transition: transform 0.3s ease;
-      font-size: 1.15rem;
+    .portal-btn-icon {
+      font-size: 1.9rem;
       line-height: 1;
+      margin-bottom: 0.55rem;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
     }
 
-    html[dir="rtl"] .card-arrow {
-      transform: scaleX(-1);
+    .portal-btn-text {
+      font-size: clamp(0.8rem, 3.2vw, 1.05rem);
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: center;
     }
 
-    .option-card:hover .card-arrow {
-      transform: translateX(4px);
+    /* Button 1: Café (Luxury Gold Theme) */
+    .btn-cafe {
+      background: linear-gradient(135deg, #C5A059 0%, #A2803D 100%);
+      color: #0A1424;
+      border-color: rgba(255, 235, 180, 0.4);
+      box-shadow: 0 8px 22px rgba(197, 160, 89, 0.3);
     }
 
-    html[dir="rtl"] .option-card:hover .card-arrow {
-      transform: scaleX(-1) translateX(4px);
+    .btn-cafe:hover {
+      background: linear-gradient(135deg, #D8B46E 0%, #B6924A 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(197, 160, 89, 0.45);
     }
 
-    /* In-Room Prompt Banner */
-    .room-service-pill {
-      margin-top: 2.25rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 0.65rem 1.5rem;
-      border-radius: 50px;
-      font-size: 0.88rem;
-      color: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
+    /* Button 2: Restaurant (Luxury Navy Theme with Gold Border) */
+    .btn-restaurant {
+      background: linear-gradient(135deg, rgba(27, 54, 93, 0.88) 0%, rgba(15, 32, 56, 0.96) 100%);
+      color: var(--color-white);
+      border-color: rgba(197, 160, 89, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
     }
 
-    .room-service-pill .dot {
-      width: 8px;
-      height: 8px;
-      background: #10B981;
-      border-radius: 50%;
-      box-shadow: 0 0 10px #10B981;
+    .btn-restaurant:hover {
+      background: linear-gradient(135deg, rgba(36, 70, 117, 0.95) 0%, rgba(20, 42, 74, 1) 100%);
+      border-color: var(--color-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(27, 54, 93, 0.5);
     }
 
     /* Footer */
     .portal-footer {
       position: relative;
       z-index: 10;
+      width: 100%;
       text-align: center;
-      padding: 1.25rem;
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.5);
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 0.75rem 1rem 1rem;
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.45);
     }
 
-    /* Language display helper */
+    /* Language display switchers */
     [lang="en"] .lang-ar { display: none !important; }
     [lang="ar"] .lang-en { display: none !important; }
 
-    /* Animations */
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes rotateSlow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .portal-header {
-        padding: 1rem 1.25rem;
-      }
-      .portal-container {
-        padding: 1rem 1rem 2.5rem;
+    /* Desktop View Polish */
+    @media (min-width: 600px) {
+      .hotel-logo-img {
+        max-width: 250px;
       }
       .hotel-title {
-        font-size: 2.1rem;
-      }
-      .hotel-title-ar {
         font-size: 1.85rem;
       }
-      .hotel-logo-emblem {
-        width: 80px;
-        height: 80px;
-        margin-bottom: 1rem;
+      .brand-section {
+        margin-bottom: 2.25rem;
       }
-      .hotel-logo-emblem svg {
-        width: 42px;
-        height: 42px;
+      .action-buttons-row {
+        gap: 16px;
       }
-      .portal-options-grid {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
+      .portal-btn {
+        padding: 1.35rem 1rem;
+        border-radius: 18px;
       }
-      .option-card {
-        padding: 1.75rem 1.5rem;
-      }
-      .card-icon-container {
-        width: 68px;
-        height: 68px;
+      .portal-btn-icon {
         font-size: 2.2rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.65rem;
       }
-      .card-title {
-        font-size: 1.4rem;
+      .portal-btn-text {
+        font-size: 1.1rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Background Layer -->
+  <!-- Background -->
   <div class="portal-bg"></div>
 
-  <!-- Header -->
+  <!-- Minimal Header -->
   <header class="portal-header">
-    <div class="hotel-mini-badge">
-      <span>⭐⭐⭐⭐⭐</span>
-      <span class="lang-ar">فندق أوز بارك | القنفذة</span>
-      <span class="lang-en">OZ Park Hotel | Al Qunfudhah</span>
+    <div class="hotel-location-tag">
+      <span class="lang-ar">القنفذة</span>
+      <span class="lang-en">Al Qunfudhah</span>
     </div>
 
     <button id="lang-switch-btn" class="lang-btn" aria-label="Switch Language">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
       <span class="lang-ar">English</span>
       <span class="lang-en">العربية</span>
     </button>
   </header>
 
-  <!-- Main Selection Portal -->
-  <main class="portal-container">
+  <!-- Main Center Content -->
+  <main class="portal-main">
     
-    <!-- Hotel Brand Block -->
-    <div class="hotel-brand-wrapper">
+    <!-- Hotel Branding -->
+    <div class="brand-section">
       <div class="hotel-logo-box">
         <img src="assets/images/oz-park-logo-darkmode.png" alt="OZ Park Hotel | فندق أوز بارك" class="hotel-logo-img">
       </div>
@@ -492,97 +327,63 @@
       <span class="hotel-stars">★★★★★</span>
 
       <h1 class="hotel-title">
-        <span class="lang-ar hotel-title-ar">فندق أوز بارك</span>
+        <span class="lang-ar">فندق أوز بارك</span>
         <span class="lang-en">OZ Park Hotel</span>
       </h1>
-
-      <p class="hotel-tagline">
-        <span class="lang-ar">خدمة طلبات وتوصيل الغرف والجلسات — مرحباً بكم في تجربة ضيافة استثنائية على ساحل البحر الأحمر</span>
-        <span class="lang-en">In-Room Dining & Guest Ordering Service — Welcome to an exceptional luxury coastal hospitality experience</span>
-      </p>
     </div>
 
-    <!-- Options Choice Grid (Cafe vs Restaurant) -->
-    <div class="portal-options-grid">
-
-      <!-- 1. Order from Café -->
-      <a href="/menu" class="option-card">
-        <div class="card-icon-container">☕</div>
-        <span class="card-label">
-          <span class="lang-ar">القهوة والحلويات</span>
-          <span class="lang-en">Lounge & Coffee</span>
-        </span>
-        <h2 class="card-title">
-          <span class="lang-ar">مقهى أوز بارك</span>
-          <span class="lang-en">OZ Park Café</span>
-        </h2>
-        <p class="card-desc">
-          <span class="lang-ar">استمتع بأفخر أنواع القهوة المختصة، المشروبات الباردة والمثلجة، العصائر الطبيعية الطازجة، وتشكيلة الحلويات والكيك الشهية.</span>
-          <span class="lang-en">Indulge in artisanal specialty coffees, chilled signature beverages, freshly squeezed juices, and handcrafted cakes & pastries.</span>
-        </p>
-        <button class="card-action-btn btn-cafe">
+    <!-- Two Small Buttons Side by Side (Left & Right) -->
+    <div class="action-buttons-row">
+      
+      <!-- Café Button -->
+      <a href="/menu" class="portal-btn btn-cafe" id="btn-cafe-choice">
+        <span class="portal-btn-icon">☕</span>
+        <span class="portal-btn-text">
           <span class="lang-ar">اطلب من المقهى</span>
           <span class="lang-en">Order from Café</span>
-          <span class="card-arrow">➔</span>
-        </button>
+        </span>
       </a>
 
-      <!-- 2. Order from Restaurant -->
-      <a href="/restaurant-menu" class="option-card">
-        <div class="card-icon-container">🍽️</div>
-        <span class="card-label">
-          <span class="lang-ar">المطعم والمأكولات</span>
-          <span class="lang-en">Dining & Cuisine</span>
-        </span>
-        <h2 class="card-title">
-          <span class="lang-ar">مطعم أوز بارك</span>
-          <span class="lang-en">OZ Park Restaurant</span>
-        </h2>
-        <p class="card-desc">
-          <span class="lang-ar">تشكيلة واسعة من المشويات الطازجة على الفحم، المقبلات الساخنة والباردة، الشوربات الغنية، الباستا والبيتزا الإيطالية، والبرجر اللذيذ.</span>
-          <span class="lang-en">Explore fresh charcoal grills, hot & cold oriental appetizers, authentic Italian pasta & pizzas, wholesome soups, and gourmet burgers.</span>
-        </p>
-        <button class="card-action-btn btn-restaurant">
+      <!-- Restaurant Button -->
+      <a href="/restaurant-menu" class="portal-btn btn-restaurant" id="btn-restaurant-choice">
+        <span class="portal-btn-icon">🍽️</span>
+        <span class="portal-btn-text">
           <span class="lang-ar">اطلب من المطعم</span>
           <span class="lang-en">Order from Restaurant</span>
-          <span class="card-arrow">➔</span>
-        </button>
+        </span>
       </a>
 
-    </div>
-
-    <!-- Room / Table Notice Pill -->
-    <div class="room-service-pill">
-      <span class="dot"></span>
-      <span class="lang-ar">الطلب مباشر وسهل عبر الواتساب مع خيار إدخال رقم الغرفة أو الطاولة</span>
-      <span class="lang-en">Direct WhatsApp checkout with Room / Table prompt for fast delivery</span>
     </div>
 
   </main>
 
-  <!-- Footer -->
+  <!-- Clean Footer -->
   <footer class="portal-footer">
-    <span class="lang-ar">© ٢٠٢٦ فندق ومقهى أوز بارك (OZ Park Hotel) — القنفذة، المملكة العربية السعودية. جميع الحقوق محفوظة.</span>
-    <span class="lang-en">© 2026 OZ Park Hotel & Dining — Al Qunfudhah, Kingdom of Saudi Arabia. All rights reserved.</span>
+    <span class="lang-ar">© ٢٠٢٦ فندق ومقهى أوز بارك — جميع الحقوق محفوظة</span>
+    <span class="lang-en">© 2026 OZ Park Hotel & Dining — All rights reserved</span>
   </footer>
 
   <script>
     // Language Toggle Handling
-    const langBtn = document.getElementById('lang-switch-btn');
-    let currentLang = localStorage.getItem('preferred-lang') || 'ar';
+    (function() {
+      var currentLang = localStorage.getItem('oz_park_portal_lang') || 'ar';
+      applyLang(currentLang);
 
-    function setLanguage(lang) {
-      currentLang = lang;
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-      localStorage.setItem('preferred-lang', lang);
-    }
+      var btn = document.getElementById('lang-switch-btn');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          currentLang = (currentLang === 'ar') ? 'en' : 'ar';
+          localStorage.setItem('oz_park_portal_lang', currentLang);
+          applyLang(currentLang);
+        });
+      }
 
-    setLanguage(currentLang);
-
-    langBtn.addEventListener('click', () => {
-      setLanguage(currentLang === 'ar' ? 'en' : 'ar');
-    });
+      function applyLang(lang) {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+      }
+    })();
   </script>
+
 </body>
 </html>
