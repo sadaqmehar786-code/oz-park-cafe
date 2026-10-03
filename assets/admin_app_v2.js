@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     currentRoute: 'dashboard',
     categories: [],
     menuItems: [],
+    restaurantCategories: [],
+    restaurantItems: [],
     pages: [],
     offers: [],
     blogPosts: [],
@@ -19,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'dashboard': 'view_dashboard',
     'pages': 'manage_pages',
     'menu': 'manage_menu',
+    'restaurant-menu': 'manage_menu',
     'offers': 'manage_offers',
     'blog': 'manage_blog',
     'seo': 'manage_seo',
@@ -250,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'dashboard': renderDashboard(viewport); break;
       case 'pages': renderPages(viewport); break;
       case 'menu': renderMenu(viewport); break;
+      case 'restaurant-menu': renderRestaurantMenu(viewport); break;
       case 'offers': renderOffers(viewport); break;
       case 'blog': renderBlog(viewport); break;
       case 'seo': renderSeo(viewport); break;
@@ -1296,7 +1300,587 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+    // ==========================================================================
+  // VIEW 3B: RESTAURANT MENU MANAGEMENT (DEDICATED RESTAURANT MANAGER)
   // ==========================================================================
+  async function renderRestaurantMenu(container) {
+    try {
+      const [catData, itemData] = await Promise.all([
+        api('/restaurant/categories'),
+        api('/restaurant/items')
+      ]);
+
+      state.restaurantCategories = catData.data;
+      state.restaurantItems = itemData.data;
+      const isAr = state.lang === 'ar';
+
+      container.innerHTML = `
+        <div class="page-header">
+          <div class="page-title">
+            <h1>${isAr ? 'إدارة قائمة طعام المطعم (OZ Park Restaurant)' : 'Restaurant Menu Manager'}</h1>
+            <p>${isAr ? 'إدارة أصناف وجبات ومقبلات المطعم، تعديل الأسعار والسعرات، وتصنيف ورفع الصور' : 'Manage restaurant items, categories, prices, calories, and food photos'}</p>
+          </div>
+          <div class="header-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-navy" id="manage-rest-categories-btn">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+              <span>${isAr ? 'إدارة تصنيفات المطعم' : 'Manage Categories'}</span>
+            </button>
+            <button class="btn btn-gold" id="add-rest-item-btn">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+              <span>${isAr ? '+ إضافة صنف جديد' : '+ Add New Item'}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-header" style="flex-wrap: wrap; gap: 1rem; align-items: center;">
+            <div class="filter-bar" style="margin: 0; flex: 1; min-width: 200px;">
+              <div class="search-box">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" id="search-rest-input" class="form-control" placeholder="${isAr ? 'بحث في أصناف المطعم...' : 'Search restaurant items...'}">
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 260px;">
+              <label style="font-weight: 700; white-space: nowrap; color: var(--color-navy); margin: 0;">${isAr ? 'التصنيف:' : 'Category:'}</label>
+              <select id="rest-category-filter-select" class="form-control" style="font-weight: 600;">
+                <option value="all">${isAr ? '📁 جميع تصنيفات المطعم (All)' : '📁 All Categories'}</option>
+                ${state.restaurantCategories.map(c => `<option value="${c.id}">${c.icon || '🍽️'} ${isAr ? c.name_ar : c.name_en} (${c.item_count || 0})</option>`).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="panel-body" style="padding: 0;">
+            <table class="admin-table" id="rest-items-table">
+              <thead>
+                <tr>
+                  <th>${isAr ? 'الصنف والصورة' : 'Item & Image'}</th>
+                  <th style="min-width: 220px;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                      <span>${isAr ? 'التصنيف' : 'Category'}</span>
+                      <select id="th-rest-cat-filter" class="form-control form-control-sm" style="font-size: 0.8rem; padding: 2px 6px; border: 1px solid var(--color-gold); font-weight: 600;">
+                        <option value="all">${isAr ? 'الكل' : 'All'}</option>
+                        ${state.restaurantCategories.map(c => `<option value="${c.id}">${c.icon || '🍽️'} ${isAr ? c.name_ar : c.name_en}</option>`).join('')}
+                      </select>
+                    </div>
+                  </th>
+                  <th>${isAr ? 'السعر' : 'Price'}</th>
+                  <th>${isAr ? 'السعرات' : 'Calories'}</th>
+                  <th>${isAr ? 'التوفر' : 'Availability'}</th>
+                  <th>${isAr ? 'إجراءات' : 'Actions'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${state.restaurantItems.map(item => {
+                  const hasCustomImg = item.image_url && (item.image_url.startsWith('data:image/') || item.image_url.startsWith('/api/') || item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'));
+                  const catIcon = item.category_icon || '🍽️';
+                  const imgBoxHtml = hasCustomImg ? `
+                    <div style="position: relative; width: 46px; height: 46px;">
+                      <img src="${item.image_url}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid var(--color-cream-dark);" alt="">
+                      <div style="display: none; width: 46px; height: 46px; border-radius: 8px; background: #F4EFE6; align-items: center; justify-content: center; font-size: 1.25rem; border: 1px solid var(--color-cream-dark);">${catIcon}</div>
+                    </div>
+                  ` : `
+                    <div style="width: 46px; height: 46px; border-radius: 8px; background: #F4EFE6; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; border: 1px solid var(--color-cream-dark);">${catIcon}</div>
+                  `;
+
+                  return `
+                    <tr data-name="${(item.name_ar + ' ' + item.name_en).toLowerCase()}" data-category-id="${item.category_id}">
+                      <td>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                          ${imgBoxHtml}
+                          <div>
+                            <div style="font-weight: 700; color: var(--color-navy);">${isAr ? item.name_ar : item.name_en}</div>
+                            <div style="font-size: 0.75rem; color: var(--color-charcoal-light);">${isAr ? (item.description_ar || '') : (item.description_en || '')}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+                          <span class="badge badge-info" style="font-size: 0.85rem;">${isAr ? (item.category_name_ar || 'غير مصنف') : (item.category_name_en || 'Uncategorized')}</span>
+                          ${item.category_id ? `
+                            <div style="display: flex; gap: 0.25rem;">
+                              <button class="btn btn-navy btn-xs direct-edit-rest-cat-btn" data-id="${item.category_id}" title="${isAr ? 'تعديل هذا التصنيف' : 'Edit this category'}">✏️</button>
+                              <button class="btn btn-danger btn-xs direct-delete-rest-cat-btn" data-id="${item.category_id}" title="${isAr ? 'حذف هذا التصنيف' : 'Delete this category'}">🗑️</button>
+                            </div>
+                          ` : ''}
+                        </div>
+                      </td>
+                      <td><strong>${item.price} ${isAr ? 'ر.س' : 'SAR'}</strong></td>
+                      <td>${item.calories ? item.calories + (isAr ? ' سعرة' : ' kcal') : '-'}</td>
+                      <td>
+                        <button class="btn btn-sm toggle-rest-avail-btn ${item.availability_status === 'available' ? 'btn-gold' : 'btn-outline'}" data-id="${item.id}" data-status="${item.availability_status}">
+                          ${item.availability_status === 'available' ? (isAr ? 'متوفر' : 'Available') : (isAr ? 'غير متوفر' : 'Unavailable')}
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-navy btn-sm edit-rest-item-btn" data-id="${item.id}">${isAr ? 'تعديل' : 'Edit'}</button>
+                        <button class="btn btn-danger btn-sm delete-rest-item-btn" data-id="${item.id}">${isAr ? 'حذف' : 'Delete'}</button>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      // Filter Logic Handler
+      const filterRestItems = () => {
+        const searchVal = document.getElementById('search-rest-input').value.toLowerCase();
+        const selectedCat = document.getElementById('rest-category-filter-select').value;
+
+        document.querySelectorAll('#rest-items-table tbody tr').forEach(tr => {
+          const nameText = tr.getAttribute('data-name');
+          const catId = tr.getAttribute('data-category-id');
+
+          const matchesSearch = nameText.includes(searchVal);
+          const matchesCat = selectedCat === 'all' || catId === selectedCat;
+
+          tr.style.display = (matchesSearch && matchesCat) ? '' : 'none';
+        });
+      };
+
+      const restCatSelect = document.getElementById('rest-category-filter-select');
+      const thRestCatSelect = document.getElementById('th-rest-cat-filter');
+
+      restCatSelect.addEventListener('change', (e) => {
+        thRestCatSelect.value = e.target.value;
+        filterRestItems();
+      });
+
+      thRestCatSelect.addEventListener('change', (e) => {
+        restCatSelect.value = e.target.value;
+        filterRestItems();
+      });
+
+      document.getElementById('search-rest-input').addEventListener('input', filterRestItems);
+      document.getElementById('add-rest-item-btn').addEventListener('click', () => openRestaurantItemModal());
+      document.getElementById('manage-rest-categories-btn').addEventListener('click', () => openManageRestaurantCategoriesModal());
+
+      // Direct Category Edit/Delete from row buttons
+      container.querySelectorAll('.direct-edit-rest-cat-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const catId = btn.getAttribute('data-id');
+          const cat = state.restaurantCategories.find(x => x.id == catId);
+          if (cat) openRestaurantCategoryModal(cat);
+        });
+      });
+
+      container.querySelectorAll('.direct-delete-rest-cat-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const catId = btn.getAttribute('data-id');
+          const cat = state.restaurantCategories.find(x => x.id == catId);
+          if (cat) openDeleteRestaurantCategoryModal(cat, cat.item_count || 0);
+        });
+      });
+
+      // Item Actions
+      container.querySelectorAll('.toggle-rest-avail-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.getAttribute('data-id');
+          const curr = btn.getAttribute('data-status');
+          const nextStatus = curr === 'available' ? 'unavailable' : 'available';
+
+          try {
+            await api(`/restaurant/items/${id}/availability`, {
+              method: 'PATCH',
+              body: JSON.stringify({ status: nextStatus })
+            });
+            showToast(isAr ? 'تم تحديث توفر الصنف' : 'Availability status updated');
+            renderRestaurantMenu(container);
+          } catch (err) {
+            showToast(err.message, 'error');
+          }
+        });
+      });
+
+      container.querySelectorAll('.edit-rest-item-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = state.restaurantItems.find(x => x.id == btn.getAttribute('data-id'));
+          if (item) openRestaurantItemModal(item);
+        });
+      });
+
+      container.querySelectorAll('.delete-rest-item-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (confirm(isAr ? 'هل أنت متأكد من إزالة هذا الصنف من قائمة المطعم؟' : 'Are you sure you want to delete this restaurant item?')) {
+            try {
+              await api(`/restaurant/items/${btn.getAttribute('data-id')}`, { method: 'DELETE' });
+              showToast(isAr ? 'تم حذف الصنف بنجاح' : 'Restaurant item deleted');
+              renderRestaurantMenu(container);
+            } catch (err) {
+              showToast(err.message, 'error');
+            }
+          }
+        });
+      });
+
+    } catch (e) {
+      container.innerHTML = `<div class="badge badge-danger">${state.lang === 'ar' ? 'فشل تحميل قائمة طعام المطعم' : 'Failed to load restaurant menu'}</div>`;
+    }
+  }
+
+  // RESTAURANT CATEGORY MODALS
+  async function openManageRestaurantCategoriesModal() {
+    openRestaurantCategoryModal();
+  }
+
+  function openRestaurantCategoryModal(category = null) {
+    const isAr = state.lang === 'ar';
+    const bodyHtml = `
+      <div style="margin-bottom: 1.25rem; background: var(--color-cream); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-cream-dark);">
+        <label style="font-weight: 700; color: var(--color-navy); margin-bottom: 0.5rem; display: block;">
+          ${isAr ? 'تصنيفات المطعم الحالية (اضغط تعديل لتغيير الاسم أو حذف للحذف)' : 'Existing Restaurant Categories'}
+        </label>
+        <div style="max-height: 180px; overflow-y: auto;">
+          <table class="admin-table" style="margin: 0; background: #fff;">
+            <thead>
+              <tr>
+                <th>${isAr ? 'التصنيف' : 'Category'}</th>
+                <th>${isAr ? 'الأصناف' : 'Items'}</th>
+                <th>${isAr ? 'إجراءات' : 'Actions'}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${state.restaurantCategories.map(c => `
+                <tr style="${category && category.id === c.id ? 'background: #fff8e7;' : ''}">
+                  <td>
+                    <strong>${c.icon || '🍽️'} ${isAr ? c.name_ar : c.name_en}</strong>
+                    <div style="font-size: 0.75rem; color: var(--color-charcoal-light);">${isAr ? c.name_en : c.name_ar}</div>
+                  </td>
+                  <td><span class="badge badge-info">${c.item_count || 0}</span></td>
+                  <td>
+                    <button type="button" class="btn btn-navy btn-xs modal-edit-rest-cat-btn" data-id="${c.id}">${isAr ? 'تعديل' : 'Edit'}</button>
+                    <button type="button" class="btn btn-danger btn-xs modal-delete-rest-cat-btn" data-id="${c.id}" data-count="${c.item_count || 0}">${isAr ? 'حذف' : 'Delete'}</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <form id="rest-category-modal-form">
+        <h5 style="color: var(--color-navy); margin-bottom: 0.75rem;" id="rest-cat-form-title">
+          ${category ? (isAr ? `تعديل التصنيف: ${category.name_ar}` : `Edit Category: ${category.name_en}`) : (isAr ? '+ إضافة تصنيف جديد' : '+ Add New Category')}
+        </h5>
+
+        <div class="form-group">
+          <label>${isAr ? 'اسم التصنيف (بالعربية) *' : 'Category Name (Arabic) *'}</label>
+          <input type="text" id="rest-cat-name-ar" class="form-control" required value="${category ? category.name_ar : ''}" placeholder="مثال: المقبلات والسلطات">
+        </div>
+        <div class="form-group">
+          <label>${isAr ? 'اسم التصنيف (English) *' : 'Category Name (English) *'}</label>
+          <input type="text" id="rest-cat-name-en" class="form-control" required value="${category ? category.name_en : ''}" placeholder="e.g. Salads & Appetizers">
+        </div>
+        <div class="form-group">
+          <label>${isAr ? 'أيقونة التصنيف' : 'Category Icon'}</label>
+          <input type="text" id="rest-cat-icon" class="form-control" value="${category ? (category.icon || '🍽️') : '🍽️'}">
+        </div>
+        <div class="form-group">
+          <label>${isAr ? 'ترتيب العرض' : 'Display Order'}</label>
+          <input type="number" id="rest-cat-order" class="form-control" value="${category ? category.display_order : '0'}">
+        </div>
+      </form>
+    `;
+
+    const footerHtml = `
+      <button class="btn btn-outline" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
+      <button class="btn btn-gold" id="save-rest-cat-btn">${category ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'حفظ التصنيف' : 'Save Category')}</button>
+    `;
+
+    openModal(isAr ? 'إدارة وتعديل تصنيفات المطعم' : 'Restaurant Category Management', bodyHtml, footerHtml);
+
+    // Bind Edit/Rename buttons inside modal
+    document.querySelectorAll('.modal-edit-rest-cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const catId = btn.getAttribute('data-id');
+        const cat = state.restaurantCategories.find(x => x.id == catId);
+        if (cat) openRestaurantCategoryModal(cat);
+      });
+    });
+
+    // Bind Delete buttons inside modal
+    document.querySelectorAll('.modal-delete-rest-cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const catId = btn.getAttribute('data-id');
+        const cat = state.restaurantCategories.find(x => x.id == catId);
+        const count = parseInt(btn.getAttribute('data-count') || '0');
+        if (cat) openDeleteRestaurantCategoryModal(cat, count);
+      });
+    });
+
+    document.getElementById('save-rest-cat-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('save-rest-cat-btn');
+      const name_ar = document.getElementById('rest-cat-name-ar').value.trim();
+      const name_en = document.getElementById('rest-cat-name-en').value.trim();
+      const icon = document.getElementById('rest-cat-icon').value.trim();
+      const display_order = parseInt(document.getElementById('rest-cat-order').value) || 0;
+
+      if (!name_ar || !name_en) {
+        return showToast(isAr ? 'أدخل اسم التصنيف باللغتين' : 'Please fill category names in English and Arabic', 'error');
+      }
+
+      try {
+        btn.disabled = true;
+        btn.textContent = isAr ? 'جاري الحفظ...' : 'Saving...';
+
+        if (category) {
+          await api(`/restaurant/categories/${category.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({ name_en, name_ar, icon, display_order })
+          });
+          showToast(isAr ? 'تم تعديل التصنيف بنجاح' : 'Category updated successfully');
+        } else {
+          await api('/restaurant/categories', {
+            method: 'POST',
+            body: JSON.stringify({ name_en, name_ar, icon, display_order })
+          });
+          showToast(isAr ? 'تمت إضافة التصنيف بنجاح' : 'Category created successfully');
+        }
+
+        closeModal();
+        renderRestaurantMenu(document.getElementById('app-viewport'));
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = category ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'حفظ التصنيف' : 'Save Category');
+        showToast(err.message, 'error');
+      }
+    });
+  }
+
+  function openDeleteRestaurantCategoryModal(category, itemCount = 0) {
+    const isAr = state.lang === 'ar';
+    const bodyHtml = `
+      <div style="text-align: center; padding: 1.5rem 0.5rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+        <h4 style="color: var(--color-navy); margin-bottom: 0.75rem;">
+          ${isAr ? `هل أنت متأكد من حذف التصنيف "${category.name_ar}"؟` : `Delete Category "${category.name_en}"?`}
+        </h4>
+        ${itemCount > 0 ? `
+          <div class="badge badge-danger" style="display: block; margin: 1rem 0; font-size: 0.95rem; padding: 0.75rem;">
+            ${isAr ? `تنبيه: يحتوي هذا التصنيف على (${itemCount}) صنف نشط. يرجى نقل الأصناف أو حذفها أولاً قبل حذف التصنيف.` : `Warning: This category contains (${itemCount}) active items. Please move or delete items first.`}
+          </div>
+        ` : `
+          <p style="color: var(--color-charcoal-light); font-size: 0.95rem;">
+            ${isAr ? 'لا توجد أصناف تابعة لهذا التصنيف. سيتم حذفه نهائياً من قائمة طعام المطعم.' : 'No items are associated with this category. It will be permanently removed.'}
+          </p>
+        `}
+      </div>
+    `;
+
+    const footerHtml = `
+      <button class="btn btn-outline" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
+      <button class="btn btn-danger" id="confirm-delete-rest-cat-btn" ${itemCount > 0 ? 'disabled' : ''}>${isAr ? 'حذف التصنيف' : 'Delete Category'}</button>
+    `;
+
+    openModal(isAr ? 'تأكيد حذف تصنيف المطعم' : 'Confirm Category Deletion', bodyHtml, footerHtml);
+
+    document.getElementById('confirm-delete-rest-cat-btn')?.addEventListener('click', async () => {
+      const btn = document.getElementById('confirm-delete-rest-cat-btn');
+      try {
+        btn.disabled = true;
+        btn.textContent = isAr ? 'جاري الحذف...' : 'Deleting...';
+        await api(`/restaurant/categories/${category.id}`, { method: 'DELETE' });
+        showToast(isAr ? 'تم حذف التصنيف بنجاح' : 'Category deleted successfully');
+        closeModal();
+        renderRestaurantMenu(document.getElementById('app-viewport'));
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = isAr ? 'حذف التصنيف' : 'Delete Category';
+        showToast(err.message, 'error');
+      }
+    });
+  }
+
+  // RESTAURANT ITEM MODAL (WITH IMAGE UPLOAD / COMPRESSION)
+  function openRestaurantItemModal(item = null) {
+    const isAr = state.lang === 'ar';
+    let currentImg = (item && item.image_url && (item.image_url.startsWith('data:image/') || item.image_url.startsWith('/api/') || item.image_url.startsWith('/uploads/') || item.image_url.startsWith('uploads/') || item.image_url.startsWith('http'))) ? item.image_url : '';
+
+    const bodyHtml = `
+      <form id="rest-item-form">
+        <div class="form-group">
+          <label>${isAr ? 'اسم الصنف (بالعربية) *' : 'Item Name (Arabic) *'}</label>
+          <input type="text" id="rest-item-name-ar" class="form-control" required value="${item ? item.name_ar : ''}">
+        </div>
+        <div class="form-group">
+          <label>${isAr ? 'اسم الصنف (English) *' : 'Item Name (English) *'}</label>
+          <input type="text" id="rest-item-name-en" class="form-control" required value="${item ? item.name_en : ''}">
+        </div>
+        <div class="form-group">
+          <label>${isAr ? 'التصنيف (Category) *' : 'Category *'}</label>
+          <select id="rest-item-category-id" class="form-control" required>
+            ${state.restaurantCategories.map(c => `<option value="${c.id}" ${item && item.category_id === c.id ? 'selected' : ''}>${isAr ? c.name_ar : c.name_en}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>${isAr ? 'السعر (بالريال) *' : 'Price (in SAR) *'}</label>
+          <input type="number" step="0.5" id="rest-item-price" class="form-control" required value="${item ? item.price : '20'}">
+        </div>
+        <div class="form-group">
+          <label>${isAr ? 'السعرات الحرارية' : 'Calories (kcal)'}</label>
+          <input type="number" id="rest-item-calories" class="form-control" value="${item && item.calories ? item.calories : ''}">
+        </div>
+
+        <!-- PRODUCT IMAGE MANAGEMENT CONTROL -->
+        <div class="form-group" style="background: var(--color-cream); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--color-cream-dark);">
+          <label style="font-weight: 700; color: var(--color-navy); margin-bottom: 0.75rem; display: block;">
+            ${isAr ? 'إدارة صورة الوجبة (Restaurant Dish Image)' : 'Restaurant Dish Image'}
+          </label>
+          
+          <input type="hidden" id="rest-item-image-url" value="${currentImg}">
+          <input type="file" id="rest-item-image-file" style="display: none;" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
+
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <div id="rest-item-img-preview-box" style="${currentImg ? 'display: block;' : 'display: none;'} width: 72px; height: 72px; border-radius: 10px; overflow: hidden; border: 2px solid var(--color-gold); box-shadow: var(--shadow-sm); background: #f8f9fa; flex-shrink: 0;">
+              <img id="rest-item-img-preview" src="${currentImg || ''}" style="width: 100%; height: 100%; object-fit: cover;" alt="">
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
+              <div style="font-size: 0.8rem; color: var(--color-charcoal-light);" id="rest-item-img-status">
+                ${currentImg ? (isAr ? 'الصورة المرفوعة الحالية للوجبة' : 'Current dish image attached') : (isAr ? 'تُعرض الأيقونة المسطحة الافتراضية (#F4EFE6) حتى يتم رفع صورة' : 'Default flat container shown until a photo is uploaded')}
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-gold btn-sm" id="btn-change-rest-item-image">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  <span>${isAr ? 'رفع / تغيير الصورة' : 'Upload / Change Photo'}</span>
+                </button>
+                
+                <button type="button" class="btn btn-danger btn-sm" id="btn-remove-rest-item-image" style="${currentImg ? 'display: inline-flex;' : 'display: none;'}">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  <span>${isAr ? 'إزالة الصورة' : 'Remove Photo'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>${isAr ? 'الوصف بالعربية' : 'Description (Arabic)'}</label>
+          <textarea id="rest-item-desc-ar" class="form-control">${item ? (item.description_ar || '') : ''}</textarea>
+        </div>
+        <div class="form-group">
+          <label>${isAr ? 'الوصف بالإنجليزية' : 'Description (English)'}</label>
+          <textarea id="rest-item-desc-en" class="form-control">${item ? (item.description_en || '') : ''}</textarea>
+        </div>
+      </form>
+    `;
+
+    const footerHtml = `
+      <button class="btn btn-outline" onclick="closeModal()">${isAr ? 'إلغاء' : 'Cancel'}</button>
+      <button class="btn btn-gold" id="save-rest-item-btn">${item ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'حفظ الصنف' : 'Save Item')}</button>
+    `;
+
+    openModal(item ? (isAr ? 'تعديل صنف في قائمة المطعم' : 'Edit Restaurant Item') : (isAr ? 'إضافة صنف جديد لقائمة المطعم' : 'Add New Restaurant Item'), bodyHtml, footerHtml);
+
+    // Bind Image Change trigger
+    document.getElementById('btn-change-rest-item-image').addEventListener('click', () => {
+      document.getElementById('rest-item-image-file').click();
+    });
+
+    const fileInput = document.getElementById('rest-item-image-file');
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const btnChange = document.getElementById('btn-change-rest-item-image');
+      const statusText = document.getElementById('rest-item-img-status');
+
+      try {
+        btnChange.disabled = true;
+        statusText.textContent = isAr ? 'جاري رفع الصورة...' : 'Uploading image...';
+
+        const formData = new FormData();
+        formData.append('files', file);
+
+        const uploadRes = await api('/media/upload', { method: 'POST', body: formData });
+        if (uploadRes.success && uploadRes.data.length > 0) {
+          const uploadedPath = uploadRes.data[0].file_path;
+          document.getElementById('rest-item-image-url').value = uploadedPath;
+          
+          const previewImg = document.getElementById('rest-item-img-preview');
+          const previewBox = document.getElementById('rest-item-img-preview-box');
+
+          if (previewImg) {
+            previewImg.src = uploadedPath;
+          }
+          if (previewBox) previewBox.style.setProperty('display', 'block', 'important');
+          document.getElementById('btn-remove-rest-item-image').style.display = 'inline-flex';
+          statusText.textContent = isAr ? 'تم رفع وتحديث صورة الوجبة بنجاح!' : 'Photo uploaded successfully!';
+          showToast(isAr ? 'تم رفع الصورة بنجاح' : 'Image uploaded successfully');
+        }
+      } catch (err) {
+        statusText.textContent = isAr ? 'فشل رفع الصورة' : 'Image upload failed';
+        showToast(err.message || (isAr ? 'فشل رفع الصورة' : 'Image upload failed'), 'error');
+      } finally {
+        btnChange.disabled = false;
+      }
+    });
+
+    // Handle Image Removal
+    document.getElementById('btn-remove-rest-item-image').addEventListener('click', () => {
+      document.getElementById('rest-item-image-url').value = '';
+      const previewBox = document.getElementById('rest-item-img-preview-box');
+      if (previewBox) previewBox.style.setProperty('display', 'none', 'important');
+      document.getElementById('btn-remove-rest-item-image').style.display = 'none';
+      document.getElementById('rest-item-img-status').textContent = isAr ? 'تمت إزالة الصورة المخصصة (سيعود المظهر المسطح الافتراضي)' : 'Custom photo removed (flat container restored)';
+    });
+
+    // Handle Save Item
+    document.getElementById('save-rest-item-btn').addEventListener('click', async () => {
+      const btnSave = document.getElementById('save-rest-item-btn');
+      const name_ar = document.getElementById('rest-item-name-ar').value.trim();
+      const name_en = document.getElementById('rest-item-name-en').value.trim();
+      const category_id = parseInt(document.getElementById('rest-item-category-id').value);
+      const price = parseFloat(document.getElementById('rest-item-price').value);
+      const caloriesVal = document.getElementById('rest-item-calories').value.trim();
+      const calories = caloriesVal ? parseInt(caloriesVal) : null;
+      const description_ar = document.getElementById('rest-item-desc-ar').value.trim();
+      const description_en = document.getElementById('rest-item-desc-en').value.trim();
+      const image_url = document.getElementById('rest-item-image-url').value.trim();
+
+      if (!name_ar || !name_en || isNaN(price) || !category_id) {
+        return showToast(isAr ? 'يرجى ملء جميع الحقول المطلوبة (الاسم باللغتين، التصنيف، والسعر)' : 'Please fill all required fields', 'error');
+      }
+
+      const payload = {
+        name_ar,
+        name_en,
+        category_id,
+        price,
+        calories,
+        description_ar,
+        description_en,
+        image_url
+      };
+
+      try {
+        btnSave.disabled = true;
+        btnSave.textContent = isAr ? 'جاري الحفظ...' : 'Saving...';
+
+        if (item && item.id) {
+          await api(`/restaurant/items/${item.id}`, { method: 'PUT', body: JSON.stringify(payload) });
+        } else {
+          await api('/restaurant/items', { method: 'POST', body: JSON.stringify(payload) });
+        }
+        showToast(isAr ? 'تم حفظ صنف المطعم بنجاح' : 'Restaurant item saved successfully');
+        closeModal();
+        renderRestaurantMenu(document.getElementById('app-viewport'));
+      } catch (err) {
+        btnSave.disabled = false;
+        btnSave.textContent = item ? (isAr ? 'حفظ التعديلات' : 'Save Changes') : (isAr ? 'حفظ الصنف' : 'Save Item');
+        showToast(err.message, 'error');
+      }
+    });
+  }
+
+  
+// ==========================================================================
   // VIEW 4: OFFERS & PROMOTIONS
   // ==========================================================================
   async function renderOffers(container) {

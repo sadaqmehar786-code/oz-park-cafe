@@ -431,9 +431,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // If we are on the restaurant menu page, DO NOT touch category tabs or menu grid!
+      // If we are on the restaurant menu page, sync restaurant menu data and return!
       const isRestaurant = window.location.pathname.includes('restaurant-menu');
       if (isRestaurant) {
+        await syncRestaurantBackendData();
         return;
       }
 
@@ -649,25 +650,139 @@ document.addEventListener('DOMContentLoaded', () => {
   syncBackendData();
 
   // ==========================================================================
-  // RESTAURANT MENU TABS FILTERING SYSTEM
+  // RESTAURANT MENU TABS FILTERING SYSTEM & LIVE BACKEND SYNC
   // ==========================================================================
-  const restTabs = document.querySelectorAll('.restaurant-menu-tabs .menu-tab');
-  const restItems = document.querySelectorAll('.restaurant-menu-grid .menu-list-item');
-  if (restTabs.length > 0 && restItems.length > 0) {
-    restTabs.forEach(tab => {
-      tab.onclick = () => {
-        restTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        const filterValue = tab.getAttribute('data-filter');
-        restItems.forEach(item => {
-          const cat = item.getAttribute('data-category');
-          if (filterValue === 'all' || cat === filterValue) {
-            item.style.display = 'flex';
-          } else {
-            item.style.display = 'none';
-          }
-        });
-      };
-    });
+  function setupRestaurantTabFiltering() {
+    const restTabs = document.querySelectorAll('.restaurant-menu-tabs .menu-tab');
+    const restItems = document.querySelectorAll('.restaurant-menu-grid .menu-list-item');
+    if (restTabs.length > 0 && restItems.length > 0) {
+      restTabs.forEach(tab => {
+        tab.onclick = () => {
+          restTabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const filterValue = tab.getAttribute('data-filter');
+          restItems.forEach(item => {
+            const cat = item.getAttribute('data-category');
+            if (filterValue === 'all' || cat === filterValue) {
+              item.style.display = 'flex';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        };
+      });
+    }
   }
+
+  async function syncRestaurantBackendData() {
+    try {
+      const res = await fetch('/api/v1/public/restaurant-menu');
+      if (!res.ok) return;
+      const json = await res.json();
+      if (!json.success || !json.data) return;
+
+      const { categories, items } = json.data;
+      if (!items || items.length === 0) return;
+
+      // 1. Dynamic Restaurant Categories Filter Tabs
+      const tabsWrapper = document.querySelector('.restaurant-menu-tabs');
+      if (tabsWrapper && categories && categories.length > 0) {
+        tabsWrapper.innerHTML = `
+          <button class="menu-tab active" data-filter="all">
+            <span class="menu-tab-icon">🍽️</span>
+            <span class="lang-ar">الكل</span>
+            <span class="lang-en">All Categories</span>
+          </button>
+          ${categories.map(c => `
+            <button class="menu-tab" data-filter="${c.slug}">
+              <span class="menu-tab-icon">${c.icon || '🍽️'}</span>
+              <span class="lang-ar">${c.name_ar}</span>
+              <span class="lang-en">${c.name_en}</span>
+            </button>
+          `).join('')}
+        `;
+      }
+
+      // 2. Dynamic Restaurant Items Grid
+      const container = document.querySelector('.restaurant-menu-grid');
+      if (container && items && items.length > 0) {
+        container.innerHTML = '';
+        items.forEach(item => {
+          const itemEl = document.createElement('div');
+          itemEl.className = 'menu-list-item reveal active';
+          itemEl.setAttribute('data-category', item.category_slug || '');
+
+          const caloriesTextAr = item.calories ? `${toArabicNum(item.calories)} سعرة` : '';
+          const caloriesTextEn = item.calories ? `${item.calories} kcal` : '';
+          const hasCustomImg = hasCustomUploadedImage(item.image_url);
+          const catIcon = item.category_icon || '🍽️';
+
+          const thumbHtml = hasCustomImg ? `
+            <div class="menu-list-thumb-wrapper">
+              <img src="${item.image_url}" alt="${item.name_en}" class="menu-list-thumb" onerror="this.parentElement.className='menu-list-thumb-wrapper menu-list-thumb-flat'; this.parentElement.innerHTML='<span class=\\'thumb-icon\\'>${catIcon}</span>';">
+            </div>
+          ` : `
+            <div class="menu-list-thumb-wrapper menu-list-thumb-flat">
+              <span class="thumb-icon">${catIcon}</span>
+            </div>
+          `;
+
+          itemEl.innerHTML = `
+            ${thumbHtml}
+            <div class="menu-list-details">
+              <div class="menu-list-top-row">
+                <div class="menu-list-info-stack">
+                  <h3>
+                    <span class="lang-ar">${item.name_ar}</span>
+                    <span class="lang-en">${item.name_en}</span>
+                  </h3>
+                  <div class="menu-list-badges">
+                    <span class="item-badge item-badge-category">
+                      <span class="lang-ar">${item.category_name_ar || ''}</span>
+                      <span class="lang-en">${item.category_name_en || ''}</span>
+                    </span>
+                    ${item.calories ? `
+                      <span class="item-badge item-badge-cal">
+                        <span class="lang-ar">${caloriesTextAr}</span>
+                        <span class="lang-en">${caloriesTextEn}</span>
+                      </span>
+                    ` : ''}
+                  </div>
+                </div>
+                <div class="menu-list-price-tag">
+                  <span class="lang-ar">${toArabicNum(item.price)} ر.س</span>
+                  <span class="lang-en">${item.price} SAR</span>
+                </div>
+              </div>
+              <div class="menu-list-order-row">
+                <div class="quantity-selector">
+                  <button class="qty-btn qty-minus" onclick="decreaseQty(this)">−</button>
+                  <span class="qty-val">1</span>
+                  <button class="qty-btn qty-plus" onclick="increaseQty(this)">+</button>
+                </div>
+                <button class="btn btn-gold btn-add-to-cart" 
+                        data-id="${item.slug || item.id}" 
+                        data-name-ar="${item.name_ar}" 
+                        data-name-en="${item.name_en}" 
+                        data-price="${item.price}" 
+                        data-calories="${item.calories || 0}"
+                        onclick="handleAddToCart(this)">
+                  <span class="lang-ar">أضف للطلب</span>
+                  <span class="lang-en">Add to Order</span>
+                </button>
+              </div>
+            </div>
+          `;
+
+          container.appendChild(itemEl);
+        });
+      }
+
+      setupRestaurantTabFiltering();
+    } catch (e) {
+      console.error('[Restaurant Sync] Failed:', e);
+    }
+  }
+
+  setupRestaurantTabFiltering();
 });

@@ -104,4 +104,37 @@ router.get('/init', async (req, res) => {
   }
 });
 
+// GET /api/v1/public/restaurant-menu - Public restaurant items and categories
+router.get('/restaurant-menu', async (req, res) => {
+  try {
+    const categories = await query(`
+      SELECT c.*, COUNT(m.id) as item_count
+      FROM restaurant_categories c
+      LEFT JOIN restaurant_items m ON m.category_id = c.id AND m.deleted_at IS NULL
+      GROUP BY c.id
+      ORDER BY c.display_order ASC, c.id ASC
+    `);
+
+    const items = await query(`
+      SELECT m.*, c.name_en as category_name_en, c.name_ar as category_name_ar, c.slug as category_slug, c.icon as category_icon
+      FROM restaurant_items m
+      LEFT JOIN restaurant_categories c ON m.category_id = c.id
+      WHERE m.deleted_at IS NULL
+      ORDER BY c.display_order ASC, m.display_order ASC, m.id ASC
+    `);
+
+    res.json({
+      success: true,
+      data: {
+        categories,
+        items
+      }
+    });
+  } catch (err) {
+    console.error('Restaurant menu fetch error:', err);
+    res.status(500).json({ success: false, error: 'Failed to fetch restaurant menu' });
+  }
+});
+
 module.exports = router;
+

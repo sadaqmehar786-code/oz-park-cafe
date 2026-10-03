@@ -17,6 +17,12 @@ initDb().then(async () => {
   } catch (e) {
     console.error('[Server] Failed to auto-update desserts on boot:', e);
   }
+  try {
+    const { initRestaurantDb } = require('./restaurant_db');
+    await initRestaurantDb();
+  } catch (e) {
+    console.error('[Server] Failed to init restaurant db on boot:', e);
+  }
 }).catch(err => {
   console.error('[Server] Database initialization failed:', err);
 });
@@ -97,6 +103,7 @@ app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/dashboard', require('./routes/dashboard'));
 app.use('/api/v1/pages', require('./routes/pages'));
 app.use('/api/v1/menu', require('./routes/menu'));
+app.use('/api/v1/restaurant', require('./routes/restaurant'));
 app.use('/api/v1/offers', require('./routes/offers'));
 app.use('/api/v1/blog', require('./routes/blog'));
 app.use('/api/v1/seo', require('./routes/seo'));
